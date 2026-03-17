@@ -1,4 +1,5 @@
 .venv
 venv
 env
-.env
+.envdata/*.csv
+data/*.xlsx
