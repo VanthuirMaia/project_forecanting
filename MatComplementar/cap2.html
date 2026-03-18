@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cap. 2 — Time Series Graphics | Roadmap de Estudos</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0d0d0f;
+        --surface: #141417;
+        --border: #252529;
+        --accent: #00e5a0;
+        --accent2: #ff6b35;
+        --accent3: #7c6fff;
+        --text: #e8e8ec;
+        --muted: #6b6b7a;
+        --card: #18181d;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Syne", sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* GRID BG */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 229, 160, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 229, 160, 0.03) 1px, transparent 1px);
+        background-size: 48px 48px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .container {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 60px 24px 100px;
+      }
+
+      /* HEADER */
+      header {
+        margin-bottom: 64px;
+      }
+
+      .tag {
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 3px;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        display: block;
+      }
+
+      h1 {
+        font-size: clamp(32px, 6vw, 56px);
+        font-weight: 800;
+        line-height: 1.05;
+        color: #fff;
+        margin-bottom: 20px;
+      }
+
+      h1 span {
+        color: var(--accent);
+      }
+
+      .subtitle {
+        font-family: "Space Mono", monospace;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.7;
+        max-width: 580px;
+        border-left: 2px solid var(--border);
+        padding-left: 16px;
+      }
+
+      /* PROGRESS BAR */
+      .progress-bar {
+        background: var(--border);
+        border-radius: 2px;
+        height: 3px;
+        margin: 40px 0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        background: linear-gradient(90deg, var(--accent), var(--accent3));
+        height: 100%;
+        width: 0%;
+        transition: width 0.6s ease;
+        border-radius: 2px;
+      }
+
+      .progress-label {
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      /* SECTION */
+      .section {
+        margin-bottom: 48px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .section-num {
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        color: var(--accent);
+        background: rgba(0, 229, 160, 0.08);
+        border: 1px solid rgba(0, 229, 160, 0.2);
+        padding: 4px 10px;
+        border-radius: 2px;
+        white-space: nowrap;
+      }
+
+      .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #fff;
+        flex: 1;
+      }
+
+      .section-toggle {
+        font-family: "Space Mono", monospace;
+        font-size: 18px;
+        color: var(--muted);
+        transition:
+          transform 0.3s ease,
+          color 0.2s;
+      }
+
+      .section-header:hover .section-toggle {
+        color: var(--accent);
+      }
+      .section.open .section-toggle {
+        transform: rotate(45deg);
+        color: var(--accent);
+      }
+
+      .section-body {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+
+      .section.open .section-body {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* CONCEPT CARD */
+      .concept {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 24px;
+        margin-bottom: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .concept::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--accent);
+      }
+
+      .concept.orange::before {
+        background: var(--accent2);
+      }
+      .concept.purple::before {
+        background: var(--accent3);
+      }
+
+      .concept-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent);
+        font-family: "Space Mono", monospace;
+        margin-bottom: 10px;
+        letter-spacing: 0.5px;
+      }
+
+      .concept.orange .concept-title {
+        color: var(--accent2);
+      }
+      .concept.purple .concept-title {
+        color: var(--accent3);
+      }
+
+      .concept p {
+        font-size: 14px;
+        line-height: 1.75;
+        color: #c0c0cc;
+      }
+
+      .concept ul {
+        margin-top: 10px;
+        padding-left: 20px;
+      }
+
+      .concept li {
+        font-size: 14px;
+        line-height: 1.9;
+        color: #c0c0cc;
+      }
+
+      /* CODE BLOCK */
+      .code-block {
+        background: #0a0a0c;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 20px 24px;
+        margin: 16px 0;
+        overflow-x: auto;
+      }
+
+      .code-block pre {
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+        line-height: 1.8;
+        color: #a8b8c8;
+        white-space: pre;
+      }
+
+      .code-block .kw {
+        color: var(--accent3);
+      }
+      .code-block .fn {
+        color: var(--accent);
+      }
+      .code-block .st {
+        color: var(--accent2);
+      }
+      .code-block .cm {
+        color: #4a5568;
+        font-style: italic;
+      }
+      .code-block .nb {
+        color: #f6e05e;
+      }
+
+      .code-label {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+
+      /* QUIZ */
+      .quiz-block {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 24px;
+        margin-bottom: 16px;
+      }
+
+      .quiz-label {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent2);
+        text-transform: uppercase;
+        margin-bottom: 14px;
+      }
+
+      .quiz-q {
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .quiz-option {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 12px 16px;
+        font-size: 13px;
+        color: #c0c0cc;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: left;
+        font-family: "Syne", sans-serif;
+      }
+
+      .quiz-option:hover {
+        border-color: var(--muted);
+        color: #fff;
+      }
+      .quiz-option.correct {
+        border-color: var(--accent);
+        background: rgba(0, 229, 160, 0.08);
+        color: var(--accent);
+      }
+      .quiz-option.wrong {
+        border-color: var(--accent2);
+        background: rgba(255, 107, 53, 0.08);
+        color: var(--accent2);
+      }
+      .quiz-option:disabled {
+        cursor: default;
+      }
+
+      .quiz-feedback {
+        margin-top: 12px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--muted);
+        display: none;
+        font-family: "Space Mono", monospace;
+      }
+
+      .quiz-feedback.show {
+        display: block;
+      }
+
+      /* CHECKLIST */
+      .checklist {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 24px;
+        margin-bottom: 16px;
+      }
+
+      .check-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+
+      .check-item:last-child {
+        border-bottom: none;
+      }
+
+      .check-box {
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid var(--muted);
+        border-radius: 2px;
+        flex-shrink: 0;
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        font-size: 11px;
+      }
+
+      .check-item.done .check-box {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #000;
+      }
+
+      .check-item.done .check-text {
+        text-decoration: line-through;
+        color: var(--muted);
+      }
+
+      .check-text {
+        font-size: 13px;
+        color: #c0c0cc;
+        line-height: 1.5;
+        transition: color 0.2s;
+      }
+
+      /* ANALOGY BOX */
+      .analogy {
+        background: rgba(124, 111, 255, 0.06);
+        border: 1px solid rgba(124, 111, 255, 0.2);
+        border-radius: 4px;
+        padding: 20px 24px;
+        margin: 16px 0;
+      }
+
+      .analogy-label {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent3);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .analogy p {
+        font-size: 14px;
+        color: #b0b0cc;
+        line-height: 1.75;
+      }
+
+      /* VISUAL DEMO */
+      .demo-box {
+        background: #0a0a0c;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 24px;
+        margin: 16px 0;
+      }
+
+      .demo-title {
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+
+      /* MINI CHART ACF */
+      .acf-chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 6px;
+        height: 80px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+      }
+
+      .acf-bar {
+        width: 18px;
+        background: var(--accent);
+        border-radius: 2px 2px 0 0;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+        flex-shrink: 0;
+      }
+
+      .acf-bar:hover {
+        opacity: 1;
+      }
+      .acf-bar.season {
+        background: var(--accent3);
+      }
+      .acf-bar.noise {
+        background: var(--muted);
+        height: 6px !important;
+      }
+
+      .acf-labels {
+        display: flex;
+        gap: 6px;
+        margin-top: 6px;
+      }
+
+      .acf-label {
+        width: 18px;
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        color: var(--muted);
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      .confidence-line {
+        position: absolute;
+        bottom: 14px;
+        left: 0;
+        right: 0;
+        border-top: 1px dashed rgba(255, 107, 53, 0.4);
+      }
+
+      .charts-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .chart-label-small {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        color: var(--muted);
+        margin-bottom: 8px;
+        text-align: center;
+      }
+
+      /* NAV BOTTOM */
+      .nav-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 64px;
+        padding-top: 32px;
+        border-top: 1px solid var(--border);
+      }
+
+      .nav-btn {
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        background: none;
+        border: 1px solid var(--border);
+        padding: 10px 20px;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .nav-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .score-display {
+        font-family: "Space Mono", monospace;
+        font-size: 13px;
+        color: var(--accent);
+      }
+
+      /* SECTION DIVIDER */
+      .divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 48px 0;
+      }
+
+      /* HIGHLIGHT */
+      .hl {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .hl2 {
+        color: var(--accent2);
+      }
+      .hl3 {
+        color: var(--accent3);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <span class="tag">Forecasting: Principles and Practice (fpppy)</span>
+        <h1>Cap. 2<br /><span>Time Series Graphics</span></h1>
+        <p class="subtitle">
+          Material complementar — conceitos, analogias e exercícios práticos.<br />
+          Use depois de ler o capítulo ou como guia de revisão.
+        </p>
+
+        <div class="progress-bar" style="margin-top: 32px">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-label">
+          <span id="progressText">0 de 7 seções concluídas</span>
+          <span id="progressPct">0%</span>
+        </div>
+      </header>
+
+      <!-- SEÇÃO 1 -->
+      <div class="section" id="s1">
+        <div class="section-header" onclick="toggleSection('s1')">
+          <span class="section-num">2.1</span>
+          <span class="section-title"
+            >DataFrame e estrutura de séries temporais</span
+          >
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">O que é</div>
+            <p>
+              Uma série temporal é uma sequência de valores medidos ao longo do
+              tempo. No pandas, você armazena isso num DataFrame com uma coluna
+              de tempo (geralmente chamada <span class="hl">ds</span> ou
+              <span class="hl">Month</span>) e uma ou mais colunas de valor.
+            </p>
+            <ul>
+              <li>
+                <strong>Timestamp</strong> — um instante exato:
+                <code>2024-01-15 08:30:00</code>
+              </li>
+              <li>
+                <strong>Period</strong> — um intervalo: "janeiro/2024" (sem hora
+                exata)
+              </li>
+              <li>
+                <strong>Colunas-chave</strong> — quando há múltiplas séries no
+                mesmo DataFrame, você as identifica por combinação de colunas
+                (ex: Estado + Gênero)
+              </li>
+            </ul>
+          </div>
+
+          <div class="analogy">
+            <div class="analogy-label">Analogia</div>
+            <p>
+              Pensa num dataset de sensores IoT do MiRoute: cada leitura tem um
+              timestamp, um ID de sensor e o valor medido. O timestamp é o eixo
+              do tempo, o ID é a chave que separa as séries, e o valor é o que
+              você vai prever.
+            </p>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">Padrão básico — como estruturar</div>
+            <pre><span class="cm"># Lendo CSV e já parseando a coluna de tempo</span>
+df = pd.read_csv(<span class="st">"dados.csv"</span>, parse_dates=[<span class="st">"ds"</span>])
+
+<span class="cm"># Filtrando uma série específica por chave</span>
+serie_a = df.loc[df[<span class="st">"sensor_id"</span>] == <span class="st">"A01"</span>]
+
+<span class="cm"># Agrupando por tempo (somando múltiplas séries)</span>
+total = (
+    df.groupby(<span class="st">"ds"</span>, as_index=<span class="nb">False</span>)
+    .agg({<span class="st">"valor"</span>: <span class="st">"sum"</span>})
+)</pre>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 2.1</div>
+            <div class="quiz-q">
+              Você tem dados mensais de vendas de 50 lojas. Qual é a estrutura
+              correta do DataFrame?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Uma coluna por loja cria um formato wide. É válido, mas dificulta análise com múltiplas séries.',
+                  )
+                "
+              >
+                Uma coluna por loja, uma linha por mês
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. Formato long: cada linha é uma observação (mês + loja + valor). A coluna loja é a chave que identifica cada série.',
+                  )
+                "
+              >
+                Uma coluna de mês, uma coluna de loja, uma coluna de valor
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Sem a coluna de tempo, não é uma série temporal.',
+                  )
+                "
+              >
+                Apenas coluna de loja e coluna de valor
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-0"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- SEÇÃO 2 -->
+      <div class="section" id="s2">
+        <div class="section-header" onclick="toggleSection('s2')">
+          <span class="section-num">2.2 – 2.3</span>
+          <span class="section-title">Time plots e padrões temporais</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">
+              Os 3 padrões que você precisa reconhecer
+            </div>
+            <ul>
+              <li>
+                <span class="hl">Tendência</span> — crescimento ou queda
+                persistente ao longo do tempo. Ex: custo de scripts médicos
+                subindo ano a ano.
+              </li>
+              <li>
+                <span class="hl2">Sazonalidade</span> — padrão que se repete em
+                período fixo e conhecido. Ex: vendas caem toda segunda, explodem
+                todo dezembro.
+              </li>
+              <li>
+                <span class="hl3">Ciclo</span> — oscilação sem período fixo,
+                ligada a fatores externos (econômicos, climáticos). Pode durar
+                anos e não tem regularidade previsível.
+              </li>
+            </ul>
+          </div>
+
+          <div class="analogy">
+            <div class="analogy-label">
+              Como diferenciar ciclo de sazonalidade
+            </div>
+            <p>
+              Sazonalidade tem calendário: você sabe que vai acontecer em
+              dezembro. Ciclo não tem calendário: você só percebe depois que já
+              aconteceu. Recessão econômica é ciclo. Black Friday é
+              sazonalidade.
+            </p>
+          </div>
+
+          <div class="concept orange">
+            <div class="concept-title">O que o time plot revela</div>
+            <p>
+              Plota valor no Y, tempo no X. É o primeiro gráfico que você faz,
+              sempre. Você consegue ver de cara: tem tendência? Tem sazonalidade
+              visível? Tem outliers? A série é estacionária (oscila em torno de
+              uma média) ou não?
+            </p>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 2.2</div>
+            <div class="quiz-q">
+              Num gráfico de vendas mensais, você vê picos altos todo mês de
+              dezembro por 5 anos seguidos, e uma leve queda geral ao longo dos
+              anos. O que você está vendo?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Ciclos não têm período fixo. Dezembro repetido todo ano é sazonalidade.',
+                  )
+                "
+              >
+                Apenas ciclo
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. Tendência de queda + sazonalidade anual (dezembro). Os dois padrões coexistem.',
+                  )
+                "
+              >
+                Tendência + sazonalidade
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Sem padrão significa ruído branco — aqui claramente há estrutura.',
+                  )
+                "
+              >
+                Ruído branco
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- SEÇÃO 3 -->
+      <div class="section" id="s3">
+        <div class="section-header" onclick="toggleSection('s3')">
+          <span class="section-num">2.4 – 2.5</span>
+          <span class="section-title">Seasonal plots e subseries plots</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">Seasonal plot</div>
+            <p>
+              Em vez de ver todos os anos em sequência, você sobrepõe cada ano
+              num mesmo eixo X de meses (Jan-Dez). Cada linha é um ano
+              diferente. Isso deixa claro se o padrão sazonal é estável (linhas
+              parecidas) ou está mudando (linhas divergindo).
+            </p>
+          </div>
+
+          <div class="concept purple">
+            <div class="concept-title">Seasonal subseries plot</div>
+            <p>
+              Divide a série em "fatias" por período (um painel por mês, por dia
+              da semana, etc). Dentro de cada fatia, você plota todos os anos
+              com a média marcada. Serve pra comparar: o padrão de janeiro é
+              muito diferente do padrão de julho? A média de cada mês está
+              crescendo ao longo dos anos?
+            </p>
+          </div>
+
+          <div class="analogy">
+            <div class="analogy-label">Quando usar cada um</div>
+            <p>
+              Seasonal plot → "o padrão sazonal está mudando ao longo dos
+              anos?"<br />
+              Subseries plot → "qual mês/dia tem maior magnitude sazonal? Ela é
+              estável?"
+            </p>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 2.3</div>
+            <div class="quiz-q">
+              Você quer verificar se o pico de vendas de dezembro está crescendo
+              ano a ano. Qual gráfico é mais direto?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'O time plot mostra tudo em sequência, mas comparar dezembros específicos fica difícil.',
+                  )
+                "
+              >
+                Time plot simples
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'O seasonal plot sobrepõe os anos, mas para ver só dezembro é menos direto.',
+                  )
+                "
+              >
+                Seasonal plot
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. O subseries plot de dezembro mostra todos os valores desse mês ao longo dos anos com a média — ideal pra ver se está crescendo.',
+                  )
+                "
+              >
+                Seasonal subseries plot
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- SEÇÃO 4 -->
+      <div class="section" id="s4">
+        <div class="section-header" onclick="toggleSection('s4')">
+          <span class="section-num">2.6</span>
+          <span class="section-title">Scatterplots e correlação</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">Pra que serve aqui</div>
+            <p>
+              Séries temporais muitas vezes têm <strong>covariáveis</strong> —
+              outras variáveis que ajudam a explicar o valor que você quer
+              prever. O scatterplot mostra se há relação entre elas. Ex:
+              temperatura vs consumo de energia elétrica.
+            </p>
+            <ul>
+              <li>
+                Correlação de Pearson: de <span class="hl2">-1</span> (inversa
+                perfeita) a <span class="hl">+1</span> (direta perfeita). Zero =
+                sem relação linear.
+              </li>
+              <li>
+                Cuidado: correlação não é causalidade. E relações não-lineares
+                podem ter correlação baixa mesmo existindo relação forte.
+              </li>
+            </ul>
+          </div>
+
+          <div class="concept orange">
+            <div class="concept-title">Scatterplot matrix</div>
+            <p>
+              Quando você tem várias variáveis, plota todas contra todas de uma
+              vez. É uma grade de scatterplots. Você identifica rapidamente
+              quais pares têm relação forte antes de modelar.
+            </p>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 2.4</div>
+            <div class="quiz-q">
+              Você calcula a correlação entre temperatura e consumo de energia e
+              obtém -0.85. O que isso indica?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Correlação negativa forte não significa sem relação — significa relação inversa forte.',
+                  )
+                "
+              >
+                Sem relação significativa
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. Relação inversa forte: quando temperatura sobe, consumo cai (ou vice-versa). Comum em climas frios onde aquecimento domina.',
+                  )
+                "
+              >
+                Relação inversa forte — quando uma sobe, a outra tende a cair
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Relação direta seria correlação positiva (+0.85).',
+                  )
+                "
+              >
+                Relação direta forte
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-3"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- SEÇÃO 5 -->
+      <div class="section" id="s5">
+        <div class="section-header" onclick="toggleSection('s5')">
+          <span class="section-num">2.7</span>
+          <span class="section-title">Lag plots</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">O que é um lag</div>
+            <p>
+              Lag 1 = o valor de ontem. Lag 12 = o valor de 12 meses atrás. Um
+              <strong>lag plot</strong> plota o valor atual (eixo Y) contra o
+              valor de N períodos atrás (eixo X).
+            </p>
+            <p style="margin-top: 10px">
+              Se o plot mostrar uma nuvem sem forma → o passado não explica o
+              presente.<br />
+              Se mostrar uma linha ou elipse clara → há autocorrelação, o
+              passado tem poder preditivo.
+            </p>
+          </div>
+
+          <div class="analogy">
+            <div class="analogy-label">Analogia</div>
+            <p>
+              Se a temperatura de hoje tem relação com a de ontem (lag 1), faz
+              sentido usar ela como variável preditora. Se a receita de dezembro
+              tem relação com a de dezembro do ano passado (lag 12), o modelo
+              precisa capturar esse lag anual.
+            </p>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 2.5</div>
+            <div class="quiz-q">
+              Você plota lag 1 de uma série e vê uma nuvem de pontos
+              completamente aleatória, sem forma. O que isso significa para
+              previsão?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Sem estrutura no lag 1 não significa que outros lags também não têm. Pode ter autocorrelação em lags maiores.',
+                  )
+                "
+              >
+                A série não pode ser prevista
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. O valor de ontem não explica o de hoje (lag 1 sem estrutura). Vale checar outros lags e o ACF completo.',
+                  )
+                "
+              >
+                O valor de ontem não tem relação linear com o de hoje
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Ruído branco seria todos os lags sem estrutura, não apenas o lag 1.',
+                  )
+                "
+              >
+                A série é ruído branco
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-4"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- SEÇÃO 6 -->
+      <div class="section" id="s6">
+        <div class="section-header" onclick="toggleSection('s6')">
+          <span class="section-num">2.8</span>
+          <span class="section-title">Autocorrelação (ACF)</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">O que é</div>
+            <p>
+              O ACF (Autocorrelation Function) mede a correlação entre a série e
+              ela mesma deslocada por N períodos, para todos os lags de uma vez.
+              O resultado é um gráfico de barras onde cada barra = um lag.
+            </p>
+            <ul>
+              <li>
+                Barra acima da linha pontilhada → autocorrelação significativa
+                naquele lag
+              </li>
+              <li>Barras altas decaindo devagar → tendência</li>
+              <li>Picos em lags específicos (ex: 12, 24...) → sazonalidade</li>
+              <li>Todas as barras baixas → ruído branco</li>
+            </ul>
+          </div>
+
+          <div class="demo-box">
+            <div class="demo-title">
+              Demo visual — como o ACF muda por tipo de série
+            </div>
+            <div class="charts-row">
+              <div>
+                <div class="chart-label-small">Série com tendência</div>
+                <div class="acf-chart" id="acf-trend">
+                  <div class="confidence-line"></div>
+                </div>
+                <div class="acf-labels" id="acf-trend-labels"></div>
+              </div>
+              <div>
+                <div class="chart-label-small">
+                  Série com sazonalidade (período 4)
+                </div>
+                <div class="acf-chart" id="acf-season">
+                  <div class="confidence-line"></div>
+                </div>
+                <div class="acf-labels" id="acf-season-labels"></div>
+              </div>
+            </div>
+            <p
+              style="
+                font-family: &quot;Space Mono&quot;, monospace;
+                font-size: 11px;
+                color: var(--muted);
+                margin-top: 16px;
+              "
+            >
+              Verde = tendência &nbsp;|&nbsp; Roxo = pico sazonal &nbsp;|&nbsp;
+              Linha pontilhada = limite de significância
+            </p>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">Como plotar o ACF em Python</div>
+            <pre><span class="kw">from</span> statsmodels.graphics.tsaplots <span class="kw">import</span> plot_acf
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+
+<span class="cm"># lags=40 mostra os primeiros 40 defasagens</span>
+<span class="fn">plot_acf</span>(df[<span class="st">"valor"</span>], lags=<span class="nb">40</span>)
+plt.<span class="fn">show</span>()</pre>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 2.6</div>
+            <div class="quiz-q">
+              No gráfico ACF de uma série mensal, você vê barras altas nos lags
+              12, 24 e 36, e barras pequenas nos outros lags. O que isso indica?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Tendência deixaria as primeiras barras altas decaindo gradualmente — não picos em lags específicos.',
+                  )
+                "
+              >
+                Tendência de longo prazo
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Ruído branco não teria nenhuma barra significativa.',
+                  )
+                "
+              >
+                Ruído branco
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. Picos nos lags 12, 24, 36 = sazonalidade anual. O valor de janeiro se correlaciona com o do janeiro anterior, dois anos atrás, etc.',
+                  )
+                "
+              >
+                Sazonalidade anual forte
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-5"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- SEÇÃO 7 -->
+      <div class="section" id="s7">
+        <div class="section-header" onclick="toggleSection('s7')">
+          <span class="section-num">2.9</span>
+          <span class="section-title">White noise e validação de modelos</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">O que é ruído branco</div>
+            <p>
+              Uma série onde os valores são completamente aleatórios e
+              independentes. Sem tendência, sem sazonalidade, sem
+              autocorrelação. O ACF mostra todas as barras dentro do intervalo
+              de confiança.
+            </p>
+          </div>
+
+          <div class="concept orange">
+            <div class="concept-title">Por que isso importa na prática</div>
+            <p>
+              Depois que você ajusta um modelo de previsão, você analisa os
+              resíduos (erros do modelo). Se os resíduos parecem ruído branco, o
+              modelo capturou toda a estrutura previsível da série. Se ainda
+              tiver padrão nos resíduos, o modelo está deixando informação na
+              mesa.
+            </p>
+          </div>
+
+          <div class="analogy">
+            <div class="analogy-label">Regra prática</div>
+            <p>
+              Resíduo bom = ruído branco.<br />
+              Resíduo com padrão no ACF = modelo ruim, precisa melhorar.
+            </p>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 2.7</div>
+            <div class="quiz-q">
+              Após treinar um modelo ARIMA, você plota o ACF dos resíduos e vê
+              um pico significativo no lag 12. O que você conclui?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'O modelo não capturou a sazonalidade — não está bom.',
+                  )
+                "
+              >
+                O modelo está bom, resíduos sempre têm algum pico
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. Pico no lag 12 nos resíduos = o modelo não capturou a sazonalidade anual. Precisa adicionar componente sazonal (ex: SARIMA).',
+                  )
+                "
+              >
+                O modelo não capturou a sazonalidade anual — precisa ajuste
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Trocar de dado não resolve — o problema é na especificação do modelo.',
+                  )
+                "
+              >
+                Trocar os dados de treino
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-6"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- CHECKLIST FINAL -->
+      <div class="section" id="sFinal">
+        <div class="section-header" onclick="toggleSection('sFinal')">
+          <span
+            class="section-num"
+            style="
+              background: rgba(124, 111, 255, 0.1);
+              border-color: rgba(124, 111, 255, 0.3);
+              color: var(--accent3);
+            "
+            >REVIEW</span
+          >
+          <span class="section-title">Checklist de domínio</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <p
+            style="
+              font-size: 13px;
+              color: var(--muted);
+              margin-bottom: 16px;
+              font-family: &quot;Space Mono&quot;, monospace;
+            "
+          >
+            Marque o que você consegue fazer sem consultar o livro.
+          </p>
+          <div class="checklist" id="checklist">
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">
+                Estruturar um DataFrame no formato correto para séries temporais
+                (colunas ds, chave, valor)
+              </div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">
+                Diferenciar Timestamp de Period e saber quando usar cada um
+              </div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">
+                Identificar tendência, sazonalidade e ciclo num time plot
+              </div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">
+                Explicar a diferença entre seasonal plot e subseries plot e
+                quando usar cada um
+              </div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">
+                Interpretar um lag plot (com estrutura vs nuvem aleatória)
+              </div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">
+                Ler um gráfico ACF e identificar tendência, sazonalidade ou
+                ruído branco
+              </div>
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box">✓</div>
+              <div class="check-text">
+                Usar o ACF dos resíduos pra avaliar se um modelo capturou a
+                estrutura da série
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-bottom">
+        <button
+          class="nav-btn"
+          onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+        >
+          ↑ Topo
+        </button>
+        <span class="score-display" id="quizScore">Quiz: 0/7 corretas</span>
+        <button class="nav-btn" onclick="expandAll()">Expandir tudo</button>
+      </div>
+    </div>
+
+    <script>
+      // Seções
+      function toggleSection(id) {
+        const el = document.getElementById(id);
+        el.classList.toggle("open");
+        updateProgress();
+      }
+
+      function expandAll() {
+        document
+          .querySelectorAll(".section")
+          .forEach((s) => s.classList.add("open"));
+        updateProgress();
+      }
+
+      // Quiz
+      let quizAnswers = new Array(7).fill(null);
+      let quizCorrect = 0;
+
+      function answer(btn, correct, feedback) {
+        const block = btn.closest(".quiz-block");
+        const options = block.querySelectorAll(".quiz-option");
+        const fbId = block.querySelector(".quiz-feedback").id;
+        const idx = parseInt(fbId.split("-")[1]);
+
+        if (quizAnswers[idx] !== null) return;
+
+        options.forEach((o) => (o.disabled = true));
+        btn.classList.add(correct ? "correct" : "wrong");
+
+        if (!correct) {
+          options.forEach((o) => {
+            if (o.getAttribute("onclick").includes("true"))
+              o.classList.add("correct");
+          });
+        }
+
+        const fb = document.getElementById(fbId);
+        fb.textContent = (correct ? "✓ " : "✗ ") + feedback;
+        fb.classList.add("show");
+
+        quizAnswers[idx] = correct;
+        if (correct) quizCorrect++;
+        document.getElementById("quizScore").textContent =
+          `Quiz: ${quizCorrect}/7 corretas`;
+        updateProgress();
+      }
+
+      // Checklist
+      function toggleCheck(el) {
+        el.classList.toggle("done");
+        updateProgress();
+      }
+
+      // Progress
+      function updateProgress() {
+        const sections = document.querySelectorAll(
+          ".section:not(#sFinal)",
+        ).length;
+        const open = document.querySelectorAll(
+          ".section.open:not(#sFinal)",
+        ).length;
+        const pct = Math.round((open / sections) * 100);
+        document.getElementById("progressFill").style.width = pct + "%";
+        document.getElementById("progressText").textContent =
+          `${open} de ${sections} seções abertas`;
+        document.getElementById("progressPct").textContent = pct + "%";
+      }
+
+      // ACF demo charts
+      function buildACF(containerId, labelsId, type) {
+        const container = document.getElementById(containerId);
+        const labelsContainer = document.getElementById(labelsId);
+
+        let heights, classes;
+
+        if (type === "trend") {
+          heights = [72, 64, 57, 50, 44, 38, 33, 28, 23, 19, 15, 12];
+          classes = ["", "", "", "", "", "", "", "", "", "", "", ""];
+        } else {
+          heights = [10, 8, 9, 62, 7, 8, 9, 58, 8, 7, 8, 55];
+          classes = [
+            "",
+            "",
+            "",
+            "season",
+            "",
+            "",
+            "",
+            "season",
+            "",
+            "",
+            "",
+            "season",
+          ];
+        }
+
+        heights.forEach((h, i) => {
+          const bar = document.createElement("div");
+          bar.className = "acf-bar " + classes[i];
+          bar.style.height = h + "px";
+          bar.title = `Lag ${i + 1}: ${(h / 80).toFixed(2)}`;
+          container.appendChild(bar);
+        });
+
+        heights.forEach((h, i) => {
+          const label = document.createElement("div");
+          label.className = "acf-label";
+          label.textContent = i + 1;
+          labelsContainer.appendChild(label);
+        });
+      }
+
+      buildACF("acf-trend", "acf-trend-labels", "trend");
+      buildACF("acf-season", "acf-season-labels", "season");
+      updateProgress();
+    </script>
+  </body>
+</html>
