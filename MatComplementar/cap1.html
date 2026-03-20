@@ -1,0 +1,2748 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cap. 1 — Introducao ao Forecasting</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0d0d0f;
+        --surface: #141417;
+        --border: #252529;
+        --accent: #00e5a0;
+        --accent2: #ff6b35;
+        --accent3: #7c6fff;
+        --text: #e8e8ec;
+        --muted: #7a7a8a;
+        --card: #18181d;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        font-size: 16px;
+        line-height: 1.7;
+        overflow-x: hidden;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 229, 160, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 229, 160, 0.025) 1px, transparent 1px);
+        background-size: 48px 48px;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .container {
+        position: relative;
+        z-index: 1;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 60px 28px 100px;
+      }
+      .tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 3px;
+        color: var(--accent);
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 16px;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 48px);
+        font-weight: 700;
+        line-height: 1.1;
+        color: #fff;
+        margin-bottom: 20px;
+      }
+      h1 span {
+        color: var(--accent);
+      }
+      .subtitle {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 600px;
+        border-left: 2px solid var(--border);
+        padding-left: 16px;
+      }
+      .progress-bar {
+        background: var(--border);
+        border-radius: 2px;
+        height: 3px;
+        margin: 36px 0 0;
+        overflow: hidden;
+      }
+      .progress-fill {
+        background: linear-gradient(90deg, var(--accent), var(--accent3));
+        height: 100%;
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+      .progress-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .section {
+        margin-bottom: 40px;
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        user-select: none;
+        padding: 4px 0;
+      }
+      .section-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--accent);
+        background: rgba(0, 229, 160, 0.08);
+        border: 1px solid rgba(0, 229, 160, 0.2);
+        padding: 4px 10px;
+        border-radius: 2px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #fff;
+        flex: 1;
+      }
+      .section-toggle {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        color: var(--muted);
+        transition:
+          transform 0.3s ease,
+          color 0.2s;
+        flex-shrink: 0;
+      }
+      .section-header:hover .section-toggle {
+        color: var(--accent);
+      }
+      .section.open .section-toggle {
+        transform: rotate(45deg);
+        color: var(--accent);
+      }
+      .section-body {
+        display: none;
+        animation: fadeIn 0.25s ease;
+      }
+      .section.open .section-body {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .concept {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 22px 24px;
+        margin-bottom: 14px;
+        position: relative;
+        overflow: hidden;
+      }
+      .concept::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--accent);
+      }
+      .concept.orange::before {
+        background: var(--accent2);
+      }
+      .concept.purple::before {
+        background: var(--accent3);
+      }
+      .concept-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+        font-family: "JetBrains Mono", monospace;
+        margin-bottom: 10px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .concept.orange .concept-title {
+        color: var(--accent2);
+      }
+      .concept.purple .concept-title {
+        color: var(--accent3);
+      }
+      .concept p {
+        font-size: 15px;
+        line-height: 1.75;
+        color: #c8c8d4;
+      }
+      .concept ul {
+        margin-top: 10px;
+        padding-left: 20px;
+      }
+      .concept li {
+        font-size: 15px;
+        line-height: 1.9;
+        color: #c8c8d4;
+        margin-bottom: 2px;
+      }
+      .analogy {
+        background: rgba(124, 111, 255, 0.07);
+        border: 1px solid rgba(124, 111, 255, 0.2);
+        border-radius: 4px;
+        padding: 20px 22px;
+        margin-bottom: 14px;
+      }
+      .analogy-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent3);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .analogy p {
+        font-size: 15px;
+        line-height: 1.75;
+        color: #c0bfe8;
+      }
+
+      /* CHART BLOCK */
+      .chart-block {
+        background: #0a0a0c;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        margin: 14px 0;
+        overflow: hidden;
+      }
+      .chart-header {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .chart-title {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .chart-caption {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: rgba(0, 229, 160, 0.6);
+      }
+      .chart-svg-wrap {
+        padding: 20px;
+        overflow-x: auto;
+      }
+      .chart-svg-wrap svg {
+        display: block;
+        margin: 0 auto;
+      }
+
+      /* CODE BLOCK */
+      .code-block {
+        background: #0a0a0c;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 18px 22px;
+        margin: 14px 0;
+        overflow-x: auto;
+      }
+      .code-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .code-block pre {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: #a8b8c8;
+        white-space: pre;
+      }
+      .kw {
+        color: var(--accent3);
+      }
+      .fn {
+        color: var(--accent);
+      }
+      .st {
+        color: var(--accent2);
+      }
+      .cm {
+        color: #4a5568;
+        font-style: italic;
+      }
+      .nb {
+        color: #f6e05e;
+      }
+
+      /* QUIZ */
+      .quiz-block {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 22px 24px;
+        margin-bottom: 14px;
+      }
+      .quiz-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent2);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .quiz-q {
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 16px;
+        line-height: 1.6;
+      }
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .quiz-option {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 12px 16px;
+        font-size: 14px;
+        color: #c0c0cc;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: left;
+        font-family: "Inter", sans-serif;
+        line-height: 1.5;
+      }
+      .quiz-option:hover {
+        border-color: var(--muted);
+        color: #fff;
+      }
+      .quiz-option.correct {
+        border-color: var(--accent);
+        background: rgba(0, 229, 160, 0.08);
+        color: var(--accent);
+      }
+      .quiz-option.wrong {
+        border-color: var(--accent2);
+        background: rgba(255, 107, 53, 0.08);
+        color: var(--accent2);
+      }
+      .quiz-option:disabled {
+        cursor: default;
+      }
+      .quiz-feedback {
+        margin-top: 12px;
+        font-size: 13px;
+        line-height: 1.7;
+        color: var(--muted);
+        display: none;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .quiz-feedback.show {
+        display: block;
+      }
+
+      /* CHECKLIST */
+      .checklist {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 22px 24px;
+        margin-bottom: 14px;
+      }
+      .checklist-title {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+      .check-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+      }
+      .check-item:last-child {
+        border-bottom: none;
+      }
+      .check-box {
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid var(--muted);
+        border-radius: 2px;
+        flex-shrink: 0;
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      .check-item.done .check-box {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .check-item.done .check-box::after {
+        content: "✓";
+        color: #000;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .check-item.done .check-text {
+        text-decoration: line-through;
+        color: var(--muted);
+      }
+      .check-text {
+        font-size: 14px;
+        color: #c0c0cc;
+        line-height: 1.6;
+      }
+
+      .steps-list {
+        counter-reset: step;
+        list-style: none;
+        padding: 0;
+        margin-top: 8px;
+      }
+      .steps-list li {
+        display: flex;
+        gap: 14px;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .steps-list li:last-child {
+        border-bottom: none;
+      }
+      .step-num {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        background: rgba(0, 229, 160, 0.1);
+        border: 1px solid rgba(0, 229, 160, 0.3);
+        border-radius: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: var(--accent);
+        margin-top: 2px;
+      }
+      .step-content {
+        flex: 1;
+      }
+      .step-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 4px;
+      }
+      .step-desc {
+        font-size: 14px;
+        color: #c0c0cc;
+        line-height: 1.6;
+      }
+
+      .case-box {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 20px 22px;
+        margin-bottom: 10px;
+      }
+      .case-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent2);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .case-box p {
+        font-size: 15px;
+        line-height: 1.75;
+        color: #c8c8d4;
+      }
+      .case-insight {
+        font-size: 13px;
+        color: var(--accent);
+        font-family: "JetBrains Mono", monospace;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+      }
+
+      .hl {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .hl2 {
+        color: var(--accent2);
+        font-weight: 600;
+      }
+      .hl3 {
+        color: var(--accent3);
+        font-weight: 600;
+      }
+      .divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 40px 0;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+        margin: 14px 0;
+      }
+
+      .nav-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 64px;
+        padding-top: 28px;
+        border-top: 1px solid var(--border);
+      }
+      .nav-btn {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        background: none;
+        border: 1px solid var(--border);
+        padding: 10px 20px;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .nav-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: default;
+      }
+      .score-display {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: var(--accent);
+      }
+
+      /* LEGEND */
+      .legend {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        padding: 10px 20px 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend-line {
+        width: 24px;
+        height: 2px;
+      }
+      .legend-rect {
+        width: 16px;
+        height: 12px;
+        border-radius: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header style="margin-bottom: 56px">
+        <span class="tag">Forecasting: Principles and Practice (fpppy)</span>
+        <h1>Cap. 1<br /><span>Introducao ao Forecasting</span></h1>
+        <p class="subtitle">
+          Conceitos, graficos do livro, codigo Python e quizzes.<br />Cada
+          grafico e acompanhado do codigo que o gera no seu notebook.
+        </p>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-label">
+          <span id="progressText">0 de 6 secoes concluidas</span>
+          <span id="progressPct">0%</span>
+        </div>
+      </header>
+
+      <!-- ===== SEC 1 ===== -->
+      <div class="section" id="s1">
+        <div class="section-header" onclick="toggleSection('s1')">
+          <span class="section-num">1.1</span>
+          <span class="section-title">O que pode ser previsto?</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">Os 4 fatores de previsibilidade</div>
+            <ul>
+              <li>
+                <span class="hl">1. Compreensao dos fatores</span> — voce sabe o
+                que causa a variacao?
+              </li>
+              <li>
+                <span class="hl">2. Disponibilidade de dados</span> — ha
+                historico suficiente?
+              </li>
+              <li>
+                <span class="hl">3. Similaridade futuro-passado</span> — o
+                padrao vai se repetir?
+              </li>
+              <li>
+                <span class="hl">4. Efeito das previsoes</span> — a previsao
+                muda o que esta sendo previsto?
+              </li>
+            </ul>
+          </div>
+          <div class="analogy">
+            <div class="analogy-label">Sua experiencia de campo</div>
+            <p>
+              Na logistica de construcao civil voce ja aplicava isso:
+              combustivel tem alta previsibilidade (frota conhecida, horas de
+              operacao, consumo medio). Preco do diesel tem baixa (mercado,
+              politica). Voce previa o volume com confianca, nao o custo
+              unitario. Forecasting = conhecer os limites do que e previsivel.
+            </p>
+          </div>
+
+          <!-- GRAFICO 1.1 -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 1.1 — Producao trimestral de cerveja australiana +
+                previsao</span
+              >
+              <span class="chart-caption"
+                >2000Q1–2010Q2 + 2 anos de previsao</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="820"
+                height="300"
+                viewBox="0 0 820 300"
+                style="max-width: 100%"
+              >
+                <!-- axes -->
+                <line
+                  x1="60"
+                  y1="260"
+                  x2="800"
+                  y2="260"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="260"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <!-- y labels -->
+                <text
+                  x="50"
+                  y="264"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  360
+                </text>
+                <text
+                  x="50"
+                  y="215"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  400
+                </text>
+                <text
+                  x="50"
+                  y="167"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  440
+                </text>
+                <text
+                  x="50"
+                  y="118"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  480
+                </text>
+                <text
+                  x="50"
+                  y="70"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  520
+                </text>
+                <!-- grid -->
+                <line
+                  x1="60"
+                  y1="215"
+                  x2="800"
+                  y2="215"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="167"
+                  x2="800"
+                  y2="167"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="118"
+                  x2="800"
+                  y2="118"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="70"
+                  x2="800"
+                  y2="70"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <!-- x labels -->
+                <text
+                  x="60"
+                  y="276"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2000
+                </text>
+                <text
+                  x="185"
+                  y="276"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2002
+                </text>
+                <text
+                  x="310"
+                  y="276"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2004
+                </text>
+                <text
+                  x="435"
+                  y="276"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2006
+                </text>
+                <text
+                  x="560"
+                  y="276"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2008
+                </text>
+                <text
+                  x="685"
+                  y="276"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2010
+                </text>
+                <text
+                  x="780"
+                  y="276"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2012
+                </text>
+                <!-- divisor historico/previsao -->
+                <line
+                  x1="685"
+                  y1="20"
+                  x2="685"
+                  y2="260"
+                  stroke="#333"
+                  stroke-width="1"
+                  stroke-dasharray="4 3"
+                />
+                <!-- intervalo 95% -->
+                <polygon
+                  points="685,110 685,190 720,200 755,208 800,220 800,165 755,152 720,142"
+                  fill="rgba(100,130,255,0.12)"
+                />
+                <!-- intervalo 80% -->
+                <polygon
+                  points="685,125 685,175 720,182 755,188 800,198 800,177 755,168 720,160"
+                  fill="rgba(100,130,255,0.22)"
+                />
+                <!-- historico -->
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1.8"
+                  points="60,167 91,118 122,215 153,230 185,150 216,105 247,210 278,225 310,155 341,108 372,205 403,218 435,158 466,112 497,208 528,222 560,162 591,115 622,212 653,225 685,158"
+                />
+                <!-- previsao pontual -->
+                <polyline
+                  fill="none"
+                  stroke="#6495ff"
+                  stroke-width="2"
+                  points="685,158 720,172 755,178 800,188"
+                />
+                <!-- title -->
+                <text
+                  x="430"
+                  y="15"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="12"
+                  fill="#888"
+                >
+                  Australian beer production
+                </text>
+                <text
+                  x="20"
+                  y="145"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                  transform="rotate(-90,20,145)"
+                >
+                  Megalitres
+                </text>
+                <text
+                  x="430"
+                  y="295"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  Quarter
+                </text>
+              </svg>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-line" style="background: #e8e8ec"></div>
+                Historico
+              </div>
+              <div class="legend-item">
+                <div class="legend-line" style="background: #6495ff"></div>
+                Previsao pontual
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-rect"
+                  style="background: rgba(100, 130, 255, 0.22)"
+                ></div>
+                IC 80%
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-rect"
+                  style="background: rgba(100, 130, 255, 0.12)"
+                ></div>
+                IC 95%
+              </div>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">Codigo — Fig 1.1 no seu notebook</div>
+            <pre><span class="kw">from</span> statsforecast <span class="kw">import</span> StatsForecast
+<span class="kw">from</span> statsforecast.models <span class="kw">import</span> AutoETS
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cm"># carrega o dataset</span>
+aus_prod = pd.read_csv(<span class="st">'data/aus_production.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+beer = (
+    aus_prod[[<span class="st">'ds'</span>, <span class="st">'Beer'</span>]]
+    .loc[<span class="kw">lambda</span> x: x[<span class="st">'ds'</span>] >= <span class="st">'2000'</span>]
+    .dropna()
+    .assign(unique_id=<span class="st">'beer'</span>, y=<span class="kw">lambda</span> x: x[<span class="st">'Beer'</span>])
+)
+
+<span class="cm"># treina AutoETS e gera previsao de 8 trimestres (2 anos)</span>
+sf = StatsForecast(models=[<span class="fn">AutoETS</span>(season_length=<span class="nb">4</span>)], freq=<span class="st">'QS'</span>)
+previsao = sf.forecast(df=beer[[<span class="st">'unique_id'</span>,<span class="st">'ds'</span>,<span class="st">'y'</span>]], h=<span class="nb">8</span>, level=[<span class="nb">80</span>,<span class="nb">95</span>])
+
+<span class="cm"># visualiza historico + previsao + intervalos</span>
+sf.plot(beer[[<span class="st">'unique_id'</span>,<span class="st">'ds'</span>,<span class="st">'y'</span>]], previsao, level=[<span class="nb">80</span>,<span class="nb">95</span>],
+        engine=<span class="st">'matplotlib'</span>)</pre>
+          </div>
+
+          <div class="concept orange">
+            <div class="concept-title">O que o grafico ensina</div>
+            <p>
+              A previsao (azul) captura o padrao sazonal do historico e o
+              projeta para frente. Os intervalos ficam mais largos com o tempo —
+              quanto mais distante o horizonte, maior a incerteza. O IC 80% e
+              mais estreito que o 95%: mais conservador significa mais largo.
+              Isso aparece no cap. 1.7 como perspectiva estatistica do
+              forecasting.
+            </p>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 1.1</div>
+            <div class="quiz-q">
+              No grafico acima, os intervalos de predicao ficam mais largos
+              conforme avancamos no tempo. Por que isso acontece?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'O modelo nao fica pior — ele e o mesmo. O alargamento e matematicamente inevitavel pela acumulacao de incerteza.',
+                  )
+                "
+              >
+                O modelo fica menos preciso com o tempo
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. A incerteza se acumula a cada passo a frente. O erro do periodo t+1 se propaga para t+2, que propaga para t+3 e assim por diante. Matematicamente, a variancia da previsao cresce com o horizonte h.',
+                  )
+                "
+              >
+                A incerteza se acumula — cada passo carrega o erro do anterior
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'A sazonalidade nao causa o alargamento. O padrao sazonal e capturado pelo modelo e projetado com confianca.',
+                  )
+                "
+              >
+                A sazonalidade dificulta a previsao futura
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-0"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ===== SEC 2 ===== -->
+      <div class="section" id="s2">
+        <div class="section-header" onclick="toggleSection('s2')">
+          <span class="section-num">1.2–1.3</span>
+          <span class="section-title"
+            >Forecasting vs metas vs planejamento</span
+          >
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="grid-3">
+            <div class="concept">
+              <div class="concept-title">Forecasting</div>
+              <p>
+                Estimar o que vai acontecer com base em dados. Neutro, baseado
+                em evidencia.<br /><span class="hl">O que VAI acontecer?</span>
+              </p>
+            </div>
+            <div class="concept orange">
+              <div class="concept-title">Metas (Goals)</div>
+              <p>
+                O que voce gostaria que acontecesse. Pode ser aspiracional.<br /><span
+                  class="hl2"
+                  >O que QUEREMOS que aconteca?</span
+                >
+              </p>
+            </div>
+            <div class="concept purple">
+              <div class="concept-title">Planejamento</div>
+              <p>
+                Acoes para aproximar o forecast da meta.<br /><span class="hl3"
+                  >O que FAZER para chegar la?</span
+                >
+              </p>
+            </div>
+          </div>
+
+          <div class="concept orange">
+            <div class="concept-title">Os 3 horizontes de previsao</div>
+            <ul>
+              <li>
+                <span class="hl2">Curto prazo</span> — dias a semanas.
+                Escalonamento de pessoal, producao, transporte
+              </li>
+              <li>
+                <span class="hl2">Medio prazo</span> — meses. Compra de
+                materia-prima, contratacao, maquinario
+              </li>
+              <li>
+                <span class="hl2">Longo prazo</span> — anos. Planejamento
+                estrategico, expansao, novos mercados
+              </li>
+            </ul>
+          </div>
+
+          <!-- GRAFICO HORIZONTE -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Horizonte de previsao — impacto na incerteza</span
+              >
+              <span class="chart-caption"
+                >Quanto maior o horizonte, mais largo o intervalo</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="820"
+                height="220"
+                viewBox="0 0 820 220"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="190"
+                  x2="800"
+                  y2="190"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="190"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <!-- divisor -->
+                <line
+                  x1="350"
+                  y1="20"
+                  x2="350"
+                  y2="190"
+                  stroke="#333"
+                  stroke-width="1"
+                  stroke-dasharray="4 3"
+                />
+                <text
+                  x="205"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  Historico
+                </text>
+                <text
+                  x="580"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  Previsao
+                </text>
+                <!-- faixa ic 95% -->
+                <path
+                  d="M350,105 C400,105 450,90 500,80 S620,60 800,40 L800,160 C620,140 500,130 450,122 S400,115 350,105Z"
+                  fill="rgba(100,130,255,0.1)"
+                />
+                <!-- faixa ic 80% -->
+                <path
+                  d="M350,105 C400,106 450,96 500,90 S620,75 800,62 L800,148 C620,125 500,118 450,114 S400,110 350,105Z"
+                  fill="rgba(100,130,255,0.2)"
+                />
+                <!-- historico -->
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1.8"
+                  points="60,140 100,110 140,155 180,125 220,145 260,115 300,140 350,105"
+                />
+                <!-- previsao -->
+                <polyline
+                  fill="none"
+                  stroke="#6495ff"
+                  stroke-width="2"
+                  points="350,105 450,100 560,88 700,74 800,62"
+                />
+                <!-- labels horizonte -->
+                <text
+                  x="395"
+                  y="205"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="var(--accent2)"
+                >
+                  curto
+                </text>
+                <text
+                  x="560"
+                  y="205"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="var(--accent2)"
+                >
+                  medio
+                </text>
+                <text
+                  x="720"
+                  y="205"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="var(--accent2)"
+                >
+                  longo
+                </text>
+                <line
+                  x1="460"
+                  y1="195"
+                  x2="460"
+                  y2="190"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="660"
+                  y1="195"
+                  x2="660"
+                  y2="190"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+              </svg>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-line" style="background: #e8e8ec"></div>
+                Historico
+              </div>
+              <div class="legend-item">
+                <div class="legend-line" style="background: #6495ff"></div>
+                Previsao pontual
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-rect"
+                  style="background: rgba(100, 130, 255, 0.2)"
+                ></div>
+                IC 80%
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-rect"
+                  style="background: rgba(100, 130, 255, 0.1)"
+                ></div>
+                IC 95%
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 1.2</div>
+            <div class="quiz-q">
+              O diretor diz: "Vamos prever vendas de R$10 milhoes no proximo
+              trimestre." Qual e o problema?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'O problema nao e o valor, mas a confusao conceitual entre forecast e meta.',
+                  )
+                "
+              >
+                O valor esta incorreto
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. R$10M e uma META, nao um forecast. Forecast seria: o modelo indica R$8,2M com IC entre 7,5 e 9,0. A diferenca de 1,8M e o gap que o planejamento precisa fechar.',
+                  )
+                "
+              >
+                Esta confundindo forecast com meta
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Trimestre e um horizonte valido. O problema e conceitual.',
+                  )
+                "
+              >
+                O horizonte trimestral e inadequado
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ===== SEC 3 ===== -->
+      <div class="section" id="s3">
+        <div class="section-header" onclick="toggleSection('s3')">
+          <span class="section-num">1.4</span>
+          <span class="section-title"
+            >Tipos de modelo: serie temporal, explicativo e misto</span
+          >
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="grid-3">
+            <div class="concept">
+              <div class="concept-title">Serie temporal</div>
+              <p>
+                Preve com base no historico da propria variavel. Nao explica
+                causas.
+              </p>
+              <p style="margin-top: 8px; font-size: 13px; color: var(--accent)">
+                ED(t+1) = f(ED(t), ED(t-1), ...)
+              </p>
+            </div>
+            <div class="concept orange">
+              <div class="concept-title">Explicativo</div>
+              <p>
+                Usa variaveis externas (covariaveis). Explica causas. Requer
+                dados futuros dos regressores.
+              </p>
+              <p
+                style="margin-top: 8px; font-size: 13px; color: var(--accent2)"
+              >
+                ED = f(temp, hora, economia, ...)
+              </p>
+            </div>
+            <div class="concept purple">
+              <div class="concept-title">Misto (dinamico)</div>
+              <p>
+                Combina historico + covariaveis. Mais rico, mais complexo. Cap.
+                10 do livro.
+              </p>
+              <p
+                style="margin-top: 8px; font-size: 13px; color: var(--accent3)"
+              >
+                ED(t+1) = f(ED(t), temp, hora, ...)
+              </p>
+            </div>
+          </div>
+
+          <!-- GRAFICO MODELOS -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Comparacao visual — serie temporal vs explicativo</span
+              >
+              <span class="chart-caption"
+                >Demanda de eletricidade: historico vs temperatura</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="820"
+                height="240"
+                viewBox="0 0 820 240"
+                style="max-width: 100%"
+              >
+                <!-- painel esquerdo: serie temporal -->
+                <rect
+                  x="60"
+                  y="20"
+                  width="340"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  stroke-width="1"
+                />
+                <text
+                  x="230"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  Modelo de Serie Temporal
+                </text>
+                <text
+                  x="230"
+                  y="212"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  Tempo
+                </text>
+                <text
+                  x="72"
+                  y="114"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                  transform="rotate(-90,72,114)"
+                >
+                  Demanda
+                </text>
+                <!-- serie historica -->
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1.5"
+                  points="70,160 100,120 130,165 160,125 190,160 220,118 250,162 280,122 310,158 340,120 370,160"
+                />
+                <!-- previsao -->
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="2"
+                  stroke-dasharray="5 3"
+                  points="370,160 390,155 410,148"
+                />
+                <text
+                  x="230"
+                  y="50"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  usa so o historico de ED
+                </text>
+
+                <!-- painel direito: explicativo -->
+                <rect
+                  x="430"
+                  y="20"
+                  width="370"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  stroke-width="1"
+                />
+                <text
+                  x="615"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  Modelo Explicativo (regressao)
+                </text>
+                <text
+                  x="615"
+                  y="212"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  Temperatura (°C)
+                </text>
+                <text
+                  x="442"
+                  y="114"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                  transform="rotate(-90,442,114)"
+                >
+                  Demanda
+                </text>
+                <!-- scatter pontos -->
+                <circle
+                  cx="470"
+                  cy="170"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="485"
+                  cy="160"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="500"
+                  cy="150"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="520"
+                  cy="145"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="535"
+                  cy="135"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="550"
+                  cy="125"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="565"
+                  cy="118"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="580"
+                  cy="115"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="600"
+                  cy="110"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="620"
+                  cy="108"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="640"
+                  cy="112"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="660"
+                  cy="120"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="680"
+                  cy="130"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="700"
+                  cy="145"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="720"
+                  cy="158"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="740"
+                  cy="168"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="760"
+                  cy="172"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="780"
+                  cy="168"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <!-- curva U -->
+                <path
+                  d="M465,175 Q610,90 790,175"
+                  fill="none"
+                  stroke="var(--accent3)"
+                  stroke-width="2"
+                />
+                <text
+                  x="615"
+                  y="50"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  ED = f(temperatura) — relacao nao linear
+                </text>
+                <!-- labels eixo x -->
+                <text
+                  x="468"
+                  y="208"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#444"
+                >
+                  0°
+                </text>
+                <text
+                  x="612"
+                  y="208"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#444"
+                >
+                  20°
+                </text>
+                <text
+                  x="792"
+                  y="208"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#444"
+                >
+                  40°
+                </text>
+              </svg>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-line" style="background: #e8e8ec"></div>
+                Historico (serie temporal)
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-line"
+                  style="
+                    background: var(--accent);
+                    border-top: 2px dashed var(--accent);
+                    height: 0;
+                  "
+                ></div>
+                Previsao
+              </div>
+              <div class="legend-item">
+                <div
+                  style="
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    background: var(--accent2);
+                  "
+                ></div>
+                Observacoes (scatter)
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-line"
+                  style="background: var(--accent3)"
+                ></div>
+                Relacao ajustada
+              </div>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">
+              Codigo — scatter demanda vs temperatura
+            </div>
+            <pre><span class="kw">import</span> seaborn <span class="kw">as</span> sns
+
+vic_elec = pd.read_csv(<span class="st">'data/vic_elec.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+elec_2014 = (
+    vic_elec.loc[<span class="kw">lambda</span> x: x[<span class="st">'ds'</span>].dt.year == <span class="nb">2014</span>]
+    .pivot(index=<span class="st">'ds'</span>, columns=<span class="st">'unique_id'</span>, values=<span class="st">'y'</span>)
+    .reset_index()
+)
+
+fig, ax = plt.subplots()
+sns.<span class="fn">scatterplot</span>(data=elec_2014, x=<span class="st">'Temperature'</span>, y=<span class="st">'Demand'</span>,
+             ax=ax, s=<span class="nb">8</span>, alpha=<span class="nb">0.4</span>)
+ax.set(title=<span class="st">'Demanda vs Temperatura — Victoria 2014'</span>,
+       xlabel=<span class="st">'Temperatura (°C)'</span>, ylabel=<span class="st">'Demanda (GW)'</span>)
+plt.show()
+<span class="cm"># relacao em U: frio e calor aumentam demanda (aquecimento e ar-condicionado)</span></pre>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 1.3</div>
+            <div class="quiz-q">
+              Por que o grafico de dispersao mostra uma relacao em U entre
+              temperatura e demanda de eletricidade?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Erro de medicao produziria ruido aleatorio, nao um padrao sistematico em U.',
+                  )
+                "
+              >
+                Erro de medicao nos dados
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. Frio aumenta demanda por aquecimento. Calor aumenta demanda por ar-condicionado. Na temperatura media (~18-22 graus) nenhum dos dois e necessario — demanda minima. Isso e uma relacao nao linear que um modelo de regressao linear simples nao capturaria bem.',
+                  )
+                "
+              >
+                Frio = aquecimento, calor = ar-condicionado, temperatura media =
+                menor demanda
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Sazonalidade produz padroes periodicos no tempo, nao dispersao em U por temperatura.',
+                  )
+                "
+              >
+                Efeito da sazonalidade no dataset
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ===== SEC 4 ===== -->
+      <div class="section" id="s4">
+        <div class="section-header" onclick="toggleSection('s4')">
+          <span class="section-num">1.5</span>
+          <span class="section-title">Estudos de caso reais</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="case-box">
+            <div class="case-num">Caso 1 — Fabricante de descartaveis</div>
+            <p>
+              Centenas de produtos, forecast mensal. Usando medias moveis
+              simples e regressao linear curta — resultados sem sentido.
+            </p>
+            <div class="case-insight">
+              Licao: medias moveis simples nao bastam para centenas de series
+              com padroes diferentes. AutoETS e AutoARIMA no nixtlaverse
+              resolvem com selecao automatica de modelo.
+            </div>
+          </div>
+          <div class="case-box">
+            <div class="case-num">
+              Caso 2 — Governo australiano / farmaceuticos
+            </div>
+            <p>
+              PBS, A$7 bilhoes. Subestimado em A$1 bilhao por dois anos. Quebras
+              abruptas por mudancas de subsidio e entrada de genericos.
+            </p>
+            <div class="case-insight">
+              Licao: series com quebras estruturais exigem STL com robust=True e
+              deteccao de anomalias. Na sua pesquisa: demanda pode quebrar por
+              mudanca de fornecedor, regulamentacao ou eventos externos.
+            </div>
+          </div>
+          <div class="case-box">
+            <div class="case-num">Caso 3 — Frota de veiculos / revenda</div>
+            <p>
+              Previsao de valor de revenda apos 3 anos. Especialistas resistiam
+              a modelos estatisticos, vendo-os como ameaca.
+            </p>
+            <div class="case-insight">
+              Licao: forecasting envolve desafios humanos alem de tecnicos. Seu
+              produto final precisa ser explicavel — caixa-preta e dificil de
+              vender para tomadores de decisao.
+            </div>
+          </div>
+          <div class="case-box">
+            <div class="case-num">Caso 4 — Passageiros aereos domesticos</div>
+            <p>
+              Forecast semanal por rota e por classe de passageiro. Multiplas
+              sazonalidades, greve de pilotos, entrada e saida de concorrente
+              low-cost.
+            </p>
+            <div class="case-insight">
+              Licao: hierarquia + multiplas sazonalidades + eventos externos = o
+              problema exato do cap. 11. O dataset de turismo australiano e uma
+              versao simplificada desse caso.
+            </div>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 1.4</div>
+            <div class="quiz-q">
+              O Caso 4 (passageiros aereos) e diretamente relevante para sua
+              pesquisa. Por que?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Transporte aereo e interessante mas nao e o tema da sua pesquisa. A relevancia e estrutural.',
+                  )
+                "
+              >
+                Voce vai trabalhar com dados de aviacao
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. O Caso 4 tem exatamente a estrutura da sua pesquisa: hierarquia (total > rota > classe), multiplas sazonalidades (semanal + anual), eventos externos (ferias, concorrentes). O dataset aus_tourism.csv do livro e uma versao do mesmo problema.',
+                  )
+                "
+              >
+                Tem hierarquia, multiplas sazonalidades e eventos externos —
+                estrutura identica a demanda de estoque
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Volume de series nao e o ponto central. O ponto e a estrutura hierarquica com multiplas sazonalidades.',
+                  )
+                "
+              >
+                Tem muitas series para prever simultaneamente
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-3"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ===== SEC 5 ===== -->
+      <div class="section" id="s5">
+        <div class="section-header" onclick="toggleSection('s5')">
+          <span class="section-num">1.6</span>
+          <span class="section-title"
+            >Os 5 passos de um projeto de forecasting</span
+          >
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <ul class="steps-list">
+            <li>
+              <div class="step-num">1</div>
+              <div class="step-content">
+                <div class="step-title">Definicao do problema</div>
+                <div class="step-desc">
+                  Quem usa as previsoes? Para que decisao? Qual horizonte? Qual
+                  frequencia? Sua pesquisa: demanda de estoque, nivel de
+                  produto, horizonte semanal/mensal, decisao de compra e
+                  reposicao.
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="step-num">2</div>
+              <div class="step-content">
+                <div class="step-title">Coleta de dados</div>
+                <div class="step-desc">
+                  Dados estatisticos + conhecimento dos especialistas. Seu
+                  desafio: ausencia de datasets publicos de demanda hierarquica.
+                  Estrategia: M5 Competition, Stallion, dados sinteticos,
+                  parceria com empresa local.
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="step-num">3</div>
+              <div class="step-content">
+                <div class="step-title">Analise exploratoria</div>
+                <div class="step-desc">
+                  SEMPRE comeca com grafico. Padroes? Tendencia? Sazonalidade?
+                  Outliers? Cap. 2 e 3 sao inteiramente sobre esse passo. Nunca
+                  pule essa etapa.
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="step-num">4</div>
+              <div class="step-content">
+                <div class="step-title">Escolha e ajuste do modelo</div>
+                <div class="step-desc">
+                  Comparar 2 ou 3 modelos candidatos. Na pesquisa: baseline
+                  (media movel) vs hierarquicos (MinT, BottomUp) vs ML
+                  hierarquico (LightGBM + reconciliacao).
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="step-num">5</div>
+              <div class="step-content">
+                <div class="step-title">Avaliacao e uso</div>
+                <div class="step-desc">
+                  Metricas de erro, comparacao com baseline, refinamento.
+                  Cross-validation temporal, metricas hierarquicas (RMSSE, MASE
+                  por nivel da hierarquia).
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 1.5</div>
+            <div class="quiz-q">
+              Antes de ajustar qualquer modelo, qual passo e obrigatorio segundo
+              o livro?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Escolher o modelo vem depois de visualizar e explorar os dados.',
+                  )
+                "
+              >
+                Escolher o melhor modelo
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. Always start by graphing the data. Mantra do livro. O grafico revela tendencia, sazonalidade, outliers e mudancas estruturais — informacoes que guiam todas as decisoes de modelagem seguintes. Quem modela sem visualizar esta trabalhando no escuro.',
+                  )
+                "
+              >
+                Visualizar os dados com graficos
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Box-Cox e util mas vem depois da visualizacao inicial. Primeiro voce ve, depois decide se transforma.',
+                  )
+                "
+              >
+                Aplicar transformacao Box-Cox
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-4"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ===== SEC 6 ===== -->
+      <div class="section" id="s6">
+        <div class="section-header" onclick="toggleSection('s6')">
+          <span class="section-num">1.7</span>
+          <span class="section-title"
+            >Perspectiva estatistica — futuros possiveis e intervalos</span
+          >
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">
+              Forecast nao e um numero — e uma distribuicao
+            </div>
+            <p>
+              O valor futuro e uma <span class="hl">variavel aleatoria</span>. A
+              previsao pontual (y^) e a media dessa distribuicao. Os intervalos
+              de predicao mostram a faixa onde o valor real deve cair com
+              determinada probabilidade.
+            </p>
+            <ul>
+              <li>
+                <span class="hl">IC 80%</span> — o valor real cai aqui em 80%
+                das vezes
+              </li>
+              <li>
+                <span class="hl">IC 95%</span> — mais conservador, mais largo
+              </li>
+              <li>
+                <span class="hl">Previsao pontual</span> — media da distribuicao
+                de futuros possiveis
+              </li>
+            </ul>
+          </div>
+
+          <!-- GRAFICO 1.2 — 10 futuros possiveis -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 1.2 — Chegadas internacionais + 10 futuros possiveis</span
+              >
+              <span class="chart-caption"
+                >1980–2015 historico | 2016–2025 projecoes</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="820"
+                height="280"
+                viewBox="0 0 820 280"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="250"
+                  x2="800"
+                  y2="250"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="250"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <!-- y labels -->
+                <text
+                  x="50"
+                  y="254"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  0
+                </text>
+                <text
+                  x="50"
+                  y="200"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2M
+                </text>
+                <text
+                  x="50"
+                  y="148"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  4M
+                </text>
+                <text
+                  x="50"
+                  y="96"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  6M
+                </text>
+                <text
+                  x="50"
+                  y="44"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  8M
+                </text>
+                <!-- grid -->
+                <line
+                  x1="60"
+                  y1="200"
+                  x2="800"
+                  y2="200"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="148"
+                  x2="800"
+                  y2="148"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="96"
+                  x2="800"
+                  y2="96"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="44"
+                  x2="800"
+                  y2="44"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <!-- x labels -->
+                <text
+                  x="60"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  1980
+                </text>
+                <text
+                  x="200"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  1990
+                </text>
+                <text
+                  x="340"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2000
+                </text>
+                <text
+                  x="480"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2010
+                </text>
+                <text
+                  x="605"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2016
+                </text>
+                <text
+                  x="800"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2025
+                </text>
+                <!-- divisor -->
+                <line
+                  x1="605"
+                  y1="20"
+                  x2="605"
+                  y2="250"
+                  stroke="#333"
+                  stroke-width="1"
+                  stroke-dasharray="4 3"
+                />
+                <!-- historico -->
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="2"
+                  points="60,238 100,232 140,226 180,218 220,210 260,200 300,188 340,175 380,160 420,148 460,130 500,110 540,90 580,72 605,60"
+                />
+                <!-- 10 futuros possiveis — cada um ligeiramente diferente -->
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="605,60 650,52 700,44 750,36 800,28"
+                />
+                <polyline
+                  fill="none"
+                  stroke="var(--accent2)"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="605,60 650,55 700,48 750,42 800,35"
+                />
+                <polyline
+                  fill="none"
+                  stroke="var(--accent3)"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="605,60 650,57 700,52 750,47 800,42"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#f6e05e"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="605,60 650,60 700,56 750,52 800,48"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#fc8181"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="605,60 650,62 700,59 750,56 800,52"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#68d391"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="605,60 650,58 700,54 750,50 800,45"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#63b3ed"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="605,60 650,53 700,46 750,39 800,32"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#fbd38d"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="605,60 650,64 700,62 750,60 800,58"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#b794f4"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="605,60 650,50 700,42 750,34 800,26"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#f687b3"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="605,60 650,66 700,65 750,64 800,63"
+                />
+                <text
+                  x="430"
+                  y="15"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="12"
+                  fill="#888"
+                >
+                  Total international arrivals to Australia
+                </text>
+                <text
+                  x="18"
+                  y="140"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                  transform="rotate(-90,18,140)"
+                >
+                  Visitors (millions)
+                </text>
+              </svg>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-line" style="background: #e8e8ec"></div>
+                Historico (1980–2015)
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-line"
+                  style="background: var(--accent); opacity: 0.7"
+                ></div>
+                10 futuros possiveis (2016–2025)
+              </div>
+            </div>
+          </div>
+
+          <!-- GRAFICO 1.3 — intervalos -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 1.3 — Chegadas internacionais + intervalos de
+                predicao</span
+              >
+              <span class="chart-caption"
+                >Previsao pontual + IC 80% + IC 95%</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="820"
+                height="280"
+                viewBox="0 0 820 280"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="250"
+                  x2="800"
+                  y2="250"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="250"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="50"
+                  y="254"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  0
+                </text>
+                <text
+                  x="50"
+                  y="200"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2M
+                </text>
+                <text
+                  x="50"
+                  y="148"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  4M
+                </text>
+                <text
+                  x="50"
+                  y="96"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  6M
+                </text>
+                <text
+                  x="50"
+                  y="44"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  8M
+                </text>
+                <line
+                  x1="60"
+                  y1="200"
+                  x2="800"
+                  y2="200"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="148"
+                  x2="800"
+                  y2="148"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="96"
+                  x2="800"
+                  y2="96"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <text
+                  x="60"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  1980
+                </text>
+                <text
+                  x="200"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  1990
+                </text>
+                <text
+                  x="340"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2000
+                </text>
+                <text
+                  x="480"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2010
+                </text>
+                <text
+                  x="605"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2016
+                </text>
+                <text
+                  x="800"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                >
+                  2025
+                </text>
+                <line
+                  x1="605"
+                  y1="20"
+                  x2="605"
+                  y2="250"
+                  stroke="#333"
+                  stroke-width="1"
+                  stroke-dasharray="4 3"
+                />
+                <!-- IC 95% -->
+                <path
+                  d="M605,60 C650,50 700,38 750,25 L800,12 L800,80 C750,68 700,58 650,52Z"
+                  fill="rgba(100,130,255,0.12)"
+                />
+                <!-- IC 80% -->
+                <path
+                  d="M605,60 C650,52 700,42 750,32 L800,22 L800,66 C750,55 700,50 650,55Z"
+                  fill="rgba(100,130,255,0.25)"
+                />
+                <!-- historico -->
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="2"
+                  points="60,238 100,232 140,226 180,218 220,210 260,200 300,188 340,175 380,160 420,148 460,130 500,110 540,90 580,72 605,60"
+                />
+                <!-- previsao pontual -->
+                <polyline
+                  fill="none"
+                  stroke="#6495ff"
+                  stroke-width="2.5"
+                  points="605,60 650,52 700,44 750,36 800,28"
+                />
+                <text
+                  x="430"
+                  y="15"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="12"
+                  fill="#888"
+                >
+                  Forecasts of total international arrivals to Australia
+                </text>
+                <text
+                  x="18"
+                  y="140"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="#555"
+                  transform="rotate(-90,18,140)"
+                >
+                  Visitors (millions)
+                </text>
+              </svg>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-line" style="background: #e8e8ec"></div>
+                Historico
+              </div>
+              <div class="legend-item">
+                <div class="legend-line" style="background: #6495ff"></div>
+                Previsao pontual
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-rect"
+                  style="background: rgba(100, 130, 255, 0.25)"
+                ></div>
+                IC 80%
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-rect"
+                  style="background: rgba(100, 130, 255, 0.12)"
+                ></div>
+                IC 95%
+              </div>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">
+              Codigo — previsao com intervalos (Figs 1.2 e 1.3)
+            </div>
+            <pre><span class="kw">from</span> statsforecast <span class="kw">import</span> StatsForecast
+<span class="kw">from</span> statsforecast.models <span class="kw">import</span> AutoETS
+
+aus_arrivals = pd.read_csv(<span class="st">'data/aus_arrivals.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+
+sf = StatsForecast(
+    models=[<span class="fn">AutoETS</span>(season_length=<span class="nb">4</span>)],
+    freq=<span class="st">'QS'</span>
+)
+
+<span class="cm"># level=[80, 95] gera os dois intervalos simultaneamente</span>
+previsao = sf.forecast(
+    df=aus_arrivals[[<span class="st">'unique_id'</span>, <span class="st">'ds'</span>, <span class="st">'y'</span>]],
+    h=<span class="nb">40</span>,           <span class="cm"># 40 trimestres = 10 anos</span>
+    level=[<span class="nb">80</span>, <span class="nb">95</span>]  <span class="cm"># intervalos de predicao</span>
+)
+
+<span class="cm"># visualiza com intervalos</span>
+sf.<span class="fn">plot</span>(aus_arrivals[[<span class="st">'unique_id'</span>,<span class="st">'ds'</span>,<span class="st">'y'</span>]], previsao,
+        level=[<span class="nb">80</span>, <span class="nb">95</span>], engine=<span class="st">'matplotlib'</span>)
+
+<span class="cm"># colunas geradas no DataFrame previsao:</span>
+<span class="cm"># AutoETS          → previsao pontual</span>
+<span class="cm"># AutoETS-lo-80    → limite inferior IC 80%</span>
+<span class="cm"># AutoETS-hi-80    → limite superior IC 80%</span>
+<span class="cm"># AutoETS-lo-95    → limite inferior IC 95%</span>
+<span class="cm"># AutoETS-hi-95    → limite superior IC 95%</span></pre>
+          </div>
+
+          <div class="concept orange">
+            <div class="concept-title">
+              Notacao padrao para papers de mestrado
+            </div>
+            <p>O livro usa notacao formal da area:</p>
+            <ul>
+              <li>
+                <span class="hl2">y^(T+h|T)</span> — previsao de y no tempo T+h,
+                dado que conhecemos ate o tempo T
+              </li>
+              <li>
+                <span class="hl2">h</span> — horizonte de previsao (quantos
+                passos a frente)
+              </li>
+              <li>
+                <span class="hl2">I</span> — conjunto de toda a informacao
+                observada ate o momento
+              </li>
+              <li>
+                <span class="hl2">y(t)|I</span> — variavel aleatoria do valor
+                futuro dado o que sabemos
+              </li>
+            </ul>
+            <p style="margin-top: 10px">
+              Nos seus papers de mestrado voce vai usar essa notacao ao
+              descrever os modelos hierarquicos.
+            </p>
+          </div>
+
+          <div class="checklist">
+            <div class="checklist-title">Checklist — dominio do cap. 1</div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Explicar os 4 fatores de previsibilidade usando exemplos da
+                logistica e demanda de estoque</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Diferenciar forecast, meta e planejamento sem confundir os
+                conceitos</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Identificar quando usar modelo de serie temporal vs explicativo
+                vs misto</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Conectar os 4 casos do livro com desafios da sua pesquisa
+                hierarquica</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Descrever os 5 passos do projeto e mapea-los no seu
+                mestrado</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Interpretar um grafico de previsao com intervalos 80% e
+                95%</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Gerar previsao com AutoETS e intervalos de predicao usando
+                StatsForecast</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-bottom">
+        <button class="nav-btn" disabled>← Inicio</button>
+        <span class="score-display" id="scoreDisplay">Quiz: 0/5</span>
+        <button class="nav-btn">Cap. 2 →</button>
+      </div>
+    </div>
+    <script>
+      const TOTAL = 6;
+      let opened = new Set(),
+        score = 0,
+        total = 0,
+        answered = {};
+      function toggleSection(id) {
+        const el = document.getElementById(id);
+        const wasOpen = el.classList.contains("open");
+        el.classList.toggle("open");
+        if (!wasOpen) {
+          opened.add(id);
+          updateProgress();
+        }
+      }
+      function updateProgress() {
+        const pct = Math.round((opened.size / TOTAL) * 100);
+        document.getElementById("progressFill").style.width = pct + "%";
+        document.getElementById("progressText").textContent =
+          opened.size + " de " + TOTAL + " secoes concluidas";
+        document.getElementById("progressPct").textContent = pct + "%";
+      }
+      function answer(btn, correct, feedback) {
+        const block = btn.closest(".quiz-block");
+        const fbEl = block.querySelector(".quiz-feedback");
+        if (answered[fbEl.id]) return;
+        answered[fbEl.id] = true;
+        total++;
+        block
+          .querySelectorAll(".quiz-option")
+          .forEach((o) => (o.disabled = true));
+        btn.classList.add(correct ? "correct" : "wrong");
+        if (correct) score++;
+        fbEl.textContent = feedback;
+        fbEl.classList.add("show");
+        document.getElementById("scoreDisplay").textContent =
+          "Quiz: " + score + "/" + total;
+      }
+      function toggleCheck(el) {
+        el.classList.toggle("done");
+      }
+    </script>
+  </body>
+</html>

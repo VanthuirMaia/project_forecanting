@@ -1,0 +1,3765 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cap. 3 — Decomposicao de Series Temporais</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0d0d0f;
+        --surface: #141417;
+        --border: #252529;
+        --accent: #00e5a0;
+        --accent2: #ff6b35;
+        --accent3: #7c6fff;
+        --text: #e8e8ec;
+        --muted: #7a7a8a;
+        --card: #18181d;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        font-size: 16px;
+        line-height: 1.7;
+        overflow-x: hidden;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 229, 160, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 229, 160, 0.025) 1px, transparent 1px);
+        background-size: 48px 48px;
+        pointer-events: none;
+        z-index: 0;
+      }
+      .container {
+        position: relative;
+        z-index: 1;
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 60px 28px 100px;
+      }
+      .tag {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 3px;
+        color: var(--accent);
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 16px;
+      }
+      h1 {
+        font-size: clamp(28px, 5vw, 48px);
+        font-weight: 700;
+        line-height: 1.1;
+        color: #fff;
+        margin-bottom: 20px;
+      }
+      h1 span {
+        color: var(--accent);
+      }
+      .subtitle {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 640px;
+        border-left: 2px solid var(--border);
+        padding-left: 16px;
+      }
+      .progress-bar {
+        background: var(--border);
+        border-radius: 2px;
+        height: 3px;
+        margin: 36px 0 0;
+        overflow: hidden;
+      }
+      .progress-fill {
+        background: linear-gradient(90deg, var(--accent), var(--accent3));
+        height: 100%;
+        width: 0%;
+        transition: width 0.5s ease;
+      }
+      .progress-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .section {
+        margin-bottom: 40px;
+      }
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        user-select: none;
+        padding: 4px 0;
+      }
+      .section-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--accent);
+        background: rgba(0, 229, 160, 0.08);
+        border: 1px solid rgba(0, 229, 160, 0.2);
+        padding: 4px 10px;
+        border-radius: 2px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #fff;
+        flex: 1;
+      }
+      .section-toggle {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 18px;
+        color: var(--muted);
+        transition:
+          transform 0.3s,
+          color 0.2s;
+        flex-shrink: 0;
+      }
+      .section-header:hover .section-toggle {
+        color: var(--accent);
+      }
+      .section.open .section-toggle {
+        transform: rotate(45deg);
+        color: var(--accent);
+      }
+      .section-body {
+        display: none;
+        animation: fadeIn 0.25s ease;
+      }
+      .section.open .section-body {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .concept {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 22px 24px;
+        margin-bottom: 14px;
+        position: relative;
+        overflow: hidden;
+      }
+      .concept::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--accent);
+      }
+      .concept.orange::before {
+        background: var(--accent2);
+      }
+      .concept.purple::before {
+        background: var(--accent3);
+      }
+      .concept-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--accent);
+        font-family: "JetBrains Mono", monospace;
+        margin-bottom: 10px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+      .concept.orange .concept-title {
+        color: var(--accent2);
+      }
+      .concept.purple .concept-title {
+        color: var(--accent3);
+      }
+      .concept p {
+        font-size: 15px;
+        line-height: 1.75;
+        color: #c8c8d4;
+      }
+      .concept ul {
+        margin-top: 10px;
+        padding-left: 20px;
+      }
+      .concept li {
+        font-size: 15px;
+        line-height: 1.9;
+        color: #c8c8d4;
+        margin-bottom: 2px;
+      }
+      .analogy {
+        background: rgba(124, 111, 255, 0.07);
+        border: 1px solid rgba(124, 111, 255, 0.2);
+        border-radius: 4px;
+        padding: 20px 22px;
+        margin-bottom: 14px;
+      }
+      .analogy-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent3);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .analogy p {
+        font-size: 15px;
+        line-height: 1.75;
+        color: #c0bfe8;
+      }
+      .formula-box {
+        background: #0a0a0c;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 16px 22px;
+        margin: 14px 0;
+        text-align: center;
+      }
+      .formula {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 17px;
+        color: var(--accent);
+        letter-spacing: 0.5px;
+      }
+      .formula-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 8px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .chart-block {
+        background: #0a0a0c;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        margin: 14px 0;
+        overflow: hidden;
+      }
+      .chart-header {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .chart-title {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .chart-caption {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: rgba(0, 229, 160, 0.6);
+      }
+      .chart-svg-wrap {
+        padding: 16px 20px;
+        overflow-x: auto;
+      }
+      .chart-svg-wrap svg {
+        display: block;
+        margin: 0 auto;
+      }
+      .chart-insight {
+        padding: 12px 20px;
+        border-top: 1px solid var(--border);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .chart-insight span {
+        color: var(--accent);
+      }
+      .code-block {
+        background: #0a0a0c;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 18px 22px;
+        margin: 14px 0;
+        overflow-x: auto;
+      }
+      .code-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .code-block pre {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: #a8b8c8;
+        white-space: pre;
+      }
+      .kw {
+        color: var(--accent3);
+      }
+      .fn {
+        color: var(--accent);
+      }
+      .st {
+        color: var(--accent2);
+      }
+      .cm {
+        color: #4a5568;
+        font-style: italic;
+      }
+      .nb {
+        color: #f6e05e;
+      }
+      .quiz-block {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 22px 24px;
+        margin-bottom: 14px;
+      }
+      .quiz-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent2);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .quiz-q {
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 16px;
+        line-height: 1.6;
+      }
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .quiz-option {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 12px 16px;
+        font-size: 14px;
+        color: #c0c0cc;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: left;
+        font-family: "Inter", sans-serif;
+        line-height: 1.5;
+      }
+      .quiz-option:hover {
+        border-color: var(--muted);
+        color: #fff;
+      }
+      .quiz-option.correct {
+        border-color: var(--accent);
+        background: rgba(0, 229, 160, 0.08);
+        color: var(--accent);
+      }
+      .quiz-option.wrong {
+        border-color: var(--accent2);
+        background: rgba(255, 107, 53, 0.08);
+        color: var(--accent2);
+      }
+      .quiz-option:disabled {
+        cursor: default;
+      }
+      .quiz-feedback {
+        margin-top: 12px;
+        font-size: 13px;
+        line-height: 1.7;
+        color: var(--muted);
+        display: none;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .quiz-feedback.show {
+        display: block;
+      }
+      .checklist {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 22px 24px;
+        margin-bottom: 14px;
+      }
+      .checklist-title {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent);
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+      .check-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+      }
+      .check-item:last-child {
+        border-bottom: none;
+      }
+      .check-box {
+        width: 18px;
+        height: 18px;
+        border: 1.5px solid var(--muted);
+        border-radius: 2px;
+        flex-shrink: 0;
+        margin-top: 2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      .check-item.done .check-box {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .check-item.done .check-box::after {
+        content: "✓";
+        color: #000;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .check-item.done .check-text {
+        text-decoration: line-through;
+        color: var(--muted);
+      }
+      .check-text {
+        font-size: 14px;
+        color: #c0c0cc;
+        line-height: 1.6;
+      }
+      .comp-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 14px 0;
+        font-size: 13px;
+      }
+      .comp-table th {
+        background: rgba(0, 229, 160, 0.1);
+        color: var(--accent);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 10px 12px;
+        text-align: left;
+        border: 1px solid var(--border);
+      }
+      .comp-table td {
+        padding: 9px 12px;
+        border: 1px solid var(--border);
+        color: #c0c0cc;
+        vertical-align: middle;
+        line-height: 1.5;
+      }
+      .comp-table tr:nth-child(even) td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      .yes {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .no {
+        color: var(--accent2);
+      }
+      .highlight-row td {
+        background: rgba(0, 229, 160, 0.05) !important;
+      }
+      .legend {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding: 10px 20px 14px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend-line {
+        width: 24px;
+        height: 2px;
+      }
+      .hl {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .hl2 {
+        color: var(--accent2);
+        font-weight: 600;
+      }
+      .hl3 {
+        color: var(--accent3);
+        font-weight: 600;
+      }
+      .divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 40px 0;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 14px 0;
+      }
+      .nav-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 64px;
+        padding-top: 28px;
+        border-top: 1px solid var(--border);
+      }
+      .nav-btn {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        background: none;
+        border: 1px solid var(--border);
+        padding: 10px 20px;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .nav-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .score-display {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header style="margin-bottom: 56px">
+        <span class="tag">Forecasting: Principles and Practice (fpppy)</span>
+        <h1>Cap. 3<br /><span>Decomposicao de Series Temporais</span></h1>
+        <p class="subtitle">
+          Todos os graficos do capitulo com codigo Python correspondente.<br />Transformacoes,
+          medias moveis, decomposicao classica e STL.
+        </p>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-label">
+          <span id="progressText">0 de 6 secoes concluidas</span>
+          <span id="progressPct">0%</span>
+        </div>
+      </header>
+
+      <!-- ===== SEC 1: TRANSFORMACOES ===== -->
+      <div class="section" id="s1">
+        <div class="section-header" onclick="toggleSection('s1')">
+          <span class="section-num">3.1</span>
+          <span class="section-title">Transformacoes e ajustes</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">
+              Por que transformar antes de decompor
+            </div>
+            <p>
+              Ajustar os dados remove fontes conhecidas de variacao e simplifica
+              os padroes. Quatro tipos:
+              <span class="hl">calendario</span> (normaliza por dias uteis),
+              <span class="hl">populacional</span> (per capita),
+              <span class="hl">inflacao</span> (ajuste por CPI),
+              <span class="hl">matematico</span> (log, Box-Cox).
+            </p>
+          </div>
+
+          <!-- Fig 3.1: PIB per capita -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 3.1 — PIB per capita da Australia</span
+              >
+              <span class="chart-caption"
+                >Ajuste populacional: GDP / Population — revela crescimento
+                REAL</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="240"
+                viewBox="0 0 860 240"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="210"
+                  x2="820"
+                  y2="210"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="210"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="52"
+                  y="213"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  0
+                </text>
+                <text
+                  x="52"
+                  y="165"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  20k
+                </text>
+                <text
+                  x="52"
+                  y="118"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  40k
+                </text>
+                <text
+                  x="52"
+                  y="70"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  55k
+                </text>
+                <text
+                  x="52"
+                  y="30"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  65k
+                </text>
+                <line
+                  x1="60"
+                  y1="165"
+                  x2="820"
+                  y2="165"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="118"
+                  x2="820"
+                  y2="118"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="70"
+                  x2="820"
+                  y2="70"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <text
+                  x="60"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1960
+                </text>
+                <text
+                  x="205"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1970
+                </text>
+                <text
+                  x="350"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1980
+                </text>
+                <text
+                  x="495"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1990
+                </text>
+                <text
+                  x="640"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2000
+                </text>
+                <text
+                  x="780"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2010
+                </text>
+                <!-- curva PIB per capita crescente com queda no final -->
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="2"
+                  points="60,200 90,195 120,190 150,185 180,178 210,172 240,165 270,158 300,150 330,143 360,138 390,130 420,118 450,100 480,85 510,72 540,62 570,52 600,44 620,38 640,35 660,32 680,35 700,40 720,38 740,34 760,32 780,38 800,50 820,55"
+                />
+                <text
+                  x="440"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  GDP per capita — Australia ($US)
+                </text>
+                <text
+                  x="15"
+                  y="115"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                  transform="rotate(-90,15,115)"
+                >
+                  $US
+                </text>
+                <text
+                  x="440"
+                  y="238"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Year [1Y]
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>Por que ajustar pela populacao:</span> o PIB total pode
+              crescer simplesmente porque ha mais pessoas. O PIB per capita
+              revela o crescimento REAL por habitante. Na sua pesquisa: demanda
+              por loja normalizada por fluxo de clientes = mesmo conceito.
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">
+              Codigo — ajuste populacional + transformacao Box-Cox
+            </div>
+            <pre><span class="cm"># ajuste populacional</span>
+global_economy = pd.<span class="fn">read_csv</span>(<span class="st">'data/global_economy.csv'</span>)
+df = (
+    global_economy
+    .loc[<span class="kw">lambda</span> x: x[<span class="st">'unique_id'</span>] == <span class="st">'Australia'</span>]
+    .assign(y=<span class="kw">lambda</span> x: x[<span class="st">'GDP'</span>] / x[<span class="st">'Population'</span>])  <span class="cm"># per capita</span>
+)
+
+<span class="cm"># transformacao Box-Cox</span>
+<span class="kw">try</span>:
+    <span class="kw">from</span> coreforecast.scalers <span class="kw">import</span> boxcox, boxcox_lambda
+    aus_gas = (
+        pd.<span class="fn">read_csv</span>(<span class="st">'data/aus_production.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+        [[<span class="st">'ds'</span>, <span class="st">'Gas'</span>]].dropna()
+        .assign(unique_id=<span class="st">'Gas'</span>, y=<span class="kw">lambda</span> x: x[<span class="st">'Gas'</span>])
+    )
+    y = aus_gas[<span class="st">'y'</span>].to_numpy()
+    <span class="cm"># encontra lambda otimo pelo metodo Guerrero</span>
+    lam = <span class="fn">boxcox_lambda</span>(y, method=<span class="st">'guerrero'</span>, season_length=<span class="nb">4</span>)
+    <span class="fn">print</span>(<span class="fn">f</span><span class="st">'Lambda otimo: {lam:.4f}'</span>)
+    <span class="fn">print</span>(<span class="st">'lambda~0: usar log | lambda~1: sem transformacao'</span>)
+    aus_gas[<span class="st">'y_transformed'</span>] = <span class="fn">boxcox</span>(y, lam)
+<span class="kw">except</span> ImportError:
+    <span class="cm"># alternativa simples: transformacao log</span>
+    aus_gas[<span class="st">'y_log'</span>] = np.<span class="fn">log</span>(aus_gas[<span class="st">'y'</span>])
+
+<span class="cm"># compara original vs transformado</span>
+fig, axes = plt.<span class="fn">subplots</span>(<span class="nb">2</span>, <span class="nb">1</span>, figsize=(<span class="nb">10</span>, <span class="nb">6</span>), sharex=<span class="nb">True</span>)
+axes[<span class="nb">0</span>].<span class="fn">plot</span>(aus_gas[<span class="st">'ds'</span>], aus_gas[<span class="st">'y'</span>])
+axes[<span class="nb">0</span>].<span class="fn">set_title</span>(<span class="st">'Producao de gas — original (variancia cresce)'</span>)
+axes[<span class="nb">1</span>].<span class="fn">plot</span>(aus_gas[<span class="st">'ds'</span>], aus_gas.get(<span class="st">'y_transformed'</span>, aus_gas.get(<span class="st">'y_log'</span>)))
+axes[<span class="nb">1</span>].<span class="fn">set_title</span>(<span class="st">'Box-Cox — variancia estabilizada'</span>)
+plt.<span class="fn">tight_layout</span>(); plt.<span class="fn">show</span>()</pre>
+          </div>
+
+          <!-- Fig 3.2: Box-Cox gas -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 3.2 — Box-Cox: producao de gas australiana (lambda =
+                0.08)</span
+              >
+              <span class="chart-caption"
+                >Original: amplitude sazonal cresce | Transformado: amplitude
+                estabilizada</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="300"
+                viewBox="0 0 860 300"
+                style="max-width: 100%"
+              >
+                <!-- painel superior: original -->
+                <line
+                  x1="60"
+                  y1="135"
+                  x2="820"
+                  y2="135"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="140"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="440"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Original — amplitude sazonal cresce com o nivel
+                </text>
+                <!-- serie com sazonalidade multiplicativa crescente -->
+                <polyline
+                  fill="none"
+                  stroke="var(--accent2)"
+                  stroke-width="1.4"
+                  points="65,132 75,128 85,130 95,126 105,129 115,122 125,128 135,115 145,122 155,108 165,116 175,100 185,110 195,92 205,104 215,85 225,98 235,78 245,92 255,70 265,85 275,62 285,78 295,55 305,72 315,48 325,66 335,42 345,60 355,36 365,55 375,30 385,50 395,26 405,46 415,22 425,42 435,18 445,38 455,16 465,36 475,14 485,33 495,12 505,30 515,10 525,28 535,10 545,26 555,10 565,24 575,10 585,22 595,10 605,20 615,10 625,18 635,10 645,17 655,10 665,16 675,10 685,15 695,10 705,14 715,10 725,14 735,10 745,14 755,10 765,13 775,10 785,13 795,10 805,12 815,10"
+                />
+                <text
+                  x="52"
+                  y="25"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent2)"
+                >
+                  alto
+                </text>
+                <text
+                  x="52"
+                  y="135"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent2)"
+                >
+                  baixo
+                </text>
+
+                <!-- painel inferior: transformado -->
+                <line
+                  x1="60"
+                  y1="285"
+                  x2="820"
+                  y2="285"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="155"
+                  x2="60"
+                  y2="290"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="440"
+                  y="152"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Box-Cox (lambda=0.08) — amplitude estabilizada
+                </text>
+                <!-- serie com sazonalidade aditiva constante (amplitude uniforme) -->
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="1.4"
+                  points="65,275 75,255 85,272 95,252 105,268 115,248 125,265 135,243 145,260 155,238 165,256 175,233 185,250 195,228 205,246 215,222 225,240 235,216 245,234 255,210 265,228 275,204 285,222 295,198 305,216 315,192 325,210 335,186 345,204 355,180 365,198 375,174 385,192 395,168 405,186 415,162 425,180 435,158 445,176 455,156 465,172 475,154 485,168 495,152 505,164 515,150 525,160 535,150 545,156 555,149 565,152 575,148 585,150 595,148 605,150 615,148 625,152 635,148 645,150 655,148 665,150 675,148 685,150 695,148 705,150 715,148 725,150 735,148 745,150 755,148 765,150 775,148 785,150 795,148 805,150 815,148"
+                />
+                <text
+                  x="52"
+                  y="162"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent)"
+                >
+                  alto
+                </text>
+                <text
+                  x="52"
+                  y="283"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent)"
+                >
+                  baixo
+                </text>
+                <!-- x labels -->
+                <text
+                  x="65"
+                  y="298"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1960
+                </text>
+                <text
+                  x="250"
+                  y="298"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1975
+                </text>
+                <text
+                  x="440"
+                  y="298"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1990
+                </text>
+                <text
+                  x="630"
+                  y="298"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2005
+                </text>
+                <text
+                  x="815"
+                  y="298"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2010
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>O efeito do Box-Cox:</span> no grafico superior a amplitude
+              sazonal cresce (sazonalidade multiplicativa). Apos a transformacao
+              (inferior), a amplitude fica constante ao longo do tempo. Isso
+              permite usar decomposicao aditiva no dado transformado —
+              matematicamente equivalente a multiplicativa no dado original.
+            </div>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 3.1</div>
+            <div class="quiz-q">
+              Voce analisa vendas mensais de uma loja. Em fevereiro sempre ha
+              menos vendas que janeiro. Qual ajuste e mais importante ANTES de
+              modelar?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Ajuste de inflacao e importante para dados financeiros de longo prazo, mas nao resolve o problema de comparacao entre meses com durações diferentes.',
+                  )
+                "
+              >
+                Ajuste de inflacao pelo CPI
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. Fevereiro tem menos dias uteis — a diferenca de vendas pode ser apenas pelo numero de dias, nao por sazonalidade real. Normalizar por dia util (vendas/dias_uteis) remove essa distorcao antes de qualquer analise.',
+                  )
+                "
+              >
+                Ajuste de calendario — normalizar por dias uteis do mes
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Box-Cox estabiliza variancia sazonal, mas o problema aqui e a comparacao entre meses com durações diferentes.',
+                  )
+                "
+              >
+                Transformacao Box-Cox
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-0"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ===== SEC 2: COMPONENTES ===== -->
+      <div class="section" id="s2">
+        <div class="section-header" onclick="toggleSection('s2')">
+          <span class="section-num">3.2</span>
+          <span class="section-title">Componentes da serie temporal</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="grid-2">
+            <div class="formula-box">
+              <div class="formula">y(t) = S(t) + T(t) + R(t)</div>
+              <div class="formula-label">
+                ADITIVO — amplitude sazonal CONSTANTE
+              </div>
+            </div>
+            <div class="formula-box">
+              <div class="formula">y(t) = S(t) × T(t) × R(t)</div>
+              <div class="formula-label">
+                MULTIPLICATIVO — amplitude sazonal CRESCE
+              </div>
+            </div>
+          </div>
+
+          <!-- Fig 3.3: Total employment + Fig 3.4: trend -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 3.3 — Emprego total no varejo dos EUA</span
+              >
+              <span class="chart-caption"
+                >Serie original + componente de tendencia (laranja) — STL
+                period=12</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="240"
+                viewBox="0 0 860 240"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="210"
+                  x2="820"
+                  y2="210"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="210"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="52"
+                  y="213"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  12.5k
+                </text>
+                <text
+                  x="52"
+                  y="168"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  14k
+                </text>
+                <text
+                  x="52"
+                  y="120"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  15.5k
+                </text>
+                <text
+                  x="52"
+                  y="72"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  16.5k
+                </text>
+                <line
+                  x1="60"
+                  y1="168"
+                  x2="820"
+                  y2="168"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="120"
+                  x2="820"
+                  y2="120"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="72"
+                  x2="820"
+                  y2="72"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <text
+                  x="60"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1992
+                </text>
+                <text
+                  x="185"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1996
+                </text>
+                <text
+                  x="310"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2000
+                </text>
+                <text
+                  x="435"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2004
+                </text>
+                <text
+                  x="560"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2008
+                </text>
+                <text
+                  x="685"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2012
+                </text>
+                <text
+                  x="790"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2019
+                </text>
+                <!-- serie original (cinza) com sazonalidade anual e tendencia -->
+                <polyline
+                  fill="none"
+                  stroke="#6a6a7a"
+                  stroke-width="1"
+                  points="60,205 67,185 74,195 81,190 88,183 95,178 102,172 109,168 116,175 123,165 130,180 137,160 144,195 151,178 158,188 165,183 172,175 179,170 186,165 193,160 200,168 207,155 214,170 221,150 228,185 235,168 242,178 249,172 256,165 263,160 270,154 277,148 284,155 291,143 298,160 305,140 312,175 319,158 326,168 333,162 340,155 347,150 354,144 361,138 368,145 375,135 382,152 389,132 396,168 403,150 410,160 417,155 424,148 431,142 438,135 445,130 452,137 459,125 466,140 473,120 480,155 487,145 494,175 501,185 508,178 515,172 522,168 529,163 536,158 543,152 550,160 557,148 564,165 571,145 578,152 585,146 592,140 599,134 606,128 613,122 620,130 627,118 634,133 641,113 648,125 655,118 662,112 669,106 676,100 683,94 690,102 697,90 704,105 711,88 718,97 725,90 732,84 739,78 746,72 753,66 760,74 767,62 774,68 781,62 788,56 795,64 802,58 809,52 816,60 820,55"
+                />
+                <!-- tendencia (laranja suave) -->
+                <polyline
+                  fill="none"
+                  stroke="#D55E00"
+                  stroke-width="2.5"
+                  points="80,195 120,185 160,177 200,168 240,160 280,152 320,145 360,138 400,148 440,158 480,168 520,162 560,148 600,128 640,112 680,96 720,82 760,68 800,58 820,55"
+                />
+                <text
+                  x="440"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Total employment in US retail
+                </text>
+                <text
+                  x="15"
+                  y="115"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                  transform="rotate(-90,15,115)"
+                >
+                  Persons (thousands)
+                </text>
+              </svg>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-line" style="background: #6a6a7a"></div>
+                Serie original
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-line"
+                  style="background: #d55e00; height: 3px"
+                ></div>
+                Tendencia (STL)
+              </div>
+            </div>
+            <div class="chart-insight">
+              <span>O que a tendencia revela:</span> crescimento ate ~2000,
+              estabilizacao, queda na crise 2008-2009, recuperacao lenta. A
+              curva laranja ignora a sazonalidade anual e mostra apenas o
+              movimento de longo prazo. Compare com a serie cinza — a tendencia
+              e muito mais "legivel".
+            </div>
+          </div>
+
+          <!-- Fig 3.5: Decomposicao completa 4 paineis -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 3.5 — Decomposicao STL completa: emprego no varejo dos
+                EUA</span
+              >
+              <span class="chart-caption"
+                >4 paineis: dados | tendencia | sazonal | residuo</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="420"
+                viewBox="0 0 860 420"
+                style="max-width: 100%"
+              >
+                <!-- eixo x compartilhado -->
+                <text
+                  x="60"
+                  y="415"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  1992
+                </text>
+                <text
+                  x="210"
+                  y="415"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  1997
+                </text>
+                <text
+                  x="360"
+                  y="415"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  2002
+                </text>
+                <text
+                  x="510"
+                  y="415"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  2007
+                </text>
+                <text
+                  x="660"
+                  y="415"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  2013
+                </text>
+                <text
+                  x="820"
+                  y="415"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  2019
+                </text>
+
+                <!-- PAINEL 1: dados -->
+                <line
+                  x1="60"
+                  y1="90"
+                  x2="820"
+                  y2="90"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="15"
+                  x2="60"
+                  y2="92"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="52"
+                  y="18"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  dados
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#6495ff"
+                  stroke-width="1"
+                  points="65,85 72,68 79,78 86,73 93,66 100,62 107,57 114,52 121,60 128,48 135,64 142,44 149,78 156,62 163,72 170,66 177,60 184,55 191,50 198,45 205,53 212,40 219,56 226,36 233,70 240,54 247,64 254,58 261,52 268,47 275,42 282,36 289,44 296,32 303,48 310,28 317,62 324,46 331,56 338,50 345,44 352,38 359,33 366,27 373,35 380,23 387,40 394,20 401,54 408,37 415,48 422,42 429,35 436,30 443,24 450,18 457,26 464,14 471,30 478,10 485,44 492,38 499,68 506,76 513,70 520,65 527,60 534,55 541,50 548,44 555,52 562,40 569,58 576,37 583,44 590,38 597,32 604,26 611,20 618,14 625,23 632,10 639,28 646,8 653,20 660,14 667,8 674,25 681,32 688,40 695,35 702,43 709,28 716,35 723,28 730,22 737,16 744,10 751,25 758,32 765,25 772,18 779,12 786,20 793,14 800,8 807,16 814,10 820,8"
+                />
+
+                <!-- PAINEL 2: tendencia -->
+                <line
+                  x1="60"
+                  y1="185"
+                  x2="820"
+                  y2="185"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="100"
+                  x2="60"
+                  y2="187"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="52"
+                  y="103"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  trend
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#D55E00"
+                  stroke-width="2"
+                  points="80,180 120,172 160,164 200,156 240,148 280,140 320,133 360,127 400,135 440,145 480,155 520,148 560,135 600,118 640,104 680,90 720,77 760,65 800,55 820,52"
+                />
+
+                <!-- PAINEL 3: sazonal -->
+                <line
+                  x1="60"
+                  y1="280"
+                  x2="820"
+                  y2="280"
+                  stroke="#555"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="195"
+                  x2="60"
+                  y2="282"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="52"
+                  y="198"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  seasonal
+                </text>
+                <!-- padrao sazonal repetitivo -->
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="1.2"
+                  points="65,295 72,270 79,282 86,278 93,272 100,268 107,264 114,260 121,266 128,256 135,272 142,252 149,295 156,270 163,282 170,278 177,272 184,268 191,264 198,260 205,266 212,256 219,272 226,252 233,295 240,270 247,282 254,278 261,272 268,268 275,264 282,260 289,266 296,256 303,272 310,252 317,295 324,270 331,282 338,278 345,272 352,268 359,264 366,260 373,266 380,256 387,272 394,252 401,295 408,270 415,282 422,278 429,272 436,268 443,264 450,260 457,266 464,256 471,272 478,252 485,295 492,270 499,282 506,278 513,272 520,268 527,264 534,260 541,266 548,256 555,272 562,252 569,295 576,270 583,282 590,278 597,272 604,268 611,264 618,260 625,266 632,256 639,272 646,252 653,295 660,270 667,282 674,278 681,272 688,268 695,264 702,260 709,266 716,256 723,272 730,252 737,295 744,270 751,282 758,278 765,272 772,268 779,264 786,260 793,266 800,256 807,272 814,252 820,295"
+                />
+
+                <!-- PAINEL 4: residuo -->
+                <line
+                  x1="60"
+                  y1="375"
+                  x2="820"
+                  y2="375"
+                  stroke="#555"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="290"
+                  x2="60"
+                  y2="377"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="52"
+                  y="293"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  remainder
+                </text>
+                <!-- residuo com pico na crise 2008 -->
+                <polyline
+                  fill="none"
+                  stroke="#888"
+                  stroke-width="1"
+                  points="65,372 80,368 95,375 110,370 125,378 140,372 155,368 170,374 185,370 200,376 215,371 230,368 245,374 260,370 275,377 290,372 305,368 320,374 335,370 350,376 365,372 380,368 395,374 410,370 425,377 440,372 455,368 470,374 485,370 500,340 510,330 520,345 530,338 540,352 550,358 560,365 570,370 580,374 590,370 600,375 610,371 620,368 630,373 640,370 650,376 660,372 670,368 680,373 690,370 700,375 710,371 720,368 730,373 740,370 750,376 760,372 770,368 780,374 790,370 800,376 810,372 820,369"
+                />
+                <!-- anotacao crise 2008 -->
+                <rect
+                  x="492"
+                  y="322"
+                  width="58"
+                  height="16"
+                  fill="#1a0a0a"
+                  rx="2"
+                />
+                <text
+                  x="521"
+                  y="333"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent2)"
+                >
+                  crise 2008
+                </text>
+                <line
+                  x1="521"
+                  y1="338"
+                  x2="521"
+                  y2="350"
+                  stroke="var(--accent2)"
+                  stroke-width="0.8"
+                />
+
+                <!-- separadores entre paineis -->
+                <line
+                  x1="60"
+                  y1="93"
+                  x2="820"
+                  y2="93"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="188"
+                  x2="820"
+                  y2="188"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="283"
+                  x2="820"
+                  y2="283"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+
+                <text
+                  x="440"
+                  y="11"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  STL decomposition — Employed = trend + seasonal + remainder
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>Leia os 4 paineis de cima para baixo:</span> dados =
+              tendencia + sazonal + residuo. A crise 2008 aparece no residuo
+              (queda abrupta em ~2008-2009) porque nao e tendencia (recupera
+              depois) nem sazonalidade (nao se repete todo ano). O residuo deve
+              ser ruido branco — se tiver padrao, o modelo falhou.
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">Codigo — Figs 3.3 a 3.5: STL completo</div>
+            <pre><span class="kw">from</span> statsmodels.tsa.seasonal <span class="kw">import</span> STL
+<span class="kw">import</span> seaborn <span class="kw">as</span> sns
+
+us_employment = pd.<span class="fn">read_csv</span>(<span class="st">'data/us_employment.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+us_retail = us_employment.loc[
+    <span class="kw">lambda</span> x: (x[<span class="st">'unique_id'</span>] == <span class="st">'Retail Trade'</span>) & (x[<span class="st">'ds'</span>] >= <span class="st">'1990'</span>)
+]
+
+<span class="cm"># decomposicao STL</span>
+stl = <span class="fn">STL</span>(us_retail[<span class="st">'y'</span>], period=<span class="nb">12</span>)
+res = stl.fit()
+
+<span class="cm"># monta dataframe com os 3 componentes</span>
+dcmp = pd.<span class="fn">DataFrame</span>({
+    <span class="st">'ds'</span>:        us_retail[<span class="st">'ds'</span>].values,
+    <span class="st">'data'</span>:      us_retail[<span class="st">'y'</span>].values,
+    <span class="st">'trend'</span>:     res.trend,
+    <span class="st">'seasonal'</span>:  res.seasonal,
+    <span class="st">'remainder'</span>: res.resid,
+})
+
+<span class="cm"># dado sazonalmente ajustado (aditivo: y - S)</span>
+dcmp[<span class="st">'adjusted'</span>] = dcmp[<span class="st">'data'</span>] - dcmp[<span class="st">'seasonal'</span>]
+
+<span class="cm"># visualiza os 4 componentes</span>
+fig, axes = plt.<span class="fn">subplots</span>(<span class="nb">4</span>, <span class="nb">1</span>, sharex=<span class="nb">True</span>, figsize=(<span class="nb">10</span>, <span class="nb">8</span>))
+axes[<span class="nb">0</span>].<span class="fn">plot</span>(dcmp[<span class="st">'ds'</span>], dcmp[<span class="st">'data'</span>])
+axes[<span class="nb">1</span>].<span class="fn">plot</span>(dcmp[<span class="st">'ds'</span>], dcmp[<span class="st">'trend'</span>], color=<span class="st">'#D55E00'</span>)
+axes[<span class="nb">2</span>].<span class="fn">plot</span>(dcmp[<span class="st">'ds'</span>], dcmp[<span class="st">'seasonal'</span>], color=<span class="st">'green'</span>)
+axes[<span class="nb">3</span>].<span class="fn">plot</span>(dcmp[<span class="st">'ds'</span>], dcmp[<span class="st">'remainder'</span>], color=<span class="st">'gray'</span>)
+<span class="kw">for</span> ax, label <span class="kw">in</span> <span class="fn">zip</span>(axes, [<span class="st">'dados'</span>, <span class="st">'tendencia'</span>, <span class="st">'sazonal'</span>, <span class="st">'residuo'</span>]):
+    ax.<span class="fn">set_ylabel</span>(label, fontsize=<span class="nb">9</span>)
+fig.<span class="fn">suptitle</span>(<span class="st">'Decomposicao STL — Emprego no Varejo EUA'</span>)
+plt.<span class="fn">tight_layout</span>(); plt.<span class="fn">show</span>()</pre>
+          </div>
+
+          <!-- Fig 3.6: Sazonalmente ajustado -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 3.6 — Dado sazonalmente ajustado vs original</span
+              >
+              <span class="chart-caption"
+                >y_adj = data - seasonal | Revela tendencia + residuo sem ruido
+                sazonal</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="220"
+                viewBox="0 0 860 220"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="195"
+                  x2="820"
+                  y2="195"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="195"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="60"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1992
+                </text>
+                <text
+                  x="310"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2002
+                </text>
+                <text
+                  x="560"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2008
+                </text>
+                <text
+                  x="820"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2019
+                </text>
+                <!-- serie original cinza -->
+                <polyline
+                  fill="none"
+                  stroke="#555"
+                  stroke-width="1"
+                  opacity=".7"
+                  points="65,180 72,162 79,172 86,167 93,160 100,155 107,150 114,145 121,152 128,140 135,158 142,138 149,172 156,155 163,165 170,160 177,153 184,148 191,143 198,138 205,145 212,132 219,150 226,130 233,165 240,148 247,158 254,152 261,145 268,140 275,134 282,128 289,136 296,124 303,142 310,122 317,156 324,138 331,150 338,144 345,137 352,132 359,126 366,120 373,128 380,116 387,134 394,114 401,148 408,130 415,142 422,136 429,128 436,122 443,116 450,110 457,118 464,106 471,122 478,102 485,136 492,128 499,158 506,165 513,158 520,153 527,148 534,143 541,138 548,132 555,140 562,128 569,145 576,125 583,132 590,126 597,120 604,114 611,108 618,102 625,110 632,98 639,115 646,95 653,108 660,102 667,96 674,112 681,120 688,128 695,122 702,130 709,115 716,122 723,115 730,108 737,102 744,96 751,110 758,118 765,112 772,105 779,98 786,106 793,100 800,94 807,102 814,96 820,90"
+                />
+                <!-- serie ajustada azul (mais suave, sem sazonalidade) -->
+                <polyline
+                  fill="none"
+                  stroke="#0072B2"
+                  stroke-width="2"
+                  points="65,178 90,172 120,165 150,158 180,150 210,143 240,136 270,130 300,124 330,130 360,138 390,145 420,152 450,148 480,140 510,135 540,128 560,122 580,110 610,96 640,82 670,70 700,80 730,88 760,75 790,64 820,56"
+                />
+                <text
+                  x="440"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Total employment in US retail
+                </text>
+                <text
+                  x="15"
+                  y="105"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                  transform="rotate(-90,15,105)"
+                >
+                  Persons (thousands)
+                </text>
+              </svg>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-line" style="background: #555"></div>
+                Original
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-line"
+                  style="background: #0072b2; height: 3px"
+                ></div>
+                Sazonalmente ajustado (y - S)
+              </div>
+            </div>
+            <div class="chart-insight">
+              <span>Dado ajustado NAO e so tendencia:</span> o dado azul ainda
+              contem o residuo R(t). Por isso nao e perfeitamente suave — as
+              quedas de 2008-2009 ainda aparecem. Se voce quiser so a tendencia,
+              use o componente trend do STL. Use o dado ajustado quando quiser
+              ver variacao economica (nao sazonal).
+            </div>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 3.2</div>
+            <div class="quiz-q">
+              Um analista remove a sazonalidade dos dados de emprego e ve uma
+              queda brusca em 2008. O que isso indica?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Um erro na sazonalidade seria visivel como padrao periodico, nao como queda pontual em um ano especifico.',
+                  )
+                "
+              >
+                Erro no componente sazonal estimado
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. A queda em 2008 e a crise financeira global — um evento nao sazonal. Aparece no dado ajustado porque este ainda contem tendencia + residuo. A sazonalidade foi removida, mas o evento economico permanece visivel. Isso e exatamente o objetivo do ajuste sazonal: revelar a variacao economica subjacente.',
+                  )
+                "
+              >
+                Evento nao sazonal — crise economica visivel no residuo e
+                tendencia
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'O dado sazonalmente ajustado ainda contem tendencia e residuo. Nao e o mesmo que tendencia pura.',
+                  )
+                "
+              >
+                O dado ajustado mostra so a tendencia
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-1"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ===== SEC 3: MEDIAS MOVEIS ===== -->
+      <div class="section" id="s3">
+        <div class="section-header" onclick="toggleSection('s3')">
+          <span class="section-num">3.3</span>
+          <span class="section-title">Medias moveis — base do baseline</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">
+              O baseline que seus modelos precisam superar
+            </div>
+            <p>
+              A media movel de ordem m estima a tendencia calculando a media dos
+              m valores ao redor de cada ponto. E a base do baseline que seu
+              orientador definiu como criterio minimo:
+              <span class="hl"
+                >seus modelos hierarquicos precisam ganhar da media movel</span
+              >.
+            </p>
+          </div>
+
+          <div class="formula-box">
+            <div class="formula">
+              T(t) = (1/m) × Σ y(t+j) | j de -k ate k | m = 2k+1
+            </div>
+            <div class="formula-label">
+              MA simetrica (center=True obrigatorio) | Periodo par: usar 2×m-MA
+            </div>
+          </div>
+
+          <!-- Fig 3.7 + 3.8: exportacoes australianas + 5-MA -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Figs 3.7–3.8 — Exportacoes australianas + 5-MA</span
+              >
+              <span class="chart-caption"
+                >Dados originais (preto) + tendencia estimada pela 5-MA
+                (laranja)</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="230"
+                viewBox="0 0 860 230"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="205"
+                  x2="820"
+                  y2="205"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="205"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="52"
+                  y="208"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  12
+                </text>
+                <text
+                  x="52"
+                  y="160"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  16
+                </text>
+                <text
+                  x="52"
+                  y="112"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  20
+                </text>
+                <text
+                  x="52"
+                  y="64"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  22
+                </text>
+                <line
+                  x1="60"
+                  y1="160"
+                  x2="820"
+                  y2="160"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="112"
+                  x2="820"
+                  y2="112"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="64"
+                  x2="820"
+                  y2="64"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <text
+                  x="60"
+                  y="221"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1960
+                </text>
+                <text
+                  x="200"
+                  y="221"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1970
+                </text>
+                <text
+                  x="340"
+                  y="221"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1980
+                </text>
+                <text
+                  x="480"
+                  y="221"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1990
+                </text>
+                <text
+                  x="620"
+                  y="221"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2000
+                </text>
+                <text
+                  x="760"
+                  y="221"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2010
+                </text>
+                <!-- exportacoes originais (volatil) -->
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1.3"
+                  points="60,170 70,185 80,165 90,175 100,155 110,168 120,158 130,172 140,148 150,165 160,178 170,155 180,148 190,162 200,152 210,165 220,145 230,158 240,168 250,150 260,140 270,155 280,145 290,130 300,145 310,132 320,148 330,128 340,142 350,120 360,135 370,115 380,128 390,112 400,125 410,108 420,120 430,100 440,115 450,98 460,112 470,94 480,108 490,92 500,106 510,90 520,105 530,88 540,102 550,85 560,100 570,82 580,98 590,78 600,95 610,75 620,92 630,72 640,90 650,68 660,85 670,65 680,82 690,60 700,78 710,56 720,74 730,52 740,70 750,48 760,66 770,44 780,62 790,40 800,60 810,36 820,56"
+                />
+                <!-- 5-MA suavizada -->
+                <polyline
+                  fill="none"
+                  stroke="#D55E00"
+                  stroke-width="2.5"
+                  points="80,168 100,162 120,158 140,162 160,162 180,155 200,155 220,150 240,152 260,145 280,140 300,138 320,138 340,132 360,128 380,122 400,118 420,112 440,108 460,104 480,100 500,97 520,94 540,90 560,88 580,85 600,82 620,80 640,77 660,74 680,72 700,69 720,66 740,63 760,60 780,57 800,54"
+                />
+                <text
+                  x="440"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Total Australian exports + 5-MA
+                </text>
+                <text
+                  x="15"
+                  y="110"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                  transform="rotate(-90,15,110)"
+                >
+                  % of GDP
+                </text>
+              </svg>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-line" style="background: #e8e8ec"></div>
+                Exportacoes originais
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-line"
+                  style="background: #d55e00; height: 3px"
+                ></div>
+                5-MA (tendencia estimada)
+              </div>
+            </div>
+            <div class="chart-insight">
+              <span>O que a MA faz:</span> a 5-MA calcula a media dos 2 anos
+              anteriores, o ano atual e os 2 anos posteriores. Elimina o ruido e
+              revela a tendencia de longo prazo. Quanto maior m, mais suave —
+              mas mais observacoes sao perdidas nas bordas.
+            </div>
+          </div>
+
+          <!-- Fig 3.9: comparacao de ordens -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 3.9 — Efeito da ordem da MA: 3, 5, 7 e 9</span
+              >
+              <span class="chart-caption"
+                >Maior m = mais suave | Menor m = mais responsiva a
+                mudancas</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="260"
+                viewBox="0 0 860 260"
+                style="max-width: 100%"
+              >
+                <!-- grade 2x2 -->
+                <!-- 3-MA -->
+                <rect
+                  x="10"
+                  y="10"
+                  width="410"
+                  height="110"
+                  fill="none"
+                  stroke="#222"
+                  rx="2"
+                />
+                <text
+                  x="215"
+                  y="24"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  3-MA (mais responsiva)
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#555"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="20,90 40,75 60,82 80,70 100,78 120,65 140,72 160,58 180,68 200,55 220,65 240,50 260,62 280,48 300,58 320,44 340,55 360,40 380,52 400,38 415,48"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#D55E00"
+                  stroke-width="2"
+                  points="35,82 75,73 115,68 155,62 195,60 235,55 275,52 315,48 355,44 395,42"
+                />
+                <!-- 5-MA -->
+                <rect
+                  x="440"
+                  y="10"
+                  width="410"
+                  height="110"
+                  fill="none"
+                  stroke="#222"
+                  rx="2"
+                />
+                <text
+                  x="645"
+                  y="24"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  5-MA (equilibrio)
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#555"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="450,90 470,75 490,82 510,70 530,78 550,65 570,72 590,58 610,68 630,55 650,65 670,50 690,62 710,48 730,58 750,44 770,55 790,40 810,52 840,38"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#D55E00"
+                  stroke-width="2"
+                  points="475,82 515,76 555,70 595,64 635,60 675,55 715,50 755,46 795,42"
+                />
+                <!-- 7-MA -->
+                <rect
+                  x="10"
+                  y="135"
+                  width="410"
+                  height="110"
+                  fill="none"
+                  stroke="#222"
+                  rx="2"
+                />
+                <text
+                  x="215"
+                  y="149"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  7-MA (mais suave)
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#555"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="20,215 40,200 60,207 80,195 100,203 120,190 140,197 160,183 180,193 200,180 220,190 240,175 260,187 280,173 300,183 320,169 340,180 360,165 380,177 400,163 415,173"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#D55E00"
+                  stroke-width="2"
+                  points="55,205 95,199 135,194 175,188 215,184 255,179 295,174 335,170 375,166"
+                />
+                <!-- 9-MA -->
+                <rect
+                  x="440"
+                  y="135"
+                  width="410"
+                  height="110"
+                  fill="none"
+                  stroke="#222"
+                  rx="2"
+                />
+                <text
+                  x="645"
+                  y="149"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  9-MA (ainda mais suave)
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#555"
+                  stroke-width="1"
+                  opacity=".5"
+                  points="450,215 470,200 490,207 510,195 530,203 550,190 570,197 590,183 610,193 630,180 650,190 670,175 690,187 710,173 730,183 750,169 770,180 790,165 810,177 840,163"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#D55E00"
+                  stroke-width="2"
+                  points="495,207 535,202 575,197 615,192 655,188 695,183 735,178 775,173"
+                />
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>Tradeoff da MA:</span> MA maior = tendencia mais suave, mas
+              perde mais observacoes nas bordas e reage mais lentamente a
+              mudancas reais. MA menor = mais responsiva, mas captura mais
+              ruido. Para detectar a crise 2008 rapidamente, MA pequena e
+              melhor. Para ver tendencia de decadas, MA grande e melhor.
+            </div>
+          </div>
+
+          <!-- Fig 3.10: 2x12-MA emprego -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 3.10 — 2x12-MA: emprego no varejo dos EUA</span
+              >
+              <span class="chart-caption"
+                >Elimina sazonalidade anual completamente | Resultado quase
+                identico ao STL</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="220"
+                viewBox="0 0 860 220"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="195"
+                  x2="820"
+                  y2="195"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="195"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="60"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1992
+                </text>
+                <text
+                  x="310"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2002
+                </text>
+                <text
+                  x="560"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2008
+                </text>
+                <text
+                  x="820"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2019
+                </text>
+                <!-- serie original cinza -->
+                <polyline
+                  fill="none"
+                  stroke="#555"
+                  stroke-width="1"
+                  opacity=".6"
+                  points="65,180 72,162 79,172 86,167 93,160 100,155 107,150 114,145 121,152 128,140 135,158 142,138 149,172 156,155 163,165 170,160 177,153 184,148 191,143 198,138 205,145 212,132 219,150 226,130 233,165 240,148 247,158 254,152 261,145 268,140 275,134 282,128 289,136 296,124 303,142 310,122 317,156 324,138 331,150 338,144 345,137 352,132 359,126 366,120 373,128 380,116 387,134 394,114 401,148 408,130 415,142 422,136 429,128 436,122 443,116 450,110 457,118 464,106 471,122 478,102 485,136 492,128 499,158 506,165 513,158 520,153 527,148 534,143 541,138 548,132 555,140 562,128 569,145 576,125 583,132 590,126 597,120 604,114 611,108 618,102 625,110 632,98 639,115 646,95 653,108 660,102 667,96 674,112 681,120 688,128 695,122 702,130 709,115 716,122 723,115 730,108 737,102 744,96 751,110 758,118 765,112 772,105 779,98 786,106 793,100 800,94 807,102 814,96 820,90"
+                />
+                <!-- 2x12-MA: sem sazonalidade, apenas tendencia -->
+                <polyline
+                  fill="none"
+                  stroke="#D55E00"
+                  stroke-width="2.5"
+                  points="130,168 160,160 200,152 240,145 280,138 320,132 360,138 400,145 440,152 480,148 520,140 560,130 580,118 610,104 640,90 670,78 700,86 730,95 760,82 790,70 820,60"
+                />
+                <text
+                  x="440"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Total employment in US retail + 2x12-MA
+                </text>
+              </svg>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <div class="legend-line" style="background: #555"></div>
+                Dados originais
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-line"
+                  style="background: #d55e00; height: 3px"
+                ></div>
+                2x12-MA (tendencia sem sazonalidade)
+              </div>
+            </div>
+            <div class="chart-insight">
+              <span>Por que 2x12-MA:</span> dados mensais tem periodo sazonal
+              12. Como 12 e par, precisamos de 2x12-MA para tornar a MA
+              simetrica. O resultado e quase identico ao componente de tendencia
+              do STL — mas o STL e mais sofisticado (Loess) e permite
+              sazonalidade variavel.
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">Codigo — Medias moveis (Figs 3.7–3.10)</div>
+            <pre><span class="cm"># 5-MA simples (dados anuais)</span>
+df[<span class="st">'5-MA'</span>] = df[<span class="st">'Exports'</span>].<span class="fn">rolling</span>(<span class="nb">5</span>, center=<span class="nb">True</span>).<span class="fn">mean</span>()
+
+<span class="cm"># comparacao de diferentes ordens</span>
+<span class="kw">for</span> m <span class="kw">in</span> [<span class="nb">3</span>, <span class="nb">5</span>, <span class="nb">7</span>, <span class="nb">9</span>]:
+    df[<span class="fn">f</span><span class="st">'{m}-MA'</span>] = df[<span class="st">'Exports'</span>].<span class="fn">rolling</span>(m, center=<span class="nb">True</span>).<span class="fn">mean</span>()
+
+<span class="cm"># 2x12-MA para dados mensais (elimina sazonalidade anual)</span>
+df[<span class="st">'12-MA'</span>]   = df[<span class="st">'y'</span>].<span class="fn">rolling</span>(window=<span class="nb">12</span>, center=<span class="nb">True</span>).<span class="fn">mean</span>()
+df[<span class="st">'2x12-MA'</span>] = df[<span class="st">'12-MA'</span>].<span class="fn">rolling</span>(window=<span class="nb">2</span>, center=<span class="nb">True</span>).<span class="fn">mean</span>()
+
+<span class="cm"># 2x4-MA para dados trimestrais</span>
+df[<span class="st">'4-MA'</span>]   = df[<span class="st">'y'</span>].<span class="fn">rolling</span>(window=<span class="nb">4</span>, center=<span class="nb">True</span>).<span class="fn">mean</span>()
+df[<span class="st">'2x4-MA'</span>] = df[<span class="st">'4-MA'</span>].<span class="fn">rolling</span>(window=<span class="nb">2</span>, center=<span class="nb">True</span>).<span class="fn">mean</span>()
+
+<span class="cm"># ATENCAO: center=True e obrigatorio para MA simetrica</span>
+<span class="cm"># sem center=True: MA causal (olha so o passado) — introduz atraso</span>
+
+<span class="cm"># regra de referencia para escolha da MA:</span>
+<span class="cm"># dados anuais    (m=1):  qualquer MA impar (3, 5, 7)</span>
+<span class="cm"># dados trimestr. (m=4):  2x4-MA</span>
+<span class="cm"># dados mensais   (m=12): 2x12-MA</span>
+<span class="cm"># dados diarios   (m=7):  7-MA simples (impar)</span></pre>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 3.3</div>
+            <div class="quiz-q">
+              Voce tem dados de vendas diarias com sazonalidade semanal. Qual
+              media movel usar para estimar a tendencia sem contaminar com
+              sazonalidade?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    '3-MA cobre apenas 3 dias — nao elimina a sazonalidade semanal de 7 dias. A tendencia estimada ainda teria padrao semanal.',
+                  )
+                "
+              >
+                3-MA
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. Periodo sazonal semanal = 7 (impar). Como 7 e impar, usamos 7-MA diretamente — ela cobre exatamente um ciclo sazonal completo e ja e simetrica. Nao e necessario 2x-MA porque 7 e impar. Para dados com sazonalidade semanal+anual, usar MSTL.',
+                  )
+                "
+              >
+                7-MA — cobre exatamente um ciclo sazonal de 7 dias
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    '12-MA e para dados mensais com sazonalidade anual. Para dados diarios com sazonalidade semanal, o periodo e 7.',
+                  )
+                "
+              >
+                12-MA
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-2"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ===== SEC 4: CLASSICA ===== -->
+      <div class="section" id="s4">
+        <div class="section-header" onclick="toggleSection('s4')">
+          <span class="section-num">3.4</span>
+          <span class="section-title"
+            >Decomposicao classica — por que nao usar</span
+          >
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">
+              Os 4 passos da decomposicao aditiva classica
+            </div>
+            <ul>
+              <li>
+                <span class="hl">Passo 1:</span> estima tendencia com 2×m-MA (m
+                par) ou m-MA (m impar)
+              </li>
+              <li>
+                <span class="hl">Passo 2:</span> serie detendenciada = y(t) -
+                T(t)
+              </li>
+              <li>
+                <span class="hl">Passo 3:</span> sazonalidade = media de cada
+                periodo ao longo dos anos, ajustada para somar zero
+              </li>
+              <li>
+                <span class="hl">Passo 4:</span> residuo = y(t) - T(t) - S(t)
+              </li>
+            </ul>
+          </div>
+
+          <!-- Fig 3.11: Decomposicao classica -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 3.11 — Decomposicao classica aditiva: emprego no varejo
+                EUA</span
+              >
+              <span class="chart-caption"
+                >Note: sem estimativa nas primeiras e ultimas 6 observacoes
+                (m=12)</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="380"
+                viewBox="0 0 860 380"
+                style="max-width: 100%"
+              >
+                <!-- 4 paineis compactos -->
+                <!-- PAINEL 1: dados -->
+                <line
+                  x1="60"
+                  y1="80"
+                  x2="820"
+                  y2="80"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="10"
+                  x2="60"
+                  y2="82"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="30"
+                  y="14"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  dados
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#6495ff"
+                  stroke-width="1"
+                  points="65,75 72,58 79,68 86,63 93,56 100,51 107,46 114,41 121,49 128,37 135,55 142,35 149,68 156,52 163,62 170,57 177,50 184,45 191,40 198,34 205,42 212,29 219,48 226,28 233,62 240,45 247,56 254,50 261,44 268,38 275,33 282,27 289,35 296,22 303,40 310,20 317,55 324,38 331,49 338,43 345,36 352,31 359,25 366,19 373,28 380,15 387,34 394,14 401,48 408,31 415,42 422,36 429,28 436,23 443,17 450,11 457,20 464,7 471,23 478,3 485,38 492,31 499,60 506,67 513,60 520,55 527,50 534,45 541,40 548,33 555,42 562,30 569,48 576,28 583,35 590,29 597,23 604,17 611,10 618,4 625,14 632,2 639,19 646,0 653,14 660,8 667,2 674,18 681,26 688,34 695,28 702,36 709,20 716,28 723,22 730,15 737,9 744,3 751,18 758,26 765,19 772,13 779,6 786,15 793,8 800,2 807,12 814,5 820,3"
+                />
+
+                <!-- PAINEL 2: tendencia com GAPS nas bordas -->
+                <line
+                  x1="60"
+                  y1="168"
+                  x2="820"
+                  y2="168"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="88"
+                  x2="60"
+                  y2="170"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="30"
+                  y="92"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  trend
+                </text>
+                <!-- gap nas bordas (primeiros e ultimos 6 meses) -->
+                <rect
+                  x="60"
+                  y="90"
+                  width="55"
+                  height="76"
+                  fill="rgba(255,107,53,0.08)"
+                />
+                <rect
+                  x="768"
+                  y="90"
+                  width="52"
+                  height="76"
+                  fill="rgba(255,107,53,0.08)"
+                />
+                <text
+                  x="87"
+                  y="132"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="var(--accent2)"
+                >
+                  sem
+                </text>
+                <text
+                  x="87"
+                  y="142"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="var(--accent2)"
+                >
+                  dado
+                </text>
+                <text
+                  x="793"
+                  y="132"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="var(--accent2)"
+                >
+                  sem
+                </text>
+                <text
+                  x="793"
+                  y="142"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="var(--accent2)"
+                >
+                  dado
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#D55E00"
+                  stroke-width="2"
+                  points="120,162 160,154 200,146 240,138 280,130 320,124 360,130 400,138 440,145 480,140 520,132 560,121 600,108 640,94 680,80 720,68 760,56"
+                />
+
+                <!-- PAINEL 3: sazonal FIXO (classico) -->
+                <line
+                  x1="60"
+                  y1="256"
+                  x2="820"
+                  y2="256"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="176"
+                  x2="60"
+                  y2="258"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="30"
+                  y="180"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  seasonal
+                </text>
+                <!-- padrao identico repetindo-se — sazonalidade FIXA -->
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="1.2"
+                  points="65,265 72,244 79,256 86,252 93,246 100,242 107,238 114,234 121,240 128,230 135,246 142,226 149,265 156,244 163,256 170,252 177,246 184,242 191,238 198,234 205,240 212,230 219,246 226,226 233,265 240,244 247,256 254,252 261,246 268,242 275,238 282,234 289,240 296,230 303,246 310,226 317,265 324,244 331,256 338,252 345,246 352,242 359,238 366,234 373,240 380,230 387,246 394,226 401,265 408,244 415,256 422,252 429,246 436,242 443,238 450,234 457,240 464,230 471,246 478,226 485,265 492,244 499,256 506,252 513,246 520,242 527,238 534,234 541,240 548,230 555,246 562,226 569,265 576,244 583,256 590,252 597,246 604,242 611,238 618,234 625,240 632,230 639,246 646,226 653,265 660,244 667,256 674,252 681,246 688,242 695,238 702,234 709,240 716,230 723,246 730,226 737,265 744,244 751,256 758,252 765,246 772,242 779,238 786,234 793,240 800,230 807,246 814,226 820,265"
+                />
+                <!-- anotacao: sazonalidade FIXA -->
+                <rect
+                  x="355"
+                  y="180"
+                  width="115"
+                  height="18"
+                  fill="#0a0a1a"
+                  rx="2"
+                />
+                <text
+                  x="412"
+                  y="192"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent2)"
+                >
+                  padrao FIXO (problema!)
+                </text>
+
+                <!-- PAINEL 4: residuo -->
+                <line
+                  x1="60"
+                  y1="344"
+                  x2="820"
+                  y2="344"
+                  stroke="#555"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="264"
+                  x2="60"
+                  y2="346"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="30"
+                  y="268"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  remainder
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#888"
+                  stroke-width="1"
+                  points="65,340 80,336 95,343 110,338 125,344 140,338 155,334 170,340 185,336 200,342 215,337 230,334 245,340 260,336 275,342 290,337 305,334 320,340 335,336 350,342 365,337 380,333 395,340 410,336 425,342 440,337 455,333 470,340 485,336 500,310 510,302 520,315 530,308 540,322 550,328 560,334 570,338 580,342 590,338 600,343 610,339 620,336 630,341 640,338 650,343 660,339 670,336 680,341 690,338 700,343 710,339 720,336 730,341 740,338 750,343 760,339 770,336 780,341 790,338 800,343 810,339 820,336"
+                />
+                <!-- anotacao crise -->
+                <rect
+                  x="492"
+                  y="292"
+                  width="58"
+                  height="16"
+                  fill="#1a0a0a"
+                  rx="2"
+                />
+                <text
+                  x="521"
+                  y="303"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent2)"
+                >
+                  crise 2008
+                </text>
+
+                <line
+                  x1="60"
+                  y1="83"
+                  x2="820"
+                  y2="83"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="171"
+                  x2="820"
+                  y2="171"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="259"
+                  x2="820"
+                  y2="259"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <text
+                  x="440"
+                  y="8"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Classical decomposition (additive)
+                </text>
+                <!-- x labels -->
+                <text
+                  x="65"
+                  y="375"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  1992
+                </text>
+                <text
+                  x="310"
+                  y="375"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  2002
+                </text>
+                <text
+                  x="560"
+                  y="375"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  2008
+                </text>
+                <text
+                  x="820"
+                  y="375"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  2019
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>Problemas visiveis:</span> (1) Zonas laranjas = sem
+              estimativa nas primeiras/ultimas 6 observacoes. (2) Sazonalidade
+              completamente identica ano a ano — nao captura mudancas sazonais
+              reais. (3) Crise 2008 aparece no residuo mas a tendencia nao foi
+              sensivel a ela.
+              <span style="color: var(--accent2)"
+                >Use STL em vez da decomposicao classica.</span
+              >
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">
+              Codigo — decomposicao classica (apenas referencia — prefira STL)
+            </div>
+            <pre><span class="kw">from</span> statsmodels.tsa.seasonal <span class="kw">import</span> seasonal_decompose
+
+<span class="cm"># decomposicao classica aditiva</span>
+result = <span class="fn">seasonal_decompose</span>(serie[<span class="st">'y'</span>],
+                              model=<span class="st">'additive'</span>,
+                              period=<span class="nb">12</span>)
+<span class="fn">print</span>(<span class="st">'Primeiras obs sem tendencia:'</span>, result.trend.isna().<span class="fn">sum</span>())
+<span class="cm"># retorna NaN nas primeiras e ultimas 6 obs (m/2 = 12/2 = 6)</span>
+
+<span class="cm"># decomposicao multiplicativa</span>
+result_mult = <span class="fn">seasonal_decompose</span>(serie[<span class="st">'y'</span>],
+                                   model=<span class="st">'multiplicative'</span>,
+                                   period=<span class="nb">12</span>)
+
+<span class="cm"># limitacoes da classica:</span>
+<span class="cm"># 1. NaN nas bordas (primeiros e ultimos 6 meses)</span>
+<span class="cm"># 2. sazonalidade FIXA — nao muda ao longo do tempo</span>
+<span class="cm"># 3. nao e robusta a outliers</span>
+<span class="cm"># 4. so funciona com periodo fixo e regular</span>
+<span class="cm"># ---</span>
+<span class="cm"># USE STL — evita todos esses problemas</span></pre>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 3.4</div>
+            <div class="quiz-q">
+              Qual e a limitacao mais critica da decomposicao classica para
+              dados de demanda de estoque que muda ao longo dos anos?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Velocidade nao e o problema principal. A decomposicao classica e ate mais rapida que o STL.',
+                  )
+                "
+              >
+                E muito lenta computacionalmente
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. A classica assume que o padrao sazonal de janeiro de 1995 e identico ao de janeiro de 2020. Para demanda de estoque que evolui (novos produtos, mudancas de mercado, disruptoes), isso e fatal. STL com seasonal variavel captura essa evolucao.',
+                  )
+                "
+              >
+                Assume sazonalidade FIXA — nao captura evolucao do padrao ao
+                longo do tempo
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Dados faltantes podem afetar qualquer decomposicao. O problema central da classica nao e esse.',
+                  )
+                "
+              >
+                Nao funciona com dados faltantes
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-3"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ===== SEC 5: STL ===== -->
+      <div class="section" id="s5">
+        <div class="section-header" onclick="toggleSection('s5')">
+          <span class="section-num">3.6</span>
+          <span class="section-title"
+            >STL — o metodo que voce vai usar na pesquisa</span
+          >
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept">
+            <div class="concept-title">STL vs os outros metodos</div>
+            <p>
+              STL = Seasonal and Trend decomposition using Loess. Desenvolvido
+              por Cleveland et al. (1990), extendido para multiplas
+              sazonalidades pelo MSTL (Bandara, Hyndman e Bergmeir, 2022).
+            </p>
+          </div>
+
+          <!-- Tabela comparativa -->
+          <table class="comp-table">
+            <tr>
+              <th>Criterio</th>
+              <th>Classica</th>
+              <th>X-11</th>
+              <th>SEATS</th>
+              <th>STL</th>
+            </tr>
+            <tr>
+              <td>Qualquer frequencia</td>
+              <td class="yes">Sim</td>
+              <td class="no">Nao (mensal/trim.)</td>
+              <td class="no">Nao (mensal/trim.)</td>
+              <td class="yes">Sim</td>
+            </tr>
+            <tr>
+              <td>Sazonalidade variavel</td>
+              <td class="no">Nao</td>
+              <td class="yes">Sim</td>
+              <td class="yes">Sim</td>
+              <td class="yes">Sim</td>
+            </tr>
+            <tr>
+              <td>Robusto a outliers</td>
+              <td class="no">Nao</td>
+              <td class="yes">Sim</td>
+              <td class="no">Parcial</td>
+              <td class="yes">Sim (robust=True)</td>
+            </tr>
+            <tr>
+              <td>Multiplas sazonalidades</td>
+              <td class="no">Nao</td>
+              <td class="no">Nao</td>
+              <td class="no">Nao</td>
+              <td class="yes">MSTL</td>
+            </tr>
+            <tr class="highlight-row">
+              <td>Usar na pesquisa</td>
+              <td class="no">Nao</td>
+              <td class="no">Referencia</td>
+              <td class="no">Referencia</td>
+              <td class="yes">SIM — principal</td>
+            </tr>
+          </table>
+
+          <!-- Fig 3.12: STL ajustado vs padrao -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 3.12 — STL padrao vs STL robusto com tendencia
+                flexivel</span
+              >
+              <span class="chart-caption"
+                >seasonal=13, trend=21, robust=True | Captura melhor a crise
+                2008</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="380"
+                viewBox="0 0 860 380"
+                style="max-width: 100%"
+              >
+                <!-- STL PADRAO (esquerda) -->
+                <text
+                  x="215"
+                  y="10"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  STL padrao
+                </text>
+
+                <!-- dados -->
+                <line
+                  x1="10"
+                  y1="80"
+                  x2="425"
+                  y2="80"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="10"
+                  y1="15"
+                  x2="10"
+                  y2="82"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="8"
+                  y="18"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="#555"
+                >
+                  dados
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#6495ff"
+                  stroke-width="1"
+                  points="15,75 25,58 35,68 45,63 55,56 65,51 75,46 85,41 95,49 105,37 115,55 125,35 135,68 145,52 155,62 165,57 175,50 185,45 195,40 205,34 215,42 225,29 235,48 245,28 255,62 265,45 275,56 285,50 295,44 305,38 315,33 325,27 335,35 345,22 355,40 365,20 375,55 385,38 395,49 405,43 415,36 425,30"
+                />
+
+                <!-- tendencia padrao: rigida, nao captura bem 2008 -->
+                <line
+                  x1="10"
+                  y1="165"
+                  x2="425"
+                  y2="165"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="10"
+                  y1="88"
+                  x2="10"
+                  y2="167"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="8"
+                  y="91"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="#555"
+                >
+                  trend
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#D55E00"
+                  stroke-width="2"
+                  points="25,158 65,150 105,142 145,134 185,128 225,133 265,140 305,135 345,126 385,116 425,106"
+                />
+                <!-- anotacao: rigida -->
+                <text
+                  x="215"
+                  y="108"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent2)"
+                >
+                  rigida — nao captura 2008
+                </text>
+
+                <!-- sazonal padrao -->
+                <line
+                  x1="10"
+                  y1="250"
+                  x2="425"
+                  y2="250"
+                  stroke="#555"
+                  stroke-width="1"
+                />
+                <line
+                  x1="10"
+                  y1="173"
+                  x2="10"
+                  y2="252"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="8"
+                  y="176"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="#555"
+                >
+                  seasonal
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="1"
+                  points="15,260 25,238 35,252 45,248 55,242 65,238 75,234 85,230 95,236 105,226 115,242 125,222 135,260 145,238 155,252 165,248 175,242 185,238 195,234 205,230 215,236 225,226 235,242 245,222 255,260 265,238 275,252 285,248 295,242 305,238 315,234 325,230 335,236 345,226 355,242 365,222 375,260 385,238 395,252 405,248 415,242 425,238"
+                />
+
+                <!-- residuo padrao: tem padrao em 2008 (vazamento) -->
+                <line
+                  x1="10"
+                  y1="335"
+                  x2="425"
+                  y2="335"
+                  stroke="#555"
+                  stroke-width="1"
+                />
+                <line
+                  x1="10"
+                  y1="258"
+                  x2="10"
+                  y2="337"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="8"
+                  y="261"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="#555"
+                >
+                  remainder
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#888"
+                  stroke-width="1"
+                  points="15,330 30,326 45,333 60,328 75,334 90,328 105,324 120,330 135,325 150,331 165,326 180,322 195,328 210,305 220,298 230,310 240,303 250,316 260,322 270,328 280,332 290,334 305,330 320,334 335,330 350,333 365,330 380,333 395,330 410,334 425,330"
+                />
+                <!-- anotacao vazamento -->
+                <rect
+                  x="195"
+                  y="288"
+                  width="75"
+                  height="16"
+                  fill="#1a0a0a"
+                  rx="2"
+                />
+                <text
+                  x="232"
+                  y="299"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="var(--accent2)"
+                >
+                  vazamento 2008
+                </text>
+
+                <!-- STL ROBUSTO (direita) -->
+                <text
+                  x="645"
+                  y="10"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="var(--accent)"
+                >
+                  STL robusto (trend=21, seasonal=13)
+                </text>
+
+                <!-- dados direita -->
+                <line
+                  x1="440"
+                  y1="80"
+                  x2="850"
+                  y2="80"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="440"
+                  y1="15"
+                  x2="440"
+                  y2="82"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="438"
+                  y="18"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="#555"
+                >
+                  dados
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#6495ff"
+                  stroke-width="1"
+                  points="445,75 455,58 465,68 475,63 485,56 495,51 505,46 515,41 525,49 535,37 545,55 555,35 565,68 575,52 585,62 595,57 605,50 615,45 625,40 635,34 645,42 655,29 665,48 675,28 685,62 695,45 705,56 715,50 725,44 735,38 745,33 755,27 765,35 775,22 785,40 795,20 805,55 815,38 825,49 835,43 845,36 850,30"
+                />
+
+                <!-- tendencia robusta: mais flexivel, captura 2008 -->
+                <line
+                  x1="440"
+                  y1="165"
+                  x2="850"
+                  y2="165"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="440"
+                  y1="88"
+                  x2="440"
+                  y2="167"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="438"
+                  y="91"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="#555"
+                >
+                  trend
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="2.5"
+                  points="455,158 495,150 535,142 575,134 615,128 645,132 665,126 685,118 705,115 725,118 745,110 765,100 785,90 805,80 825,72 850,62"
+                />
+                <text
+                  x="645"
+                  y="102"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent)"
+                >
+                  flexivel — captura 2008
+                </text>
+
+                <!-- sazonal robusto -->
+                <line
+                  x1="440"
+                  y1="250"
+                  x2="850"
+                  y2="250"
+                  stroke="#555"
+                  stroke-width="1"
+                />
+                <line
+                  x1="440"
+                  y1="173"
+                  x2="440"
+                  y2="252"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="438"
+                  y="176"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="#555"
+                >
+                  seasonal
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="1"
+                  points="445,260 455,238 465,252 475,248 485,242 495,238 505,234 515,230 525,236 535,226 545,242 555,222 565,260 575,238 585,252 595,248 605,242 615,238 625,234 635,230 645,236 655,226 665,242 675,222 685,260 695,238 705,252 715,248 725,242 735,238 745,234 755,230 765,236 775,226 785,242 795,222 805,260 815,238 825,252 835,248 845,242 850,238"
+                />
+
+                <!-- residuo robusto: limpo, sem padrao em 2008 -->
+                <line
+                  x1="440"
+                  y1="335"
+                  x2="850"
+                  y2="335"
+                  stroke="#555"
+                  stroke-width="1"
+                />
+                <line
+                  x1="440"
+                  y1="258"
+                  x2="440"
+                  y2="337"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="438"
+                  y="261"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="7"
+                  fill="#555"
+                >
+                  remainder
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#888"
+                  stroke-width="1"
+                  points="445,330 460,326 475,333 490,328 505,334 520,328 535,324 550,330 565,325 580,331 595,326 610,322 625,328 640,323 655,330 670,325 685,330 700,325 715,330 730,324 745,330 760,325 775,330 790,324 805,330 820,325 835,330 850,325"
+                />
+                <text
+                  x="645"
+                  y="310"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent)"
+                >
+                  residuo limpo
+                </text>
+
+                <!-- linhas separadoras -->
+                <line
+                  x1="10"
+                  y1="83"
+                  x2="425"
+                  y2="83"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="10"
+                  y1="168"
+                  x2="425"
+                  y2="168"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="10"
+                  y1="253"
+                  x2="425"
+                  y2="253"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="440"
+                  y1="83"
+                  x2="850"
+                  y2="83"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="440"
+                  y1="168"
+                  x2="850"
+                  y2="168"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="440"
+                  y1="253"
+                  x2="850"
+                  y2="253"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <!-- divisor vertical -->
+                <line
+                  x1="432"
+                  y1="10"
+                  x2="432"
+                  y2="370"
+                  stroke="#333"
+                  stroke-width="1"
+                  stroke-dasharray="4 3"
+                />
+
+                <!-- x labels -->
+                <text
+                  x="215"
+                  y="370"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Month [1M]
+                </text>
+                <text
+                  x="645"
+                  y="370"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Month [1M]
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>Diferenca principal:</span> o STL padrao tem tendencia
+              rigida que "vaza" a crise 2008 para o residuo como padrao anormal.
+              O STL com trend=21 (mais flexivel) captura a queda na tendencia e
+              o residuo fica limpo.
+              <span style="color: var(--accent)"
+                >Para dados com eventos bruscos: use robust=True e trend
+                menor.</span
+              >
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">
+              Codigo — STL padrao vs STL avancado (Fig 3.12)
+            </div>
+            <pre><span class="kw">from</span> statsmodels.tsa.seasonal <span class="kw">import</span> STL
+
+<span class="cm"># STL padrao — bom ponto de partida</span>
+stl_default = <span class="fn">STL</span>(us_retail[<span class="st">'y'</span>], period=<span class="nb">12</span>)
+res_default = stl_default.fit()
+
+<span class="cm"># STL ajustado para dados com outliers e crise</span>
+<span class="cm"># seasonal=13: sazonalidade pode variar lentamente (impar, > period)</span>
+<span class="cm"># trend=21: tendencia mais flexivel (impar, > seasonal)</span>
+<span class="cm"># robust=True: reduz impacto de outliers na tendencia e sazonal</span>
+stl_robust = <span class="fn">STL</span>(us_retail[<span class="st">'y'</span>],
+                 period=<span class="nb">12</span>,
+                 seasonal=<span class="nb">13</span>,
+                 trend=<span class="nb">21</span>,
+                 robust=<span class="nb">True</span>)
+res_robust = stl_robust.fit()
+
+<span class="cm"># extrai componentes</span>
+<span class="kw">for</span> res, label <span class="kw">in</span> [(res_default, <span class="st">'Padrao'</span>), (res_robust, <span class="st">'Robusto'</span>)]:
+    dcmp = pd.<span class="fn">DataFrame</span>({
+        <span class="st">'ds'</span>:        us_retail[<span class="st">'ds'</span>].values,
+        <span class="st">'trend'</span>:     res.trend,
+        <span class="st">'seasonal'</span>:  res.seasonal,
+        <span class="st">'remainder'</span>: res.resid,
+    })
+    <span class="fn">print</span>(<span class="fn">f</span><span class="st">'{label} — variancia do residuo: {dcmp["remainder"].var():.2f}'</span>)
+    <span class="cm"># menor variancia do residuo = melhor decomposicao</span>
+
+<span class="cm"># metricas de forca dos componentes</span>
+<span class="kw">def</span> <span class="fn">forca_sazonal</span>(res):
+    var_R = res.resid.var()
+    var_SR = (res.seasonal + res.resid).var()
+    <span class="kw">return</span> <span class="fn">max</span>(<span class="nb">0</span>, <span class="nb">1</span> - var_R / var_SR)
+
+<span class="kw">def</span> <span class="fn">forca_tendencia</span>(res):
+    var_R = res.resid.var()
+    var_TR = (res.trend + res.resid).var()
+    <span class="kw">return</span> <span class="fn">max</span>(<span class="nb">0</span>, <span class="nb">1</span> - var_R / var_TR)
+
+<span class="fn">print</span>(<span class="fn">f</span><span class="st">'Forca sazonal: {forca_sazonal(res_robust):.3f}'</span>)  <span class="cm"># > 0.6 = forte</span>
+<span class="fn">print</span>(<span class="fn">f</span><span class="st">'Forca tendencia: {forca_tendencia(res_robust):.3f}'</span>)</pre>
+          </div>
+
+          <div class="quiz-block">
+            <div class="quiz-label">Quiz 3.5</div>
+            <div class="quiz-q">
+              Voce esta decompondo dados de consumo de combustivel de frota, com
+              leituras diarias. Ha sazonalidade semanal (mais no meio da semana)
+              e anual (mais no verao). Qual metodo usar?
+            </div>
+            <div class="quiz-options">
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'X-11 e SEATS so funcionam com dados mensais ou trimestrais. Dados diarios estao fora do escopo desses metodos.',
+                  )
+                "
+              >
+                X-11 ou SEATS
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'STL com period=7 captura apenas a sazonalidade semanal. Para capturar as duas sazonalidades simultaneamente, precisa de MSTL.',
+                  )
+                "
+              >
+                STL com period=7
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    true,
+                    'Correto. MSTL (Multiple Seasonal-Trend decomposition using Loess) permite multiplos periodos sazonais. Para dados diarios: periods=[7, 365] captura sazonalidade semanal E anual ao mesmo tempo. E a extensao do STL para multiplas sazonalidades.',
+                  )
+                "
+              >
+                MSTL com periods=[7, 365] — captura sazonal semanal e anual
+                simultaneamente
+              </button>
+            </div>
+            <div class="quiz-feedback" id="fb-4"></div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <!-- ===== SEC 6: CONSOLIDACAO ===== -->
+      <div class="section" id="s6">
+        <div class="section-header" onclick="toggleSection('s6')">
+          <span class="section-num">Revisao</span>
+          <span class="section-title">Checklist — dominio do cap. 3</span>
+          <span class="section-toggle">+</span>
+        </div>
+        <div class="section-body">
+          <div class="concept orange">
+            <div class="concept-title">
+              Tabela de referencia — escolha do metodo
+            </div>
+            <ul>
+              <li>
+                <span class="hl2">Dados mensais:</span> STL(period=12) | MA de
+                tendencia: 2×12-MA
+              </li>
+              <li>
+                <span class="hl2">Dados trimestrais:</span> STL(period=4) | MA
+                de tendencia: 2×4-MA
+              </li>
+              <li>
+                <span class="hl2">Dados diarios (semanal):</span> STL(period=7)
+                | MA: 7-MA
+              </li>
+              <li>
+                <span class="hl2">Dados diarios (semanal+anual):</span>
+                MSTL(periods=[7,365])
+              </li>
+              <li>
+                <span class="hl2">Dados com outliers:</span> STL(robust=True)
+              </li>
+              <li>
+                <span class="hl2">Tendencia flexivel:</span> STL(trend=X onde X
+                &lt; padrao)
+              </li>
+              <li>
+                <span class="hl2">Sazonalidade multiplicativa:</span> log(y) +
+                STL aditivo
+              </li>
+            </ul>
+          </div>
+
+          <div class="checklist">
+            <div class="checklist-title">
+              Marque o que voce ja consegue fazer
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Identificar sazonalidade aditiva vs multiplicativa pelo grafico
+                temporal e escolher a transformacao correta</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Aplicar Box-Cox com boxcox_lambda() e boxcox() do
+                CoreForecast</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Executar STL e extrair os 4 componentes num DataFrame (data,
+                trend, seasonal, remainder)</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Calcular dado sazonalmente ajustado: y - S (aditivo) ou y / S
+                (multiplicativo)</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Escolher a MA correta: 2x12-MA (mensal), 2x4-MA (trimestral),
+                7-MA (diario semanal)</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Explicar por que a decomposicao classica e inferior ao STL (3
+                limitacoes)</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Ajustar os parametros do STL: seasonal, trend e robust=True
+                para dados com outliers</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Calcular forca da sazonalidade e da tendencia como metricas de
+                qualidade da decomposicao</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Usar ACF dos residuos para verificar se o modelo capturou toda
+                a informacao disponivel</span
+              >
+            </div>
+          </div>
+
+          <div class="concept purple">
+            <div class="concept-title">
+              Como o cap. 3 se conecta ao cap. 11 (hierarquico)
+            </div>
+            <ul>
+              <li>
+                <span class="hl3">Analise exploratoria:</span> decomponha cada
+                nivel da hierarquia — revela series com comportamento anomalo
+              </li>
+              <li>
+                <span class="hl3">Dentro dos modelos:</span> AutoETS, AutoTheta
+                e MSTL usam decomposicao internamente
+              </li>
+              <li>
+                <span class="hl3">Dado ajustado para reconciliacao:</span>
+                reconciliar series ajustadas sazonalmente pode melhorar a
+                coerencia hierarquica
+              </li>
+              <li>
+                <span class="hl3">Forca sazonal por nivel:</span> series nos
+                niveis mais granulares tendem a ter sazonalidade mais fraca —
+                isso orienta qual nivel precisa de modelo mais sofisticado
+              </li>
+            </ul>
+          </div>
+
+          <div class="concept">
+            <div class="concept-title">
+              Proximo: Capitulo 4 — Features de Series Temporais
+            </div>
+            <p>
+              Forca da sazonalidade, forca da tendencia, entropia espectral,
+              ACF1 — numeros que descrevem cada serie. Usados para clustering e
+              selecao automatica de modelos. Diretamente aplicavel ao seu
+              dataset hierarquico para entender quais series sao mais complexas.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-bottom">
+        <button class="nav-btn">← Cap. 2</button>
+        <span class="score-display" id="scoreDisplay">Quiz: 0/5</span>
+        <button class="nav-btn">Cap. 4 →</button>
+      </div>
+    </div>
+    <script>
+      const TOTAL = 6;
+      let opened = new Set(),
+        score = 0,
+        total = 0,
+        answered = {};
+      function toggleSection(id) {
+        const el = document.getElementById(id);
+        const was = el.classList.contains("open");
+        el.classList.toggle("open");
+        if (!was) {
+          opened.add(id);
+          updateProgress();
+        }
+      }
+      function updateProgress() {
+        const pct = Math.round((opened.size / TOTAL) * 100);
+        document.getElementById("progressFill").style.width = pct + "%";
+        document.getElementById("progressText").textContent =
+          opened.size + " de " + TOTAL + " secoes concluidas";
+        document.getElementById("progressPct").textContent = pct + "%";
+      }
+      function answer(btn, correct, feedback) {
+        const block = btn.closest(".quiz-block");
+        const fbEl = block.querySelector(".quiz-feedback");
+        if (answered[fbEl.id]) return;
+        answered[fbEl.id] = true;
+        total++;
+        block
+          .querySelectorAll(".quiz-option")
+          .forEach((o) => (o.disabled = true));
+        btn.classList.add(correct ? "correct" : "wrong");
+        if (correct) score++;
+        fbEl.textContent = feedback;
+        fbEl.classList.add("show");
+        document.getElementById("scoreDisplay").textContent =
+          "Quiz: " + score + "/" + total;
+      }
+      function toggleCheck(el) {
+        el.classList.toggle("done");
+      }
+    </script>
+  </body>
+</html>

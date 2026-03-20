@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cap. 2 — Time Series Graphics | Roadmap de Estudos</title>
+    <title>Cap. 2 — Graficos de Series Temporais</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -17,125 +17,103 @@
         --accent2: #ff6b35;
         --accent3: #7c6fff;
         --text: #e8e8ec;
-        --muted: #6b6b7a;
+        --muted: #7a7a8a;
         --card: #18181d;
       }
-
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
-
       body {
         background: var(--bg);
         color: var(--text);
-        font-family: "Syne", sans-serif;
-        min-height: 100vh;
+        font-family: "Inter", sans-serif;
+        font-size: 16px;
+        line-height: 1.7;
         overflow-x: hidden;
       }
-
-      /* GRID BG */
       body::before {
         content: "";
         position: fixed;
         inset: 0;
         background-image:
-          linear-gradient(rgba(0, 229, 160, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0, 229, 160, 0.03) 1px, transparent 1px);
+          linear-gradient(rgba(0, 229, 160, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 229, 160, 0.025) 1px, transparent 1px);
         background-size: 48px 48px;
         pointer-events: none;
         z-index: 0;
       }
-
       .container {
         position: relative;
         z-index: 1;
-        max-width: 900px;
+        max-width: 920px;
         margin: 0 auto;
-        padding: 60px 24px 100px;
+        padding: 60px 28px 100px;
       }
-
-      /* HEADER */
-      header {
-        margin-bottom: 64px;
-      }
-
       .tag {
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 11px;
         letter-spacing: 3px;
         color: var(--accent);
         text-transform: uppercase;
-        margin-bottom: 16px;
         display: block;
+        margin-bottom: 16px;
       }
-
       h1 {
-        font-size: clamp(32px, 6vw, 56px);
-        font-weight: 800;
-        line-height: 1.05;
+        font-size: clamp(28px, 5vw, 48px);
+        font-weight: 700;
+        line-height: 1.1;
         color: #fff;
         margin-bottom: 20px;
       }
-
       h1 span {
         color: var(--accent);
       }
-
       .subtitle {
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 13px;
         color: var(--muted);
-        line-height: 1.7;
-        max-width: 580px;
+        line-height: 1.8;
+        max-width: 640px;
         border-left: 2px solid var(--border);
         padding-left: 16px;
       }
-
-      /* PROGRESS BAR */
       .progress-bar {
         background: var(--border);
         border-radius: 2px;
         height: 3px;
-        margin: 40px 0;
-        position: relative;
+        margin: 36px 0 0;
         overflow: hidden;
       }
-
       .progress-fill {
         background: linear-gradient(90deg, var(--accent), var(--accent3));
         height: 100%;
         width: 0%;
-        transition: width 0.6s ease;
-        border-radius: 2px;
+        transition: width 0.5s ease;
       }
-
       .progress-label {
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 11px;
         color: var(--muted);
         margin-top: 8px;
         display: flex;
         justify-content: space-between;
       }
-
-      /* SECTION */
       .section {
-        margin-bottom: 48px;
+        margin-bottom: 40px;
       }
-
       .section-header {
         display: flex;
         align-items: center;
-        gap: 16px;
-        margin-bottom: 24px;
+        gap: 14px;
+        margin-bottom: 20px;
         cursor: pointer;
         user-select: none;
+        padding: 4px 0;
       }
-
       .section-num {
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 11px;
         color: var(--accent);
         background: rgba(0, 229, 160, 0.08);
@@ -143,24 +121,23 @@
         padding: 4px 10px;
         border-radius: 2px;
         white-space: nowrap;
+        flex-shrink: 0;
       }
-
       .section-title {
-        font-size: 20px;
-        font-weight: 700;
+        font-size: 18px;
+        font-weight: 600;
         color: #fff;
         flex: 1;
       }
-
       .section-toggle {
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 18px;
         color: var(--muted);
         transition:
           transform 0.3s ease,
           color 0.2s;
+        flex-shrink: 0;
       }
-
       .section-header:hover .section-toggle {
         color: var(--accent);
       }
@@ -168,38 +145,32 @@
         transform: rotate(45deg);
         color: var(--accent);
       }
-
       .section-body {
         display: none;
-        animation: fadeIn 0.3s ease;
+        animation: fadeIn 0.25s ease;
       }
-
       .section.open .section-body {
         display: block;
       }
-
       @keyframes fadeIn {
         from {
           opacity: 0;
-          transform: translateY(-8px);
+          transform: translateY(-6px);
         }
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
-
-      /* CONCEPT CARD */
       .concept {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 4px;
-        padding: 24px;
-        margin-bottom: 16px;
+        padding: 22px 24px;
+        margin-bottom: 14px;
         position: relative;
         overflow: hidden;
       }
-
       .concept::before {
         content: "";
         position: absolute;
@@ -209,136 +180,188 @@
         width: 3px;
         background: var(--accent);
       }
-
       .concept.orange::before {
         background: var(--accent2);
       }
       .concept.purple::before {
         background: var(--accent3);
       }
-
       .concept-title {
-        font-size: 14px;
-        font-weight: 700;
+        font-size: 12px;
+        font-weight: 600;
         color: var(--accent);
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
         margin-bottom: 10px;
         letter-spacing: 0.5px;
+        text-transform: uppercase;
       }
-
       .concept.orange .concept-title {
         color: var(--accent2);
       }
       .concept.purple .concept-title {
         color: var(--accent3);
       }
-
       .concept p {
-        font-size: 14px;
+        font-size: 15px;
         line-height: 1.75;
-        color: #c0c0cc;
+        color: #c8c8d4;
       }
-
       .concept ul {
         margin-top: 10px;
         padding-left: 20px;
       }
-
       .concept li {
-        font-size: 14px;
+        font-size: 15px;
         line-height: 1.9;
-        color: #c0c0cc;
+        color: #c8c8d4;
+        margin-bottom: 2px;
       }
-
-      /* CODE BLOCK */
+      .analogy {
+        background: rgba(124, 111, 255, 0.07);
+        border: 1px solid rgba(124, 111, 255, 0.2);
+        border-radius: 4px;
+        padding: 20px 22px;
+        margin-bottom: 14px;
+      }
+      .analogy-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent3);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .analogy p {
+        font-size: 15px;
+        line-height: 1.75;
+        color: #c0bfe8;
+      }
+      .chart-block {
+        background: #0a0a0c;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        margin: 14px 0;
+        overflow: hidden;
+      }
+      .chart-header {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .chart-title {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .chart-caption {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        color: rgba(0, 229, 160, 0.6);
+      }
+      .chart-svg-wrap {
+        padding: 16px 20px;
+        overflow-x: auto;
+      }
+      .chart-svg-wrap svg {
+        display: block;
+        margin: 0 auto;
+      }
+      .chart-insight {
+        padding: 12px 20px;
+        border-top: 1px solid var(--border);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .chart-insight span {
+        color: var(--accent);
+      }
       .code-block {
         background: #0a0a0c;
         border: 1px solid var(--border);
         border-radius: 4px;
-        padding: 20px 24px;
-        margin: 16px 0;
+        padding: 18px 22px;
+        margin: 14px 0;
         overflow-x: auto;
       }
-
-      .code-block pre {
-        font-family: "Space Mono", monospace;
-        font-size: 12px;
-        line-height: 1.8;
-        color: #a8b8c8;
-        white-space: pre;
-      }
-
-      .code-block .kw {
-        color: var(--accent3);
-      }
-      .code-block .fn {
-        color: var(--accent);
-      }
-      .code-block .st {
-        color: var(--accent2);
-      }
-      .code-block .cm {
-        color: #4a5568;
-        font-style: italic;
-      }
-      .code-block .nb {
-        color: #f6e05e;
-      }
-
       .code-label {
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 10px;
         letter-spacing: 2px;
         color: var(--muted);
         text-transform: uppercase;
         margin-bottom: 12px;
       }
-
-      /* QUIZ */
+      .code-block pre {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.9;
+        color: #a8b8c8;
+        white-space: pre;
+      }
+      .kw {
+        color: var(--accent3);
+      }
+      .fn {
+        color: var(--accent);
+      }
+      .st {
+        color: var(--accent2);
+      }
+      .cm {
+        color: #4a5568;
+        font-style: italic;
+      }
+      .nb {
+        color: #f6e05e;
+      }
       .quiz-block {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 4px;
-        padding: 24px;
-        margin-bottom: 16px;
+        padding: 22px 24px;
+        margin-bottom: 14px;
       }
-
       .quiz-label {
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 10px;
         letter-spacing: 2px;
         color: var(--accent2);
         text-transform: uppercase;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
       }
-
       .quiz-q {
         font-size: 15px;
         font-weight: 600;
         color: #fff;
         margin-bottom: 16px;
-        line-height: 1.5;
+        line-height: 1.6;
       }
-
       .quiz-options {
         display: flex;
         flex-direction: column;
         gap: 8px;
       }
-
       .quiz-option {
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 3px;
         padding: 12px 16px;
-        font-size: 13px;
+        font-size: 14px;
         color: #c0c0cc;
         cursor: pointer;
         transition: all 0.2s;
         text-align: left;
-        font-family: "Syne", sans-serif;
+        font-family: "Inter", sans-serif;
+        line-height: 1.5;
       }
-
       .quiz-option:hover {
         border-color: var(--muted);
         color: #fff;
@@ -356,29 +379,32 @@
       .quiz-option:disabled {
         cursor: default;
       }
-
       .quiz-feedback {
         margin-top: 12px;
         font-size: 13px;
-        line-height: 1.6;
+        line-height: 1.7;
         color: var(--muted);
         display: none;
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
       }
-
       .quiz-feedback.show {
         display: block;
       }
-
-      /* CHECKLIST */
       .checklist {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 4px;
-        padding: 24px;
+        padding: 22px 24px;
+        margin-bottom: 14px;
+      }
+      .checklist-title {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: var(--accent);
+        text-transform: uppercase;
         margin-bottom: 16px;
       }
-
       .check-item {
         display: flex;
         align-items: flex-start;
@@ -386,13 +412,10 @@
         padding: 10px 0;
         border-bottom: 1px solid var(--border);
         cursor: pointer;
-        transition: opacity 0.2s;
       }
-
       .check-item:last-child {
         border-bottom: none;
       }
-
       .check-box {
         width: 18px;
         height: 18px;
@@ -404,149 +427,81 @@
         align-items: center;
         justify-content: center;
         transition: all 0.2s;
-        font-size: 11px;
       }
-
       .check-item.done .check-box {
         background: var(--accent);
         border-color: var(--accent);
-        color: #000;
       }
-
+      .check-item.done .check-box::after {
+        content: "✓";
+        color: #000;
+        font-size: 11px;
+        font-weight: 700;
+      }
       .check-item.done .check-text {
         text-decoration: line-through;
         color: var(--muted);
       }
-
       .check-text {
-        font-size: 13px;
-        color: #c0c0cc;
-        line-height: 1.5;
-        transition: color 0.2s;
-      }
-
-      /* ANALOGY BOX */
-      .analogy {
-        background: rgba(124, 111, 255, 0.06);
-        border: 1px solid rgba(124, 111, 255, 0.2);
-        border-radius: 4px;
-        padding: 20px 24px;
-        margin: 16px 0;
-      }
-
-      .analogy-label {
-        font-family: "Space Mono", monospace;
-        font-size: 10px;
-        letter-spacing: 2px;
-        color: var(--accent3);
-        text-transform: uppercase;
-        margin-bottom: 8px;
-      }
-
-      .analogy p {
         font-size: 14px;
-        color: #b0b0cc;
-        line-height: 1.75;
+        color: #c0c0cc;
+        line-height: 1.6;
       }
-
-      /* VISUAL DEMO */
-      .demo-box {
-        background: #0a0a0c;
-        border: 1px solid var(--border);
-        border-radius: 4px;
-        padding: 24px;
-        margin: 16px 0;
-      }
-
-      .demo-title {
-        font-family: "Space Mono", monospace;
+      .legend {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        padding: 10px 20px 14px;
+        font-family: "JetBrains Mono", monospace;
         font-size: 11px;
-        letter-spacing: 2px;
         color: var(--muted);
-        text-transform: uppercase;
-        margin-bottom: 16px;
       }
-
-      /* MINI CHART ACF */
-      .acf-chart {
+      .legend-item {
         display: flex;
-        align-items: flex-end;
+        align-items: center;
         gap: 6px;
-        height: 80px;
-        padding-bottom: 4px;
-        border-bottom: 1px solid var(--border);
-        position: relative;
       }
-
-      .acf-bar {
-        width: 18px;
-        background: var(--accent);
-        border-radius: 2px 2px 0 0;
-        opacity: 0.8;
-        transition: opacity 0.2s;
-        flex-shrink: 0;
+      .legend-line {
+        width: 24px;
+        height: 2px;
       }
-
-      .acf-bar:hover {
-        opacity: 1;
+      .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
       }
-      .acf-bar.season {
-        background: var(--accent3);
+      .legend-rect {
+        width: 16px;
+        height: 12px;
+        border-radius: 1px;
       }
-      .acf-bar.noise {
-        background: var(--muted);
-        height: 6px !important;
+      .hl {
+        color: var(--accent);
+        font-weight: 600;
       }
-
-      .acf-labels {
-        display: flex;
-        gap: 6px;
-        margin-top: 6px;
+      .hl2 {
+        color: var(--accent2);
+        font-weight: 600;
       }
-
-      .acf-label {
-        width: 18px;
-        font-family: "Space Mono", monospace;
-        font-size: 9px;
-        color: var(--muted);
-        text-align: center;
-        flex-shrink: 0;
+      .hl3 {
+        color: var(--accent3);
+        font-weight: 600;
       }
-
-      .confidence-line {
-        position: absolute;
-        bottom: 14px;
-        left: 0;
-        right: 0;
-        border-top: 1px dashed rgba(255, 107, 53, 0.4);
+      .divider {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 40px 0;
       }
-
-      .charts-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-
-      .chart-label-small {
-        font-family: "Space Mono", monospace;
-        font-size: 10px;
-        color: var(--muted);
-        margin-bottom: 8px;
-        text-align: center;
-      }
-
-      /* NAV BOTTOM */
       .nav-bottom {
         display: flex;
         justify-content: space-between;
         align-items: center;
         margin-top: 64px;
-        padding-top: 32px;
+        padding-top: 28px;
         border-top: 1px solid var(--border);
       }
-
       .nav-btn {
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 12px;
         color: var(--muted);
         background: none;
@@ -556,122 +511,619 @@
         cursor: pointer;
         transition: all 0.2s;
       }
-
       .nav-btn:hover {
         border-color: var(--accent);
         color: var(--accent);
       }
-
+      .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: default;
+      }
       .score-display {
-        font-family: "Space Mono", monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 13px;
         color: var(--accent);
       }
-
-      /* SECTION DIVIDER */
-      .divider {
-        border: none;
-        border-top: 1px solid var(--border);
-        margin: 48px 0;
-      }
-
-      /* HIGHLIGHT */
-      .hl {
-        color: var(--accent);
-        font-weight: 700;
-      }
-      .hl2 {
-        color: var(--accent2);
-      }
-      .hl3 {
-        color: var(--accent3);
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin: 14px 0;
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <header>
+      <header style="margin-bottom: 56px">
         <span class="tag">Forecasting: Principles and Practice (fpppy)</span>
-        <h1>Cap. 2<br /><span>Time Series Graphics</span></h1>
+        <h1>Cap. 2<br /><span>Graficos de Series Temporais</span></h1>
         <p class="subtitle">
-          Material complementar — conceitos, analogias e exercícios práticos.<br />
-          Use depois de ler o capítulo ou como guia de revisão.
+          Todos os graficos do capitulo com codigo Python correspondente.<br />Visualize
+          o grafico, entenda o padrao, execute o codigo no notebook.
         </p>
-
-        <div class="progress-bar" style="margin-top: 32px">
+        <div class="progress-bar">
           <div class="progress-fill" id="progressFill"></div>
         </div>
         <div class="progress-label">
-          <span id="progressText">0 de 7 seções concluídas</span>
+          <span id="progressText">0 de 7 secoes concluidas</span>
           <span id="progressPct">0%</span>
         </div>
       </header>
 
-      <!-- SEÇÃO 1 -->
+      <!-- ===== SEC 1: TIME PLOT ===== -->
       <div class="section" id="s1">
         <div class="section-header" onclick="toggleSection('s1')">
-          <span class="section-num">2.1</span>
-          <span class="section-title"
-            >DataFrame e estrutura de séries temporais</span
-          >
+          <span class="section-num">2.1–2.2</span>
+          <span class="section-title">Graficos temporais — Time Plots</span>
           <span class="section-toggle">+</span>
         </div>
         <div class="section-body">
           <div class="concept">
-            <div class="concept-title">O que é</div>
+            <div class="concept-title">
+              Regra de ouro — sempre comece com o grafico
+            </div>
             <p>
-              Uma série temporal é uma sequência de valores medidos ao longo do
-              tempo. No pandas, você armazena isso num DataFrame com uma coluna
-              de tempo (geralmente chamada <span class="hl">ds</span> ou
-              <span class="hl">Month</span>) e uma ou mais colunas de valor.
+              O time plot e o primeiro grafico de qualquer analise. Plota o
+              valor no eixo Y e o tempo no eixo X. Revela tendencia,
+              sazonalidade, outliers, mudancas estruturais e eventos anomalos.
+              Nunca modele sem antes visualizar.
             </p>
-            <ul>
-              <li>
-                <strong>Timestamp</strong> — um instante exato:
-                <code>2024-01-15 08:30:00</code>
-              </li>
-              <li>
-                <strong>Period</strong> — um intervalo: "janeiro/2024" (sem hora
-                exata)
-              </li>
-              <li>
-                <strong>Colunas-chave</strong> — quando há múltiplas séries no
-                mesmo DataFrame, você as identifica por combinação de colunas
-                (ex: Estado + Gênero)
-              </li>
-            </ul>
           </div>
 
-          <div class="analogy">
-            <div class="analogy-label">Analogia</div>
-            <p>
-              Pensa num dataset de sensores IoT do MiRoute: cada leitura tem um
-              timestamp, um ID de sensor e o valor medido. O timestamp é o eixo
-              do tempo, o ID é a chave que separa as séries, e o valor é o que
-              você vai prever.
-            </p>
+          <!-- Fig 2.1: Ansett Airlines -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 2.1 — Ansett Airlines: Classe Economica
+                Melbourne-Sydney</span
+              >
+              <span class="chart-caption"
+                >Passageiros semanais (1987–1992)</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="260"
+                viewBox="0 0 860 260"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="225"
+                  x2="840"
+                  y2="225"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="225"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <!-- y labels -->
+                <text
+                  x="52"
+                  y="228"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  0
+                </text>
+                <text
+                  x="52"
+                  y="183"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  10
+                </text>
+                <text
+                  x="52"
+                  y="138"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  20
+                </text>
+                <text
+                  x="52"
+                  y="93"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  25
+                </text>
+                <text
+                  x="52"
+                  y="48"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  30
+                </text>
+                <!-- grid -->
+                <line
+                  x1="60"
+                  y1="183"
+                  x2="840"
+                  y2="183"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="138"
+                  x2="840"
+                  y2="138"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="93"
+                  x2="840"
+                  y2="93"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="48"
+                  x2="840"
+                  y2="48"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <!-- x labels -->
+                <text
+                  x="60"
+                  y="241"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1988
+                </text>
+                <text
+                  x="190"
+                  y="241"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1989
+                </text>
+                <text
+                  x="320"
+                  y="241"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1990
+                </text>
+                <text
+                  x="450"
+                  y="241"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1991
+                </text>
+                <text
+                  x="580"
+                  y="241"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1992
+                </text>
+                <text
+                  x="710"
+                  y="241"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1993
+                </text>
+                <!-- serie com queda zero em 1989 (greve) e reducao em 1992 -->
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1.5"
+                  points="60,93 80,88 100,95 120,85 140,92 160,84 180,90
+                      190,225 200,225 210,225 220,225 230,225 240,225
+                      250,128 270,120 290,130 310,118 330,126
+                      340,93 360,87 380,95 400,85 420,91 440,84 460,90 470,86
+                      480,148 500,142 510,152 520,140 530,148 540,138
+                      550,93 570,87 590,95 610,85 630,91 650,85 670,92 690,86 710,93 730,87 750,95 770,85 790,92 810,86 830,93"
+                />
+                <!-- anotacoes -->
+                <rect
+                  x="185"
+                  y="30"
+                  width="70"
+                  height="22"
+                  fill="#1a0a0a"
+                  rx="2"
+                />
+                <text
+                  x="220"
+                  y="45"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="var(--accent2)"
+                >
+                  greve 1989
+                </text>
+                <line
+                  x1="220"
+                  y1="52"
+                  x2="220"
+                  y2="200"
+                  stroke="var(--accent2)"
+                  stroke-width="0.8"
+                  stroke-dasharray="3 2"
+                />
+                <rect
+                  x="472"
+                  y="30"
+                  width="80"
+                  height="22"
+                  fill="#0a0a1a"
+                  rx="2"
+                />
+                <text
+                  x="512"
+                  y="45"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="var(--accent3)"
+                >
+                  exec→econ 1992
+                </text>
+                <line
+                  x1="512"
+                  y1="52"
+                  x2="512"
+                  y2="130"
+                  stroke="var(--accent3)"
+                  stroke-width="0.8"
+                  stroke-dasharray="3 2"
+                />
+                <text
+                  x="450"
+                  y="15"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Ansett airlines economy class: Melbourne-Sydney
+                </text>
+                <text
+                  x="15"
+                  y="125"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                  transform="rotate(-90,15,125)"
+                >
+                  Passengers ('000)
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>O que o grafico revela:</span> queda a zero em 1989 = greve
+              trabalhista. Reducao em 1992 = assentos exec trocados por econ.
+              Quedas no inicio de cada ano = feriados. Qualquer modelo precisa
+              capturar esses padroes.
+            </div>
           </div>
 
           <div class="code-block">
-            <div class="code-label">Padrão básico — como estruturar</div>
-            <pre><span class="cm"># Lendo CSV e já parseando a coluna de tempo</span>
-df = pd.read_csv(<span class="st">"dados.csv"</span>, parse_dates=[<span class="st">"ds"</span>])
+            <div class="code-label">Codigo — Fig 2.1</div>
+            <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> utilsforecast.plotting <span class="kw">import</span> plot_series
 
-<span class="cm"># Filtrando uma série específica por chave</span>
-serie_a = df.loc[df[<span class="st">"sensor_id"</span>] == <span class="st">"A01"</span>]
+melsyd = (
+    pd.<span class="fn">read_csv</span>(<span class="st">'data/ansett.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+    .loc[<span class="kw">lambda</span> x: (x[<span class="st">'Airports'</span>] == <span class="st">'MEL-SYD'</span>) & (x[<span class="st">'Class'</span>] == <span class="st">'Economy'</span>)]
+    .rename(columns={<span class="st">'Airports'</span>: <span class="st">'unique_id'</span>})
+    .assign(y=<span class="kw">lambda</span> x: x[<span class="st">'y'</span>] / <span class="nb">1000</span>)
+)
 
-<span class="cm"># Agrupando por tempo (somando múltiplas séries)</span>
-total = (
-    df.groupby(<span class="st">"ds"</span>, as_index=<span class="nb">False</span>)
-    .agg({<span class="st">"valor"</span>: <span class="st">"sum"</span>})
-)</pre>
+<span class="cm"># time plot basico — sempre o primeiro passo</span>
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="nb">10</span>, <span class="nb">4</span>))
+ax.<span class="fn">plot</span>(melsyd[<span class="st">'ds'</span>], melsyd[<span class="st">'y'</span>], color=<span class="st">'steelblue'</span>, linewidth=<span class="nb">1</span>)
+ax.<span class="fn">set</span>(title=<span class="st">'Ansett Airlines — Classe Economica: Melbourne-Sydney'</span>,
+     xlabel=<span class="st">'Semana'</span>, ylabel=<span class="st">"Passageiros ('000)"</span>)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">show</span>()
+
+<span class="cm"># ou usando utilsforecast (mais simples)</span>
+<span class="fn">plot_series</span>(melsyd, xlabel=<span class="st">'Week [1W]'</span>,
+            ylabel=<span class="st">"Passengers ('000)"</span>,
+            title=<span class="st">'Ansett airlines economy class'</span>)</pre>
+          </div>
+
+          <!-- Fig 2.2: Medicamentos antidiabeticos -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 2.2 — Vendas mensais de medicamentos antidiabeticos —
+                Australia</span
+              >
+              <span class="chart-caption"
+                >1991–2008 | Tendencia + Sazonalidade multiplicativa</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="240"
+                viewBox="0 0 860 240"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="210"
+                  x2="840"
+                  y2="210"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="210"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="52"
+                  y="213"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  5
+                </text>
+                <text
+                  x="52"
+                  y="165"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  10
+                </text>
+                <text
+                  x="52"
+                  y="118"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  20
+                </text>
+                <text
+                  x="52"
+                  y="70"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  25
+                </text>
+                <text
+                  x="52"
+                  y="30"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  30
+                </text>
+                <line
+                  x1="60"
+                  y1="165"
+                  x2="840"
+                  y2="165"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="118"
+                  x2="840"
+                  y2="118"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="70"
+                  x2="840"
+                  y2="70"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <text
+                  x="60"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1992
+                </text>
+                <text
+                  x="185"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1994
+                </text>
+                <text
+                  x="310"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1996
+                </text>
+                <text
+                  x="435"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  1998
+                </text>
+                <text
+                  x="560"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2000
+                </text>
+                <text
+                  x="685"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2002
+                </text>
+                <text
+                  x="800"
+                  y="226"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2004
+                </text>
+                <!-- serie com tendencia crescente e sazonalidade multiplicativa -->
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1.5"
+                  points="60,40 65,195 70,185 80,188 90,183 100,178 105,40 110,192 115,182 125,184 135,180 145,174 150,38 155,188 165,178 175,180 185,175 195,168 200,35 205,182 215,170 225,172 235,167 245,160 250,32 255,175 265,162 275,164 285,158 295,150 300,28 305,165 315,152 325,154 335,148 345,140 350,26 355,155 365,142 375,144 385,138 395,130 400,24 405,145 415,132 425,134 435,128 445,120 450,22 455,132 465,118 475,120 485,114 495,106 500,20 505,118 515,104 525,106 535,100 545,92 550,18 555,104 565,90 575,92 585,86 595,78 600,16 605,92 615,78 625,80 635,74 645,66 650,14 655,80 665,68 675,70 685,64 695,58 700,12 705,68 715,58 725,60 735,56 745,50 750,10 755,58 765,50 775,52 785,48 795,44 800,8 805,50 815,42 825,44 835,40 840,38"
+                />
+                <text
+                  x="450"
+                  y="13"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Australian antidiabetic drug sales
+                </text>
+                <text
+                  x="15"
+                  y="115"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                  transform="rotate(-90,15,115)"
+                >
+                  $ (millions)
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>O que o grafico revela:</span> tendencia crescente clara.
+              Sazonalidade
+              <span style="color: var(--accent2)">multiplicativa</span> — os
+              picos ficam cada vez maiores junto com a serie. Queda abrupta no
+              inicio de cada ano = pacientes estocam medicamento no final do ano
+              civil. Exige decomposicao multiplicativa ou transformacao log
+              antes de modelar.
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">Codigo — Fig 2.2</div>
+            <pre>pbs = (
+    pd.<span class="fn">read_csv</span>(<span class="st">'data/PBS_unparsed.csv'</span>, parse_dates=[<span class="st">'Month'</span>])
+    [[<span class="st">'Month'</span>, <span class="st">'Concession'</span>, <span class="st">'Type'</span>, <span class="st">'ATC1'</span>, <span class="st">'ATC2'</span>, <span class="st">'Scripts'</span>, <span class="st">'Cost'</span>]]
+)
+
+total_cost = (
+    pbs.loc[pbs[<span class="st">'ATC2'</span>] == <span class="st">'A10'</span>]
+    .drop(columns=[<span class="st">'ATC1'</span>, <span class="st">'ATC2'</span>])
+    .groupby(<span class="st">'Month'</span>, as_index=<span class="nb">False</span>)
+    .agg({<span class="st">'Cost'</span>: <span class="st">'sum'</span>})
+    .assign(Cost=<span class="kw">lambda</span> x: (x[<span class="st">'Cost'</span>] / <span class="nb">1e6</span>).<span class="fn">round</span>(<span class="nb">2</span>))
+)
+
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="nb">10</span>, <span class="nb">4</span>))
+ax.<span class="fn">plot</span>(total_cost[<span class="st">'Month'</span>], total_cost[<span class="st">'Cost'</span>], linewidth=<span class="nb">1.2</span>)
+ax.<span class="fn">set</span>(title=<span class="st">'Australian antidiabetic drug sales'</span>,
+     xlabel=<span class="st">'Month [1M]'</span>, ylabel=<span class="st">'$ (millions)'</span>)
+plt.<span class="fn">show</span>()
+
+<span class="cm"># sazonalidade multiplicativa: amplitude dos picos cresce com o nivel</span>
+<span class="cm"># solucao: log(y) ou Box-Cox antes de decompor</span></pre>
           </div>
 
           <div class="quiz-block">
             <div class="quiz-label">Quiz 2.1</div>
             <div class="quiz-q">
-              Você tem dados mensais de vendas de 50 lojas. Qual é a estrutura
-              correta do DataFrame?
+              No grafico dos medicamentos (Fig 2.2), os picos sazonais ficam
+              cada vez maiores ao longo dos anos. Isso indica qual tipo de
+              decomposicao?
             </div>
             <div class="quiz-options">
               <button
@@ -680,11 +1132,11 @@ total = (
                   answer(
                     this,
                     false,
-                    'Uma coluna por loja cria um formato wide. É válido, mas dificulta análise com múltiplas séries.',
+                    'Decomposicao aditiva assume amplitude sazonal constante. Aqui a amplitude cresce — isso e multiplicativo.',
                   )
                 "
               >
-                Uma coluna por loja, uma linha por mês
+                Decomposicao aditiva: y = S + T + R
               </button>
               <button
                 class="quiz-option"
@@ -692,11 +1144,11 @@ total = (
                   answer(
                     this,
                     true,
-                    'Correto. Formato long: cada linha é uma observação (mês + loja + valor). A coluna loja é a chave que identifica cada série.',
+                    'Correto. Quando a amplitude sazonal cresce proporcionalmente ao nivel da serie, a decomposicao multiplicativa e mais adequada: y = S × T × R. Alternativa: aplicar log(y) e usar decomposicao aditiva no dado transformado — equivalente matematicamente.',
                   )
                 "
               >
-                Uma coluna de mês, uma coluna de loja, uma coluna de valor
+                Decomposicao multiplicativa: y = S × T × R
               </button>
               <button
                 class="quiz-option"
@@ -704,11 +1156,11 @@ total = (
                   answer(
                     this,
                     false,
-                    'Sem a coluna de tempo, não é uma série temporal.',
+                    'Ruido branco e uma serie sem padrao. Aqui ha padrao claro de tendencia + sazonalidade.',
                   )
                 "
               >
-                Apenas coluna de loja e coluna de valor
+                A serie e ruido branco
               </button>
             </div>
             <div class="quiz-feedback" id="fb-0"></div>
@@ -718,65 +1170,268 @@ total = (
 
       <hr class="divider" />
 
-      <!-- SEÇÃO 2 -->
+      <!-- ===== SEC 2: PADROES ===== -->
       <div class="section" id="s2">
         <div class="section-header" onclick="toggleSection('s2')">
-          <span class="section-num">2.2 – 2.3</span>
-          <span class="section-title">Time plots e padrões temporais</span>
+          <span class="section-num">2.3</span>
+          <span class="section-title"
+            >Padroes: tendencia, sazonalidade e ciclo</span
+          >
           <span class="section-toggle">+</span>
         </div>
         <div class="section-body">
           <div class="concept">
-            <div class="concept-title">
-              Os 3 padrões que você precisa reconhecer
-            </div>
+            <div class="concept-title">Os 3 padroes fundamentais</div>
             <ul>
               <li>
-                <span class="hl">Tendência</span> — crescimento ou queda
-                persistente ao longo do tempo. Ex: custo de scripts médicos
-                subindo ano a ano.
+                <span class="hl">Tendencia</span> — crescimento ou queda
+                sistematica de longo prazo (nao precisa ser linear)
               </li>
               <li>
-                <span class="hl2">Sazonalidade</span> — padrão que se repete em
-                período fixo e conhecido. Ex: vendas caem toda segunda, explodem
-                todo dezembro.
+                <span class="hl2">Sazonalidade</span> — padrao que se repete em
+                intervalos FIXOS e conhecidos (periodo constante)
               </li>
               <li>
-                <span class="hl3">Ciclo</span> — oscilação sem período fixo,
-                ligada a fatores externos (econômicos, climáticos). Pode durar
-                anos e não tem regularidade previsível.
+                <span class="hl3">Ciclo</span> — flutuacoes sem frequencia fixa,
+                geralmente &gt; 2 anos (condicoes economicas)
               </li>
             </ul>
           </div>
 
-          <div class="analogy">
-            <div class="analogy-label">
-              Como diferenciar ciclo de sazonalidade
+          <!-- Fig 2.3: 4 exemplos de padroes -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 2.3 — Quatro exemplos de padroes diferentes</span
+              >
+              <span class="chart-caption"
+                >Tendencia | Sazonalidade | Ciclo | Sem padrao</span
+              >
             </div>
-            <p>
-              Sazonalidade tem calendário: você sabe que vai acontecer em
-              dezembro. Ciclo não tem calendário: você só percebe depois que já
-              aconteceu. Recessão econômica é ciclo. Black Friday é
-              sazonalidade.
-            </p>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="360"
+                viewBox="0 0 860 360"
+                style="max-width: 100%"
+              >
+                <!-- painel 1: vendas imoveis (sazonal + ciclico) -->
+                <rect
+                  x="10"
+                  y="10"
+                  width="410"
+                  height="160"
+                  fill="none"
+                  stroke="#222"
+                  rx="2"
+                />
+                <text
+                  x="215"
+                  y="24"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Vendas mensais de imoveis — EUA (Sazonal + Ciclo)
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="1.2"
+                  points="20,120 35,90 50,130 65,95 80,135 95,100 110,80 125,60 140,75 155,55 170,70 185,50 200,65 215,45 230,90 245,70 260,110 275,85 290,125 305,100 320,80 335,60 350,75 365,55 380,70 395,50 410,65"
+                />
+                <text
+                  x="215"
+                  y="165"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Index [1M]
+                </text>
+
+                <!-- painel 2: tesouro EUA (tendencia) -->
+                <rect
+                  x="440"
+                  y="10"
+                  width="410"
+                  height="160"
+                  fill="none"
+                  stroke="#222"
+                  rx="2"
+                />
+                <text
+                  x="645"
+                  y="24"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Titulos do Tesouro EUA — 1981 (So Tendencia)
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="var(--accent2)"
+                  stroke-width="1.5"
+                  points="450,50 475,55 500,58 525,62 550,67 575,73 600,80 625,88 650,96 660,100 675,108 690,115 700,120 710,115 720,122 730,128 740,133 750,136 760,140 770,143 780,146 790,148 800,150 810,152 820,154 840,156"
+                />
+                <text
+                  x="645"
+                  y="165"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Day
+                </text>
+
+                <!-- painel 3: eletricidade australia (tendencia + sazonal) -->
+                <rect
+                  x="10"
+                  y="195"
+                  width="410"
+                  height="160"
+                  fill="none"
+                  stroke="#222"
+                  rx="2"
+                />
+                <text
+                  x="215"
+                  y="209"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Eletricidade trimestral — Australia (Tendencia + Sazonal)
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="var(--accent3)"
+                  stroke-width="1.2"
+                  points="20,340 35,310 50,345 65,315 80,338 95,305 110,332 125,298 140,325 155,290 170,318 185,282 200,310 215,272 230,298 245,260 260,285 275,246 290,270 305,230 320,252 335,212 350,235 365,195 380,218 395,215 410,240"
+                />
+                <text
+                  x="215"
+                  y="349"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Quarter [1Q]
+                </text>
+
+                <!-- painel 4: google stock (sem padrao) -->
+                <rect
+                  x="440"
+                  y="195"
+                  width="410"
+                  height="160"
+                  fill="none"
+                  stroke="#222"
+                  rx="2"
+                />
+                <text
+                  x="645"
+                  y="209"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Variacoes diarias Google — Ruido branco
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#7a7a8a"
+                  stroke-width="1"
+                  points="450,280 460,260 470,295 480,270 490,305 500,282 510,260 520,290 530,268 540,310 550,285 560,262 570,298 580,273 590,312 600,288 610,265 620,295 630,272 640,308 650,282 660,258 670,292 680,270 690,306 700,280 710,258 720,290 730,268 740,305 750,280 760,258 770,295 780,272 790,310 800,285 810,262 820,298 830,275 840,308"
+                />
+                <text
+                  x="645"
+                  y="349"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Date [!]
+                </text>
+
+                <!-- labels dos paineis -->
+                <text
+                  x="215"
+                  y="355"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent)"
+                >
+                  Tendencia + Sazonalidade + Ciclo
+                </text>
+                <text
+                  x="645"
+                  y="355"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--muted)"
+                >
+                  Nenhum padrao util
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>Diferenca critica:</span> Sazonalidade tem periodo FIXO
+              (dezembro sempre = pico). Ciclo nao tem periodo fixo — voce so
+              percebe depois. Ruido branco (Google) nao tem padrao util para
+              previsao: qualquer modelo vai bater no teto da previsibilidade.
+            </div>
           </div>
 
-          <div class="concept orange">
-            <div class="concept-title">O que o time plot revela</div>
-            <p>
-              Plota valor no Y, tempo no X. É o primeiro gráfico que você faz,
-              sempre. Você consegue ver de cara: tem tendência? Tem sazonalidade
-              visível? Tem outliers? A série é estacionária (oscila em torno de
-              uma média) ou não?
-            </p>
+          <div class="code-block">
+            <div class="code-label">Codigo — os 4 padroes</div>
+            <pre><span class="cm"># imoveis — sazonal + ciclico</span>
+hsales = pd.<span class="fn">read_csv</span>(<span class="st">'data/hsales.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+
+<span class="cm"># tesouro EUA — so tendencia</span>
+ustreas = pd.<span class="fn">read_csv</span>(<span class="st">'data/ustreas.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+
+<span class="cm"># eletricidade australia — tendencia + sazonal</span>
+aus_prod = pd.<span class="fn">read_csv</span>(<span class="st">'data/aus_production.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+elec = aus_prod[[<span class="st">'ds'</span>, <span class="st">'Electricity'</span>]].dropna()
+
+<span class="cm"># google — ruido branco (variacoes diarias)</span>
+gafa = pd.<span class="fn">read_csv</span>(<span class="st">'data/gafa_stock.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+goog_diff = (
+    gafa.loc[gafa[<span class="st">'unique_id'</span>] == <span class="st">'GOOG_Close'</span>]
+    .assign(y=<span class="kw">lambda</span> x: x[<span class="st">'y'</span>].diff())
+    .dropna()
+)
+
+fig, axes = plt.<span class="fn">subplots</span>(<span class="nb">2</span>, <span class="nb">2</span>, figsize=(<span class="nb">12</span>, <span class="nb">7</span>))
+axes[<span class="nb">0</span>,<span class="nb">0</span>].<span class="fn">plot</span>(hsales[<span class="st">'ds'</span>], hsales[<span class="st">'y'</span>])
+axes[<span class="nb">0</span>,<span class="nb">0</span>].<span class="fn">set_title</span>(<span class="st">'Vendas imoveis EUA'</span>)
+axes[<span class="nb">0</span>,<span class="nb">1</span>].<span class="fn">plot</span>(ustreas[<span class="st">'ds'</span>], ustreas[<span class="st">'y'</span>])
+axes[<span class="nb">0</span>,<span class="nb">1</span>].<span class="fn">set_title</span>(<span class="st">'Tesouro EUA 1981'</span>)
+axes[<span class="nb">1</span>,<span class="nb">0</span>].<span class="fn">plot</span>(elec[<span class="st">'ds'</span>], elec[<span class="st">'Electricity'</span>])
+axes[<span class="nb">1</span>,<span class="nb">0</span>].<span class="fn">set_title</span>(<span class="st">'Eletricidade Australia'</span>)
+axes[<span class="nb">1</span>,<span class="nb">1</span>].<span class="fn">plot</span>(goog_diff[<span class="st">'ds'</span>], goog_diff[<span class="st">'y'</span>], linewidth=<span class="nb">0.5</span>)
+axes[<span class="nb">1</span>,<span class="nb">1</span>].<span class="fn">set_title</span>(<span class="st">'Variacoes Google'</span>)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">show</span>()</pre>
           </div>
 
           <div class="quiz-block">
             <div class="quiz-label">Quiz 2.2</div>
             <div class="quiz-q">
-              Num gráfico de vendas mensais, você vê picos altos todo mês de
-              dezembro por 5 anos seguidos, e uma leve queda geral ao longo dos
-              anos. O que você está vendo?
+              Vendas de uma loja sempre sobem em dezembro. Isso e sazonalidade
+              ou ciclo?
             </div>
             <div class="quiz-options">
               <button
@@ -785,11 +1440,11 @@ total = (
                   answer(
                     this,
                     false,
-                    'Ciclos não têm período fixo. Dezembro repetido todo ano é sazonalidade.',
+                    'Ciclo nao tem periodo fixo. Uma alta que sempre ocorre em dezembro tem periodo fixo de 12 meses — isso e sazonalidade.',
                   )
                 "
               >
-                Apenas ciclo
+                Ciclo — e uma flutuacao economica recorrente
               </button>
               <button
                 class="quiz-option"
@@ -797,11 +1452,11 @@ total = (
                   answer(
                     this,
                     true,
-                    'Correto. Tendência de queda + sazonalidade anual (dezembro). Os dois padrões coexistem.',
+                    'Correto. Sazonalidade tem periodo FIXO e CONHECIDO: dezembro = 12 meses. Voce sabe quando vai acontecer antes de acontecer. Ciclo voce so percebe depois — nao tem calendario.',
                   )
                 "
               >
-                Tendência + sazonalidade
+                Sazonalidade — periodo fixo de 12 meses, previsivel
               </button>
               <button
                 class="quiz-option"
@@ -809,11 +1464,11 @@ total = (
                   answer(
                     this,
                     false,
-                    'Sem padrão significa ruído branco — aqui claramente há estrutura.',
+                    'Tendencia e a direcao geral de longo prazo, nao um padrao periodico que se repete.',
                   )
                 "
               >
-                Ruído branco
+                Tendencia de crescimento anual
               </button>
             </div>
             <div class="quiz-feedback" id="fb-1"></div>
@@ -823,50 +1478,871 @@ total = (
 
       <hr class="divider" />
 
-      <!-- SEÇÃO 3 -->
+      <!-- ===== SEC 3: SAZONAL ===== -->
       <div class="section" id="s3">
         <div class="section-header" onclick="toggleSection('s3')">
-          <span class="section-num">2.4 – 2.5</span>
-          <span class="section-title">Seasonal plots e subseries plots</span>
+          <span class="section-num">2.4–2.5</span>
+          <span class="section-title"
+            >Graficos sazonais e sub-series sazonais</span
+          >
           <span class="section-toggle">+</span>
         </div>
         <div class="section-body">
           <div class="concept">
-            <div class="concept-title">Seasonal plot</div>
-            <p>
-              Em vez de ver todos os anos em sequência, você sobrepõe cada ano
-              num mesmo eixo X de meses (Jan-Dez). Cada linha é um ano
-              diferente. Isso deixa claro se o padrão sazonal é estável (linhas
-              parecidas) ou está mudando (linhas divergindo).
-            </p>
+            <div class="concept-title">
+              Dois graficos complementares ao time plot
+            </div>
+            <ul>
+              <li>
+                <span class="hl">Sazonal:</span> sobrepoem os dados de cada
+                ciclo (cada linha = um ano). Revela padrao sazonal e se ele muda
+                ao longo do tempo
+              </li>
+              <li>
+                <span class="hl2">Sub-series:</span> mini-graficos separados por
+                estacao. Linha horizontal = media historica de cada mes. Revela
+                mudancas dentro de cada estacao
+              </li>
+            </ul>
           </div>
 
-          <div class="concept purple">
-            <div class="concept-title">Seasonal subseries plot</div>
-            <p>
-              Divide a série em "fatias" por período (um painel por mês, por dia
-              da semana, etc). Dentro de cada fatia, você plota todos os anos
-              com a média marcada. Serve pra comparar: o padrão de janeiro é
-              muito diferente do padrão de julho? A média de cada mês está
-              crescendo ao longo dos anos?
-            </p>
+          <!-- Fig 2.4: Seasonal plot medicamentos -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 2.4 — Grafico sazonal: medicamentos antidiabeticos</span
+              >
+              <span class="chart-caption"
+                >Cada linha = um ano | Eixo X = mes do ano</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="260"
+                viewBox="0 0 860 260"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="230"
+                  x2="820"
+                  y2="230"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="230"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <!-- y labels -->
+                <text
+                  x="52"
+                  y="233"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  5
+                </text>
+                <text
+                  x="52"
+                  y="183"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  10
+                </text>
+                <text
+                  x="52"
+                  y="133"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  20
+                </text>
+                <text
+                  x="52"
+                  y="83"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  25
+                </text>
+                <text
+                  x="52"
+                  y="33"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  30
+                </text>
+                <line
+                  x1="60"
+                  y1="183"
+                  x2="820"
+                  y2="183"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="133"
+                  x2="820"
+                  y2="133"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="83"
+                  x2="820"
+                  y2="83"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <!-- meses no eixo X -->
+                <text
+                  x="93"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Jan
+                </text>
+                <text
+                  x="153"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Fev
+                </text>
+                <text
+                  x="213"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Mar
+                </text>
+                <text
+                  x="273"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Abr
+                </text>
+                <text
+                  x="333"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Mai
+                </text>
+                <text
+                  x="393"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Jun
+                </text>
+                <text
+                  x="453"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Jul
+                </text>
+                <text
+                  x="513"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Ago
+                </text>
+                <text
+                  x="573"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Set
+                </text>
+                <text
+                  x="633"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Out
+                </text>
+                <text
+                  x="693"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Nov
+                </text>
+                <text
+                  x="753"
+                  y="246"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Dez
+                </text>
+                <!-- linhas por ano — cada uma ligeiramente mais alta (tendencia) -->
+                <!-- 1991 (mais baixo) -->
+                <polyline
+                  fill="none"
+                  stroke="#3a4a6a"
+                  stroke-width="1"
+                  opacity=".7"
+                  points="93,55 153,213 213,205 273,208 333,202 393,198 453,200 513,204 573,198 633,195 693,192 753,188"
+                />
+                <!-- anos intermediarios -->
+                <polyline
+                  fill="none"
+                  stroke="#4a5a8a"
+                  stroke-width="1"
+                  opacity=".6"
+                  points="93,65 153,218 213,210 273,213 333,207 393,203 453,205 513,209 573,203 633,200 693,197 753,193"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#5a70aa"
+                  stroke-width="1"
+                  opacity=".6"
+                  points="93,75 153,220 213,212 273,215 333,210 393,206 453,208 513,212 573,207 633,204 693,201 753,197"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#6a80bb"
+                  stroke-width="1"
+                  opacity=".6"
+                  points="93,85 153,222 213,215 273,218 333,213 393,209 453,211 513,215 573,210 633,207 693,204 753,200"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#7a90cc"
+                  stroke-width="1"
+                  opacity=".6"
+                  points="93,100 153,225 213,218 273,221 333,215 393,212 453,214 513,218 573,213 633,210 693,207 753,203"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#8aa0dd"
+                  stroke-width="1"
+                  opacity=".6"
+                  points="93,112 153,227 213,220 273,223 333,218 393,215 453,217 513,221 573,216 633,213 693,210 753,206"
+                />
+                <polyline
+                  fill="none"
+                  stroke="#9ab0ee"
+                  stroke-width="1"
+                  opacity=".6"
+                  points="93,128 153,229 213,223 273,226 333,221 393,218 453,220 513,224 573,219 633,216 693,213 753,209"
+                />
+                <!-- 2007 (mais alto) -->
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="1.5"
+                  points="93,30 153,210 213,200 273,203 333,196 393,192 453,194 513,198 573,192 633,188 693,185 753,180"
+                />
+                <!-- label anos -->
+                <text
+                  x="800"
+                  y="185"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent)"
+                >
+                  2007
+                </text>
+                <text
+                  x="800"
+                  y="215"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#3a4a6a"
+                >
+                  1991
+                </text>
+                <text
+                  x="430"
+                  y="15"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Seasonal Plot: Antidiabetic Drug Sales
+                </text>
+                <text
+                  x="430"
+                  y="258"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Month
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>O que o grafico sazonal revela:</span> pico SEMPRE em
+              janeiro — pacientes estocam em dezembro e registram em janeiro.
+              Cada linha e um ano, linhas mais altas = anos mais recentes
+              (tendencia crescente). Padrao sazonal estavel ao longo dos anos.
+            </div>
           </div>
 
-          <div class="analogy">
-            <div class="analogy-label">Quando usar cada um</div>
-            <p>
-              Seasonal plot → "o padrão sazonal está mudando ao longo dos
-              anos?"<br />
-              Subseries plot → "qual mês/dia tem maior magnitude sazonal? Ela é
-              estável?"
-            </p>
+          <div class="code-block">
+            <div class="code-label">Codigo — Fig 2.4 grafico sazonal</div>
+            <pre><span class="kw">import</span> seaborn <span class="kw">as</span> sns
+
+df = total_cost.assign(
+    Ano=total_cost[<span class="st">'Month'</span>].dt.year,
+    Mes_num=total_cost[<span class="st">'Month'</span>].dt.month,
+)
+
+anos = df[<span class="st">'Ano'</span>].unique()
+palette = sns.<span class="fn">color_palette</span>(<span class="st">'husl'</span>, n_colors=<span class="fn">len</span>(anos))
+
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="nb">11</span>, <span class="nb">5</span>))
+sns.<span class="fn">lineplot</span>(data=df, x=<span class="st">'Mes_num'</span>, y=<span class="st">'Cost'</span>,
+             hue=<span class="st">'Ano'</span>, palette=palette, legend=<span class="nb">False</span>, ax=ax)
+
+ax.<span class="fn">set</span>(title=<span class="st">'Seasonal Plot: Antidiabetic Drug Sales'</span>,
+     xlabel=<span class="st">'Month'</span>, ylabel=<span class="st">'$ (millions)'</span>,
+     xticks=<span class="fn">range</span>(<span class="nb">1</span>,<span class="nb">13</span>),
+     xticklabels=[<span class="st">'Jan'</span>,<span class="st">'Fev'</span>,<span class="st">'Mar'</span>,<span class="st">'Abr'</span>,<span class="st">'Mai'</span>,<span class="st">'Jun'</span>,
+                  <span class="st">'Jul'</span>,<span class="st">'Ago'</span>,<span class="st">'Set'</span>,<span class="st">'Out'</span>,<span class="st">'Nov'</span>,<span class="st">'Dez'</span>])
+
+<span class="cm"># rotula o ano no final de cada linha</span>
+min_ano = anos.min()
+<span class="kw">for</span> ano, subset <span class="kw">in</span> df.<span class="fn">groupby</span>(<span class="st">'Ano'</span>):
+    ax.<span class="fn">text</span>(subset[<span class="st">'Mes_num'</span>].iloc[-<span class="nb">1</span>] + <span class="nb">.1</span>,
+           subset[<span class="st">'Cost'</span>].iloc[-<span class="nb">1</span>],
+           <span class="fn">str</span>(ano), fontsize=<span class="nb">7</span>, color=palette[ano - min_ano])
+plt.<span class="fn">show</span>()</pre>
+          </div>
+
+          <!-- Fig 2.8: Sub-series -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 2.8 — Sub-series sazonais: medicamentos
+                antidiabeticos</span
+              >
+              <span class="chart-caption"
+                >Mini-grafico por mes | Linha azul = media historica de cada
+                mes</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="220"
+                viewBox="0 0 860 220"
+                style="max-width: 100%"
+              >
+                <!-- 12 mini-graficos -->
+                <!-- definindo posicoes: cada mini tem ~60px de largura -->
+                <!-- Jan -->
+                <rect
+                  x="10"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="41"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Jan
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="15,160 22,155 29,148 36,140 43,130 50,118 57,104 64,88"
+                />
+                <line
+                  x1="10"
+                  y1="128"
+                  x2="72"
+                  y2="128"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Fev -->
+                <rect
+                  x="80"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="111"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Fev
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="85,178 92,174 99,170 106,165 113,158 120,150 127,140 134,128"
+                />
+                <line
+                  x1="80"
+                  y1="158"
+                  x2="142"
+                  y2="158"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Mar -->
+                <rect
+                  x="150"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="181"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Mar
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="155,175 162,171 169,167 176,162 183,155 190,147 197,138 204,126"
+                />
+                <line
+                  x1="150"
+                  y1="156"
+                  x2="212"
+                  y2="156"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Abr -->
+                <rect
+                  x="220"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="251"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Abr
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="225,178 232,174 239,170 246,165 253,158 260,150 267,140 274,128"
+                />
+                <line
+                  x1="220"
+                  y1="157"
+                  x2="282"
+                  y2="157"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Mai -->
+                <rect
+                  x="290"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="321"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Mai
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="295,178 302,175 309,172 316,168 323,162 330,155 337,146 344,135"
+                />
+                <line
+                  x1="290"
+                  y1="159"
+                  x2="352"
+                  y2="159"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Jun -->
+                <rect
+                  x="360"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="391"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Jun
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="365,180 372,177 379,174 386,170 393,163 400,156 407,148 414,138"
+                />
+                <line
+                  x1="360"
+                  y1="161"
+                  x2="422"
+                  y2="161"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Jul -->
+                <rect
+                  x="430"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="461"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Jul
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="435,178 442,175 449,171 456,166 463,158 470,150 477,140 484,128"
+                />
+                <line
+                  x1="430"
+                  y1="158"
+                  x2="492"
+                  y2="158"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Ago -->
+                <rect
+                  x="500"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="531"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Ago
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="505,178 512,175 519,171 526,166 533,158 540,150 547,140 554,128"
+                />
+                <line
+                  x1="500"
+                  y1="158"
+                  x2="562"
+                  y2="158"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Set -->
+                <rect
+                  x="570"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="601"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Set
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="575,178 582,175 589,171 596,166 603,158 610,150 617,140 624,128"
+                />
+                <line
+                  x1="570"
+                  y1="158"
+                  x2="632"
+                  y2="158"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Out -->
+                <rect
+                  x="640"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="671"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Out
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="645,180 652,177 659,173 666,168 673,160 680,152 687,142 694,130"
+                />
+                <line
+                  x1="640"
+                  y1="160"
+                  x2="702"
+                  y2="160"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Nov -->
+                <rect
+                  x="710"
+                  y="10"
+                  width="62"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="741"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Nov
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="715,178 722,175 729,171 736,166 743,158 750,150 757,140 764,128"
+                />
+                <line
+                  x1="710"
+                  y1="158"
+                  x2="772"
+                  y2="158"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+                <!-- Dez -->
+                <rect
+                  x="780"
+                  y="10"
+                  width="72"
+                  height="180"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="816"
+                  y="204"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  Dez
+                </text>
+                <polyline
+                  fill="none"
+                  stroke="#e8e8ec"
+                  stroke-width="1"
+                  points="785,178 793,175 801,171 809,166 817,158 825,150 833,140 841,128"
+                />
+                <line
+                  x1="780"
+                  y1="158"
+                  x2="852"
+                  y2="158"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                />
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>Sub-series revelamn:</span> a linha branca sobe em todos os
+              meses (tendencia). Janeiro tem a maior queda inicial (estoque no
+              fim do ano). A linha azul = media historica de cada mes — se a
+              linha branca esta acima da azul nos anos recentes, o mes cresceu
+              acima da media historica.
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">Codigo — Fig 2.8 sub-series sazonais</div>
+            <pre>df = total_cost.assign(
+    ano=total_cost[<span class="st">'Month'</span>].dt.year,
+    mes_nome=total_cost[<span class="st">'Month'</span>].dt.month_name(),
+    mes_idx=total_cost[<span class="st">'Month'</span>].dt.month,
+)
+
+fig, axes = plt.<span class="fn">subplots</span>(<span class="nb">1</span>, <span class="nb">12</span>, figsize=(<span class="nb">16</span>, <span class="nb">4</span>), sharey=<span class="nb">True</span>)
+
+<span class="kw">for</span> ax, ((_, mes), mes_df) <span class="kw">in</span> <span class="fn">zip</span>(axes, df.<span class="fn">groupby</span>([<span class="st">'mes_idx'</span>, <span class="st">'mes_nome'</span>])):
+    media = mes_df[<span class="st">'Cost'</span>].<span class="fn">mean</span>()
+    ax.<span class="fn">plot</span>(mes_df[<span class="st">'ano'</span>], mes_df[<span class="st">'Cost'</span>], color=<span class="st">'k'</span>, linewidth=<span class="nb">1</span>)
+    ax.<span class="fn">axhline</span>(media, color=<span class="st">'steelblue'</span>, linewidth=<span class="nb">1.5</span>)  <span class="cm"># media historica</span>
+    ax.<span class="fn">set</span>(title=mes[:<span class="nb">3</span>], xlabel=<span class="st">''</span>)
+    ax.tick_params(axis=<span class="st">'x'</span>, rotation=<span class="nb">90</span>)
+
+fig.<span class="fn">suptitle</span>(<span class="st">'Sub-series sazonais — Medicamentos Antidiabeticos'</span>)
+fig.<span class="fn">supylabel</span>(<span class="st">'$ (millions)'</span>)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">show</span>()</pre>
           </div>
 
           <div class="quiz-block">
             <div class="quiz-label">Quiz 2.3</div>
             <div class="quiz-q">
-              Você quer verificar se o pico de vendas de dezembro está crescendo
-              ano a ano. Qual gráfico é mais direto?
+              No grafico de sub-series, a linha branca (valor real) esta sempre
+              ABAIXO da linha azul (media historica) em agosto dos ultimos 3
+              anos. O que isso indica?
             </div>
             <div class="quiz-options">
               <button
@@ -875,23 +2351,11 @@ total = (
                   answer(
                     this,
                     false,
-                    'O time plot mostra tudo em sequência, mas comparar dezembros específicos fica difícil.',
+                    'Um erro aleatorio seria inconsistente — 3 anos consecutivos abaixo da media nao e aleatorio, e um padrao.',
                   )
                 "
               >
-                Time plot simples
-              </button>
-              <button
-                class="quiz-option"
-                onclick="
-                  answer(
-                    this,
-                    false,
-                    'O seasonal plot sobrepõe os anos, mas para ver só dezembro é menos direto.',
-                  )
-                "
-              >
-                Seasonal plot
+                Erro aleatorio nos dados
               </button>
               <button
                 class="quiz-option"
@@ -899,11 +2363,23 @@ total = (
                   answer(
                     this,
                     true,
-                    'Correto. O subseries plot de dezembro mostra todos os valores desse mês ao longo dos anos com a média — ideal pra ver se está crescendo.',
+                    'Correto. Agosto sistematicamente abaixo da media historica indica que agosto esta perdendo forca relativa ao longo do tempo. A sazonalidade esta mudando — agosto foi mais forte no passado do que e hoje. Isso e exatamente o que sub-series revelamn e o time plot simples pode mascarar.',
                   )
                 "
               >
-                Seasonal subseries plot
+                Agosto perdeu forca relativa — sazonalidade esta mudando
+              </button>
+              <button
+                class="quiz-option"
+                onclick="
+                  answer(
+                    this,
+                    false,
+                    'Uma tendencia geral de queda afetaria todos os meses, nao so agosto.',
+                  )
+                "
+              >
+                Tendencia geral de queda nos dados
               </button>
             </div>
             <div class="quiz-feedback" id="fb-2"></div>
@@ -913,49 +2389,530 @@ total = (
 
       <hr class="divider" />
 
-      <!-- SEÇÃO 4 -->
+      <!-- ===== SEC 4: DISPERSAO ===== -->
       <div class="section" id="s4">
         <div class="section-header" onclick="toggleSection('s4')">
           <span class="section-num">2.6</span>
-          <span class="section-title">Scatterplots e correlação</span>
+          <span class="section-title">Diagramas de dispersao e correlacao</span>
           <span class="section-toggle">+</span>
         </div>
         <div class="section-body">
           <div class="concept">
-            <div class="concept-title">Pra que serve aqui</div>
+            <div class="concept-title">
+              Quando usar scatter plot em series temporais
+            </div>
             <p>
-              Séries temporais muitas vezes têm <strong>covariáveis</strong> —
-              outras variáveis que ajudam a explicar o valor que você quer
-              prever. O scatterplot mostra se há relação entre elas. Ex:
-              temperatura vs consumo de energia elétrica.
+              Scatter plots revelam relacoes ENTRE series temporais. Util quando
+              ha covariaveis externas (temperatura, PIB, concorrentes).
+              Correlacao de Pearson mede so relacao linear — scatter pode
+              mostrar relacoes nao lineares que r esconde.
             </p>
-            <ul>
-              <li>
-                Correlação de Pearson: de <span class="hl2">-1</span> (inversa
-                perfeita) a <span class="hl">+1</span> (direta perfeita). Zero =
-                sem relação linear.
-              </li>
-              <li>
-                Cuidado: correlação não é causalidade. E relações não-lineares
-                podem ter correlação baixa mesmo existindo relação forte.
-              </li>
-            </ul>
           </div>
 
-          <div class="concept orange">
-            <div class="concept-title">Scatterplot matrix</div>
-            <p>
-              Quando você tem várias variáveis, plota todas contra todas de uma
-              vez. É uma grade de scatterplots. Você identifica rapidamente
-              quais pares têm relação forte antes de modelar.
-            </p>
+          <!-- Fig 2.14: scatter demanda vs temperatura -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 2.14 — Demanda vs Temperatura — Victoria 2014</span
+              >
+              <span class="chart-caption"
+                >Relacao em U: frio e calor aumentam demanda | r = 0.28
+                (subestima a relacao)</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="280"
+                viewBox="0 0 860 280"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="250"
+                  x2="820"
+                  y2="250"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="250"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="52"
+                  y="253"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  3000
+                </text>
+                <text
+                  x="52"
+                  y="193"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  5000
+                </text>
+                <text
+                  x="52"
+                  y="133"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  7000
+                </text>
+                <text
+                  x="52"
+                  y="73"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  9000
+                </text>
+                <line
+                  x1="60"
+                  y1="193"
+                  x2="820"
+                  y2="193"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="133"
+                  x2="820"
+                  y2="133"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="73"
+                  x2="820"
+                  y2="73"
+                  stroke="#1a1a1f"
+                  stroke-width="1"
+                />
+                <text
+                  x="120"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  0°
+                </text>
+                <text
+                  x="320"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  10°
+                </text>
+                <text
+                  x="520"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  20°
+                </text>
+                <text
+                  x="720"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  30°
+                </text>
+                <text
+                  x="820"
+                  y="266"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  40°
+                </text>
+                <!-- curva U ajustada -->
+                <path
+                  d="M100,60 Q440,230 820,55"
+                  fill="none"
+                  stroke="var(--accent3)"
+                  stroke-width="2"
+                  opacity=".7"
+                />
+                <!-- pontos dispersos ao redor da curva U -->
+                <circle
+                  cx="100"
+                  cy="55"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="115"
+                  cy="70"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="130"
+                  cy="80"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="145"
+                  cy="90"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="160"
+                  cy="100"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="180"
+                  cy="120"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="200"
+                  cy="135"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="220"
+                  cy="148"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="240"
+                  cy="155"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="270"
+                  cy="165"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="300"
+                  cy="172"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="340"
+                  cy="178"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="380"
+                  cy="183"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="420"
+                  cy="186"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="460"
+                  cy="188"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="500"
+                  cy="187"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="540"
+                  cy="183"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="580"
+                  cy="175"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="620"
+                  cy="163"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="660"
+                  cy="148"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="700"
+                  cy="130"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="740"
+                  cy="108"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="780"
+                  cy="82"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <circle
+                  cx="810"
+                  cy="62"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <!-- dispersao em torno -->
+                <circle
+                  cx="110"
+                  cy="45"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="130"
+                  cy="68"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="160"
+                  cy="110"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="200"
+                  cy="150"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="280"
+                  cy="180"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="360"
+                  cy="190"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="440"
+                  cy="195"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="520"
+                  cy="192"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="600"
+                  cy="182"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="680"
+                  cy="158"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="760"
+                  cy="120"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <circle
+                  cx="820"
+                  cy="68"
+                  r="2.5"
+                  fill="var(--accent2)"
+                  opacity=".35"
+                />
+                <!-- r label -->
+                <text
+                  x="440"
+                  y="15"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Scatter Plot of Demand vs. Temperature
+                </text>
+                <text
+                  x="700"
+                  y="45"
+                  font-family="JetBrains Mono"
+                  font-size="10"
+                  fill="var(--muted)"
+                >
+                  r = 0.28
+                </text>
+                <text
+                  x="700"
+                  y="58"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="var(--accent3)"
+                >
+                  (relacao real e muito maior)
+                </text>
+                <text
+                  x="440"
+                  y="278"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Temperature (degrees Celsius)
+                </text>
+                <text
+                  x="15"
+                  y="140"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                  transform="rotate(-90,15,140)"
+                >
+                  Electricity demand (GW)
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>Licao critica:</span> r = 0.28 parece baixo mas o grafico
+              mostra relacao forte — so que NAO LINEAR. Correlacao de Pearson
+              mede apenas relacoes lineares. Sempre visualize antes de confiar
+              no r. Na sua pesquisa: relacoes entre niveis hierarquicos podem
+              ser nao lineares.
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">Codigo — Fig 2.14 scatter + correlacao</div>
+            <pre><span class="kw">from</span> scipy.stats <span class="kw">import</span> pearsonr
+
+vic_elec = pd.<span class="fn">read_csv</span>(<span class="st">'data/vic_elec.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+elec_2014 = (
+    vic_elec.loc[<span class="kw">lambda</span> x: x[<span class="st">'ds'</span>].dt.year == <span class="nb">2014</span>]
+    .pivot(index=<span class="st">'ds'</span>, columns=<span class="st">'unique_id'</span>, values=<span class="st">'y'</span>)
+    .reset_index()
+)
+
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="nb">8</span>, <span class="nb">5</span>))
+ax.<span class="fn">scatter</span>(elec_2014[<span class="st">'Temperature'</span>], elec_2014[<span class="st">'Demand'</span>],
+           alpha=<span class="nb">0.3</span>, s=<span class="nb">5</span>, color=<span class="st">'steelblue'</span>)
+
+r, p = <span class="fn">pearsonr</span>(elec_2014[<span class="st">'Temperature'</span>].dropna(),
+                 elec_2014[<span class="st">'Demand'</span>].dropna())
+ax.<span class="fn">text</span>(<span class="nb">0.05</span>, <span class="nb">0.95</span>, <span class="fn">f</span><span class="st">'r = {r:.2f}'</span>,
+       transform=ax.transAxes, va=<span class="st">'top'</span>, fontsize=<span class="nb">12</span>)
+
+ax.<span class="fn">set</span>(title=<span class="st">'Demanda vs Temperatura — Victoria 2014'</span>,
+     xlabel=<span class="st">'Temperatura (°C)'</span>, ylabel=<span class="st">'Demanda (GW)'</span>)
+plt.<span class="fn">show</span>()
+
+<span class="cm"># r=0.28 parece baixo, mas o scatter mostra relacao em U forte</span>
+<span class="cm"># correlacao linear nao captura relacoes nao lineares</span></pre>
           </div>
 
           <div class="quiz-block">
             <div class="quiz-label">Quiz 2.4</div>
             <div class="quiz-q">
-              Você calcula a correlação entre temperatura e consumo de energia e
-              obtém -0.85. O que isso indica?
+              A correlacao r = 0.82 entre duas variaveis garante que o modelo de
+              regressao linear sera preciso?
             </div>
             <div class="quiz-options">
               <button
@@ -964,11 +2921,11 @@ total = (
                   answer(
                     this,
                     false,
-                    'Correlação negativa forte não significa sem relação — significa relação inversa forte.',
+                    'r alto indica relacao linear forte, mas nao garante precisao se a relacao for nao linear, houver outliers ou variaveis confundidoras.',
                   )
                 "
               >
-                Sem relação significativa
+                Sim, r = 0.82 indica relacao linear forte e confiavel
               </button>
               <button
                 class="quiz-option"
@@ -976,11 +2933,12 @@ total = (
                   answer(
                     this,
                     true,
-                    'Correto. Relação inversa forte: quando temperatura sobe, consumo cai (ou vice-versa). Comum em climas frios onde aquecimento domina.',
+                    'Correto. O livro mostra (Fig 2.16) que 4 datasets com r = 0.82 identico tem relacoes completamente diferentes — linear, com outlier, em curva, etc. O Quarteto de Anscombe demonstra isso classicamente. Sempre visualize o scatter antes de confiar no r.',
                   )
                 "
               >
-                Relação inversa forte — quando uma sobe, a outra tende a cair
+                Nao — conjuntos com r identico podem ter relacoes completamente
+                diferentes
               </button>
               <button
                 class="quiz-option"
@@ -988,11 +2946,11 @@ total = (
                   answer(
                     this,
                     false,
-                    'Relação direta seria correlação positiva (+0.85).',
+                    'r=0.82 e uma correlacao alta. O problema nao e o valor do r, mas o que ele nao revela sobre a natureza da relacao.',
                   )
                 "
               >
-                Relação direta forte
+                Nao — r = 0.82 e muito baixo para ser util
               </button>
             </div>
             <div class="quiz-feedback" id="fb-3"></div>
@@ -1002,45 +2960,1203 @@ total = (
 
       <hr class="divider" />
 
-      <!-- SEÇÃO 5 -->
+      <!-- ===== SEC 5: LAG E ACF ===== -->
       <div class="section" id="s5">
         <div class="section-header" onclick="toggleSection('s5')">
-          <span class="section-num">2.7</span>
-          <span class="section-title">Lag plots</span>
+          <span class="section-num">2.7–2.8</span>
+          <span class="section-title"
+            >Graficos de lag e autocorrelacao (ACF)</span
+          >
           <span class="section-toggle">+</span>
         </div>
         <div class="section-body">
           <div class="concept">
-            <div class="concept-title">O que é um lag</div>
+            <div class="concept-title">
+              Lag plot e ACF — diagnostico pre-modelagem
+            </div>
             <p>
-              Lag 1 = o valor de ontem. Lag 12 = o valor de 12 meses atrás. Um
-              <strong>lag plot</strong> plota o valor atual (eixo Y) contra o
-              valor de N períodos atrás (eixo X).
-            </p>
-            <p style="margin-top: 10px">
-              Se o plot mostrar uma nuvem sem forma → o passado não explica o
-              presente.<br />
-              Se mostrar uma linha ou elipse clara → há autocorrelação, o
-              passado tem poder preditivo.
+              Lag plot plota y(t) contra y(t-k). ACF mede a correlacao de uma
+              serie com versoes defasadas dela mesma. Juntos revelam a estrutura
+              temporal da serie e definem quais defasagens incluir como features
+              em modelos de ML.
             </p>
           </div>
 
-          <div class="analogy">
-            <div class="analogy-label">Analogia</div>
-            <p>
-              Se a temperatura de hoje tem relação com a de ontem (lag 1), faz
-              sentido usar ela como variável preditora. Se a receita de dezembro
-              tem relação com a de dezembro do ano passado (lag 12), o modelo
-              precisa capturar esse lag anual.
-            </p>
+          <!-- Fig 2.19: Lag plots cerveja -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 2.19 — Lag plots: producao trimestral de cerveja
+                australiana</span
+              >
+              <span class="chart-caption"
+                >lag 4 e 8 positivos fortes = sazonalidade trimestral | lag 2 e
+                6 negativos = picos vs vales</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="280"
+                viewBox="0 0 860 280"
+                style="max-width: 100%"
+              >
+                <!-- 9 mini-scatter: lag 1 a 9 em grade 3x3 -->
+                <!-- cada mini: 90x80px -->
+                <!-- lag 1 -->
+                <rect
+                  x="10"
+                  y="10"
+                  width="88"
+                  height="78"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="54"
+                  y="22"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  lag 1
+                </text>
+                <!-- pontos dispersos sem correlacao clara -->
+                <circle
+                  cx="30"
+                  cy="65"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="45"
+                  cy="55"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="60"
+                  cy="70"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <circle cx="75" cy="45" r="3" fill="#f6e05e" opacity=".6" />
+                <circle
+                  cx="35"
+                  cy="40"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="55"
+                  cy="30"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="70"
+                  cy="60"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <circle cx="40" cy="75" r="3" fill="#f6e05e" opacity=".6" />
+                <!-- lag 2 (correlacao negativa) -->
+                <rect
+                  x="108"
+                  y="10"
+                  width="88"
+                  height="78"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="152"
+                  y="22"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  lag 2
+                </text>
+                <circle
+                  cx="118"
+                  cy="25"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="128"
+                  cy="35"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="140"
+                  cy="50"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <circle cx="152" cy="60" r="3" fill="#f6e05e" opacity=".6" />
+                <circle
+                  cx="165"
+                  cy="68"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="175"
+                  cy="75"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <line
+                  x1="114"
+                  y1="20"
+                  x2="184"
+                  y2="82"
+                  stroke="var(--accent2)"
+                  stroke-width="1"
+                  opacity=".5"
+                />
+                <!-- lag 3 -->
+                <rect
+                  x="206"
+                  y="10"
+                  width="88"
+                  height="78"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="250"
+                  y="22"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  lag 3
+                </text>
+                <circle
+                  cx="220"
+                  cy="65"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="235"
+                  cy="45"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="250"
+                  cy="55"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <circle cx="265" cy="40" r="3" fill="#f6e05e" opacity=".6" />
+                <circle
+                  cx="278"
+                  cy="60"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="225"
+                  cy="30"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="260"
+                  cy="70"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <!-- lag 4 (correlacao POSITIVA FORTE — sazonalidade) -->
+                <rect
+                  x="304"
+                  y="10"
+                  width="88"
+                  height="78"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="348"
+                  y="22"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent)"
+                >
+                  lag 4 ★
+                </text>
+                <circle
+                  cx="314"
+                  cy="75"
+                  r="3.5"
+                  fill="var(--accent)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="325"
+                  cy="68"
+                  r="3.5"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="338"
+                  cy="62"
+                  r="3.5"
+                  fill="var(--accent3)"
+                  opacity=".7"
+                />
+                <circle cx="350" cy="55" r="3.5" fill="#f6e05e" opacity=".7" />
+                <circle
+                  cx="362"
+                  cy="48"
+                  r="3.5"
+                  fill="var(--accent)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="374"
+                  cy="40"
+                  r="3.5"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="385"
+                  cy="32"
+                  r="3.5"
+                  fill="var(--accent3)"
+                  opacity=".7"
+                />
+                <line
+                  x1="310"
+                  y1="82"
+                  x2="390"
+                  y2="22"
+                  stroke="var(--accent)"
+                  stroke-width="1.5"
+                  opacity=".6"
+                />
+                <!-- lag 5 -->
+                <rect
+                  x="402"
+                  y="10"
+                  width="88"
+                  height="78"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="446"
+                  y="22"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  lag 5
+                </text>
+                <circle
+                  cx="415"
+                  cy="60"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="430"
+                  cy="45"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="445"
+                  cy="55"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <circle cx="460" cy="40" r="3" fill="#f6e05e" opacity=".6" />
+                <circle
+                  cx="475"
+                  cy="65"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="420"
+                  cy="30"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="465"
+                  cy="72"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <!-- lag 6 (correlacao negativa) -->
+                <rect
+                  x="500"
+                  y="10"
+                  width="88"
+                  height="78"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="544"
+                  y="22"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  lag 6
+                </text>
+                <circle
+                  cx="510"
+                  cy="25"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="522"
+                  cy="35"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="535"
+                  cy="48"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <circle cx="548" cy="58" r="3" fill="#f6e05e" opacity=".6" />
+                <circle
+                  cx="562"
+                  cy="67"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="574"
+                  cy="74"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <line
+                  x1="506"
+                  y1="20"
+                  x2="580"
+                  y2="82"
+                  stroke="var(--accent2)"
+                  stroke-width="1"
+                  opacity=".5"
+                />
+                <!-- lag 7 -->
+                <rect
+                  x="598"
+                  y="10"
+                  width="88"
+                  height="78"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="642"
+                  y="22"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  lag 7
+                </text>
+                <circle
+                  cx="610"
+                  cy="65"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="625"
+                  cy="50"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="640"
+                  cy="58"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <circle cx="655" cy="42" r="3" fill="#f6e05e" opacity=".6" />
+                <circle
+                  cx="670"
+                  cy="60"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="618"
+                  cy="35"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="660"
+                  cy="72"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <!-- lag 8 (correlacao positiva forte) -->
+                <rect
+                  x="10"
+                  y="108"
+                  width="88"
+                  height="78"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="54"
+                  y="120"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent)"
+                >
+                  lag 8 ★
+                </text>
+                <circle
+                  cx="20"
+                  cy="172"
+                  r="3.5"
+                  fill="var(--accent)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="32"
+                  cy="165"
+                  r="3.5"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="44"
+                  cy="158"
+                  r="3.5"
+                  fill="var(--accent3)"
+                  opacity=".7"
+                />
+                <circle cx="56" cy="148" r="3.5" fill="#f6e05e" opacity=".7" />
+                <circle
+                  cx="68"
+                  cy="138"
+                  r="3.5"
+                  fill="var(--accent)"
+                  opacity=".7"
+                />
+                <circle
+                  cx="80"
+                  cy="128"
+                  r="3.5"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <line
+                  x1="15"
+                  y1="180"
+                  x2="90"
+                  y2="112"
+                  stroke="var(--accent)"
+                  stroke-width="1.5"
+                  opacity=".6"
+                />
+                <!-- lag 9 -->
+                <rect
+                  x="108"
+                  y="108"
+                  width="88"
+                  height="78"
+                  fill="none"
+                  stroke="#222"
+                  rx="1"
+                />
+                <text
+                  x="152"
+                  y="120"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  lag 9
+                </text>
+                <circle
+                  cx="118"
+                  cy="162"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="132"
+                  cy="148"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="148"
+                  cy="155"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <circle cx="162" cy="140" r="3" fill="#f6e05e" opacity=".6" />
+                <circle
+                  cx="175"
+                  cy="168"
+                  r="3"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="125"
+                  cy="130"
+                  r="3"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <circle
+                  cx="168"
+                  cy="175"
+                  r="3"
+                  fill="var(--accent3)"
+                  opacity=".6"
+                />
+                <!-- legenda cores por trimestre -->
+                <text
+                  x="280"
+                  y="125"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Cores = trimestre:
+                </text>
+                <circle
+                  cx="300"
+                  cy="140"
+                  r="5"
+                  fill="var(--accent)"
+                  opacity=".8"
+                />
+                <text
+                  x="312"
+                  y="144"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Q1
+                </text>
+                <circle
+                  cx="340"
+                  cy="140"
+                  r="5"
+                  fill="var(--accent2)"
+                  opacity=".8"
+                />
+                <text
+                  x="352"
+                  y="144"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Q2
+                </text>
+                <circle
+                  cx="380"
+                  cy="140"
+                  r="5"
+                  fill="var(--accent3)"
+                  opacity=".8"
+                />
+                <text
+                  x="392"
+                  y="144"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Q3
+                </text>
+                <circle cx="420" cy="140" r="5" fill="#f6e05e" opacity=".8" />
+                <text
+                  x="432"
+                  y="144"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  Q4
+                </text>
+                <text
+                  x="280"
+                  y="165"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="var(--accent)"
+                >
+                  ★ lag 4 e 8: correlacao positiva forte
+                </text>
+                <text
+                  x="280"
+                  y="180"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="var(--accent2)"
+                >
+                  lag 2 e 6: correlacao negativa (picos vs vales)
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>O que o lag plot revela:</span> lag 4 e lag 8 mostram
+              correlacao positiva forte — confirma periodo sazonal de 4
+              trimestres. Lag 2 e 6 mostram correlacao negativa — picos (Q4)
+              plotados contra vales (Q2). Isso define period=4 para qualquer
+              modelo desta serie.
+            </div>
+          </div>
+
+          <!-- Fig 2.20: ACF cerveja -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Fig 2.20 — ACF: producao trimestral de cerveja
+                australiana</span
+              >
+              <span class="chart-caption"
+                >Barras fora da banda = autocorrelacao significativa | lag 4 e 8
+                dominantes</span
+              >
+            </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="220"
+                viewBox="0 0 860 220"
+                style="max-width: 100%"
+              >
+                <line
+                  x1="60"
+                  y1="110"
+                  x2="820"
+                  y2="110"
+                  stroke="#555"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="200"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <!-- banda de confianca (cinza) -->
+                <rect
+                  x="60"
+                  y="88"
+                  width="760"
+                  height="44"
+                  fill="rgba(100,100,100,0.15)"
+                />
+                <line
+                  x1="60"
+                  y1="88"
+                  x2="820"
+                  y2="88"
+                  stroke="#555"
+                  stroke-width="0.5"
+                  stroke-dasharray="3 2"
+                />
+                <line
+                  x1="60"
+                  y1="132"
+                  x2="820"
+                  y2="132"
+                  stroke="#555"
+                  stroke-width="0.5"
+                  stroke-dasharray="3 2"
+                />
+                <text
+                  x="828"
+                  y="92"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  +1.96/√T
+                </text>
+                <text
+                  x="828"
+                  y="136"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  -1.96/√T
+                </text>
+                <!-- barras ACF lags 1-16 -->
+                <!-- lag 1: -0.05 (dentro banda) -->
+                <rect
+                  x="88"
+                  y="110"
+                  width="22"
+                  height="6"
+                  fill="var(--muted)"
+                />
+                <text
+                  x="99"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  1
+                </text>
+                <!-- lag 2: -0.76 (grande negativo) -->
+                <rect
+                  x="135"
+                  y="110"
+                  width="22"
+                  height="76"
+                  fill="var(--accent2)"
+                  opacity=".8"
+                />
+                <text
+                  x="146"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  2
+                </text>
+                <!-- lag 3: -0.03 -->
+                <rect
+                  x="182"
+                  y="107"
+                  width="22"
+                  height="3"
+                  fill="var(--muted)"
+                />
+                <text
+                  x="193"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  3
+                </text>
+                <!-- lag 4: 0.80 (GRANDE POSITIVO) -->
+                <rect
+                  x="229"
+                  y="30"
+                  width="22"
+                  height="80"
+                  fill="var(--accent)"
+                  opacity=".9"
+                />
+                <text
+                  x="240"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent)"
+                >
+                  4 ★
+                </text>
+                <!-- lag 5: -0.08 -->
+                <rect
+                  x="276"
+                  y="110"
+                  width="22"
+                  height="8"
+                  fill="var(--muted)"
+                />
+                <text
+                  x="287"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  5
+                </text>
+                <!-- lag 6: -0.66 -->
+                <rect
+                  x="323"
+                  y="110"
+                  width="22"
+                  height="66"
+                  fill="var(--accent2)"
+                  opacity=".7"
+                />
+                <text
+                  x="334"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  6
+                </text>
+                <!-- lag 7: 0.00 -->
+                <rect
+                  x="370"
+                  y="109"
+                  width="22"
+                  height="1"
+                  fill="var(--muted)"
+                />
+                <text
+                  x="381"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  7
+                </text>
+                <!-- lag 8: 0.71 (POSITIVO) -->
+                <rect
+                  x="417"
+                  y="39"
+                  width="22"
+                  height="71"
+                  fill="var(--accent)"
+                  opacity=".8"
+                />
+                <text
+                  x="428"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent)"
+                >
+                  8 ★
+                </text>
+                <!-- lag 9: -0.09 -->
+                <rect
+                  x="464"
+                  y="110"
+                  width="22"
+                  height="9"
+                  fill="var(--muted)"
+                />
+                <text
+                  x="475"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  9
+                </text>
+                <!-- lag 10: -0.52 -->
+                <rect
+                  x="511"
+                  y="110"
+                  width="22"
+                  height="52"
+                  fill="var(--accent2)"
+                  opacity=".6"
+                />
+                <text
+                  x="522"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  10
+                </text>
+                <!-- lag 11: 0.02 -->
+                <rect
+                  x="558"
+                  y="108"
+                  width="22"
+                  height="2"
+                  fill="var(--muted)"
+                />
+                <text
+                  x="569"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  11
+                </text>
+                <!-- lag 12: 0.60 -->
+                <rect
+                  x="605"
+                  y="50"
+                  width="22"
+                  height="60"
+                  fill="var(--accent)"
+                  opacity=".7"
+                />
+                <text
+                  x="616"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  12
+                </text>
+                <!-- lag 13: -0.07 -->
+                <rect
+                  x="652"
+                  y="110"
+                  width="22"
+                  height="7"
+                  fill="var(--muted)"
+                />
+                <text
+                  x="663"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  13
+                </text>
+                <!-- lag 14: -0.44 -->
+                <rect
+                  x="699"
+                  y="110"
+                  width="22"
+                  height="44"
+                  fill="var(--accent2)"
+                  opacity=".5"
+                />
+                <text
+                  x="710"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  14
+                </text>
+                <!-- lag 15: 0.00 -->
+                <rect
+                  x="746"
+                  y="109"
+                  width="22"
+                  height="1"
+                  fill="var(--muted)"
+                />
+                <text
+                  x="757"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  15
+                </text>
+                <!-- lag 16: 0.49 -->
+                <rect
+                  x="793"
+                  y="61"
+                  width="22"
+                  height="49"
+                  fill="var(--accent)"
+                  opacity=".6"
+                />
+                <text
+                  x="804"
+                  y="210"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  16
+                </text>
+                <!-- y labels -->
+                <text
+                  x="52"
+                  y="113"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  0.0
+                </text>
+                <text
+                  x="52"
+                  y="53"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  0.6
+                </text>
+                <text
+                  x="52"
+                  y="163"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  -0.5
+                </text>
+                <text
+                  x="430"
+                  y="15"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Autocorrelation Function for Beer
+                </text>
+                <text
+                  x="430"
+                  y="220"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  lag [1Q]
+                </text>
+              </svg>
+            </div>
+            <div class="chart-insight">
+              <span>Como ler o correlograma:</span> barras verdes positivas em
+              lags 4, 8, 12, 16 = sazonalidade trimestral confirmada. Barras
+              laranjas negativas em lags 2, 6, 10, 14 = picos vs vales (metade
+              do periodo). Banda cinza = limite de significancia estatistica.
+              <span style="color: var(--accent)">Isso define period=4</span>
+              para qualquer modelo desta serie.
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-label">Codigo — Figs 2.19 e 2.20</div>
+            <pre><span class="kw">import</span> statsmodels.api <span class="kw">as</span> sm
+<span class="kw">from</span> statsmodels.graphics.tsaplots <span class="kw">import</span> plot_acf
+
+beer = (
+    pd.<span class="fn">read_csv</span>(<span class="st">'data/aus_production.csv'</span>, parse_dates=[<span class="st">'ds'</span>])
+    [[<span class="st">'ds'</span>, <span class="st">'Beer'</span>]]
+    .loc[<span class="kw">lambda</span> x: x[<span class="st">'ds'</span>] >= <span class="st">'2000'</span>]
+    .assign(y=<span class="kw">lambda</span> x: x[<span class="st">'Beer'</span>],
+            Trimestre=<span class="kw">lambda</span> x: <span class="st">'Q'</span> + x[<span class="st">'ds'</span>].dt.quarter.<span class="fn">astype</span>(<span class="st">'string'</span>))
+)
+
+<span class="cm"># ACF numerica</span>
+acf_vals = sm.tsa.<span class="fn">acf</span>(beer[<span class="st">'y'</span>], nlags=<span class="nb">9</span>, fft=<span class="nb">False</span>)
+<span class="fn">print</span>(<span class="st">'r4:'</span>, acf_vals[<span class="nb">4</span>].round(<span class="nb">3</span>))   <span class="cm"># deve ser ~0.80</span>
+<span class="fn">print</span>(<span class="st">'r8:'</span>, acf_vals[<span class="nb">8</span>].round(<span class="nb">3</span>))   <span class="cm"># deve ser ~0.71</span>
+
+<span class="cm"># correlograma visual</span>
+fig, ax = plt.<span class="fn">subplots</span>(figsize=(<span class="nb">10</span>, <span class="nb">4</span>))
+<span class="fn">plot_acf</span>(beer[<span class="st">'y'</span>], lags=<span class="nb">16</span>, ax=ax,
+         zero=<span class="nb">False</span>, bartlett_confint=<span class="nb">False</span>, auto_ylims=<span class="nb">True</span>)
+ax.<span class="fn">set</span>(title=<span class="st">'ACF — Producao Trimestral de Cerveja'</span>,
+     xlabel=<span class="st">'lag [1Q]'</span>, ylabel=<span class="st">'Autocorrelacao'</span>)
+plt.<span class="fn">show</span>()
+
+<span class="cm"># r4 e r8 dominantes → period=4 para qualquer modelo desta serie</span></pre>
           </div>
 
           <div class="quiz-block">
             <div class="quiz-label">Quiz 2.5</div>
             <div class="quiz-q">
-              Você plota lag 1 de uma série e vê uma nuvem de pontos
-              completamente aleatória, sem forma. O que isso significa para
-              previsão?
+              No correlograma da cerveja, as barras maiores estao nos lags 4, 8,
+              12, 16. O que isso indica para a modelagem?
             </div>
             <div class="quiz-options">
               <button
@@ -1049,11 +4165,11 @@ total = (
                   answer(
                     this,
                     false,
-                    'Sem estrutura no lag 1 não significa que outros lags também não têm. Pode ter autocorrelação em lags maiores.',
+                    'Tendencia produziria barras que decrescem lentamente do lag 1 em diante. Aqui os picos sao nos multiplos de 4.',
                   )
                 "
               >
-                A série não pode ser prevista
+                Ha uma tendencia de longo prazo nos dados
               </button>
               <button
                 class="quiz-option"
@@ -1061,11 +4177,11 @@ total = (
                   answer(
                     this,
                     true,
-                    'Correto. O valor de ontem não explica o de hoje (lag 1 sem estrutura). Vale checar outros lags e o ACF completo.',
+                    'Correto. Barras altas nos multiplos de 4 = sazonalidade com periodo 4 (trimestral). Isso define period=4 para STL, season_length=4 para SeasonalNaive e AutoETS, e m=4 para ARIMA sazonal. Errar o periodo quebra qualquer modelo.',
                   )
                 "
               >
-                O valor de ontem não tem relação linear com o de hoje
+                Sazonalidade com periodo 4 — usar period=4 em todos os modelos
               </button>
               <button
                 class="quiz-option"
@@ -1073,11 +4189,11 @@ total = (
                   answer(
                     this,
                     false,
-                    'Ruído branco seria todos os lags sem estrutura, não apenas o lag 1.',
+                    'Ruido branco teria todas as barras dentro da banda cinza, sem nenhum padrao. Aqui ha padrao claro.',
                   )
                 "
               >
-                A série é ruído branco
+                A serie e ruido branco
               </button>
             </div>
             <div class="quiz-feedback" id="fb-4"></div>
@@ -1087,421 +4203,601 @@ total = (
 
       <hr class="divider" />
 
-      <!-- SEÇÃO 6 -->
+      <!-- ===== SEC 6: WHITE NOISE ===== -->
       <div class="section" id="s6">
         <div class="section-header" onclick="toggleSection('s6')">
-          <span class="section-num">2.8</span>
-          <span class="section-title">Autocorrelação (ACF)</span>
+          <span class="section-num">2.9</span>
+          <span class="section-title"
+            >Ruido branco — criterio de qualidade do modelo</span
+          >
           <span class="section-toggle">+</span>
         </div>
         <div class="section-body">
           <div class="concept">
-            <div class="concept-title">O que é</div>
+            <div class="concept-title">
+              Ruido branco = residuos sem autocorrelacao
+            </div>
             <p>
-              O ACF (Autocorrelation Function) mede a correlação entre a série e
-              ela mesma deslocada por N períodos, para todos os lags de uma vez.
-              O resultado é um gráfico de barras onde cada barra = um lag.
+              Uma serie e ruido branco quando nao tem autocorrelacao — valores
+              passados nao predizem valores futuros. Os
+              <span class="hl"
+                >residuos do modelo precisam ser ruido branco</span
+              >. Se a ACF dos residuos mostrar barras significativas, o modelo
+              deixou informacao na mesa e precisa ser melhorado.
             </p>
-            <ul>
-              <li>
-                Barra acima da linha pontilhada → autocorrelação significativa
-                naquele lag
-              </li>
-              <li>Barras altas decaindo devagar → tendência</li>
-              <li>Picos em lags específicos (ex: 12, 24...) → sazonalidade</li>
-              <li>Todas as barras baixas → ruído branco</li>
-            </ul>
           </div>
 
-          <div class="demo-box">
-            <div class="demo-title">
-              Demo visual — como o ACF muda por tipo de série
+          <!-- Figs 2.22 e 2.23: white noise -->
+          <div class="chart-block">
+            <div class="chart-header">
+              <span class="chart-title"
+                >Figs 2.22 e 2.23 — Serie de ruido branco e sua ACF</span
+              >
+              <span class="chart-caption"
+                >Sem padrao na serie | Quase todas barras da ACF dentro da
+                banda</span
+              >
             </div>
-            <div class="charts-row">
-              <div>
-                <div class="chart-label-small">Série com tendência</div>
-                <div class="acf-chart" id="acf-trend">
-                  <div class="confidence-line"></div>
-                </div>
-                <div class="acf-labels" id="acf-trend-labels"></div>
-              </div>
-              <div>
-                <div class="chart-label-small">
-                  Série com sazonalidade (período 4)
-                </div>
-                <div class="acf-chart" id="acf-season">
-                  <div class="confidence-line"></div>
-                </div>
-                <div class="acf-labels" id="acf-season-labels"></div>
-              </div>
+            <div class="chart-svg-wrap">
+              <svg
+                width="860"
+                height="340"
+                viewBox="0 0 860 340"
+                style="max-width: 100%"
+              >
+                <!-- painel superior: serie WN -->
+                <line
+                  x1="60"
+                  y1="140"
+                  x2="820"
+                  y2="140"
+                  stroke="#555"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="60"
+                  y2="160"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <text
+                  x="52"
+                  y="143"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  0
+                </text>
+                <text
+                  x="52"
+                  y="40"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  2
+                </text>
+                <text
+                  x="52"
+                  y="160"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  -2
+                </text>
+                <text
+                  x="440"
+                  y="14"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  White noise
+                </text>
+                <!-- serie WN irregular -->
+                <polyline
+                  fill="none"
+                  stroke="#6495ff"
+                  stroke-width="1.5"
+                  points="65,115 80,158 95,100 110,145 125,90 140,135 155,108 170,150 185,120 200,85 215,145 230,110 245,155 260,95 275,140 290,108 305,152 320,118 335,88 350,143 365,112 380,155 395,98 410,142 425,110 440,152 455,120 470,88 485,145 500,115 515,158 530,100 545,148 560,112 575,155 590,98 605,142 620,110 635,155 650,118 665,88 680,145 695,118 710,158 725,98 740,145 755,108 770,152 785,115 800,160 815,100"
+                />
+                <text
+                  x="440"
+                  y="172"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  sample [1]
+                </text>
+
+                <!-- painel inferior: ACF do WN -->
+                <line
+                  x1="60"
+                  y1="260"
+                  x2="820"
+                  y2="260"
+                  stroke="#555"
+                  stroke-width="1"
+                />
+                <line
+                  x1="60"
+                  y1="185"
+                  x2="60"
+                  y2="330"
+                  stroke="#333"
+                  stroke-width="1"
+                />
+                <!-- banda de confianca -->
+                <rect
+                  x="60"
+                  y="248"
+                  width="760"
+                  height="24"
+                  fill="rgba(100,100,100,0.15)"
+                />
+                <line
+                  x1="60"
+                  y1="248"
+                  x2="820"
+                  y2="248"
+                  stroke="#555"
+                  stroke-width="0.5"
+                  stroke-dasharray="3 2"
+                />
+                <line
+                  x1="60"
+                  y1="272"
+                  x2="820"
+                  y2="272"
+                  stroke="#555"
+                  stroke-width="0.5"
+                  stroke-dasharray="3 2"
+                />
+                <text
+                  x="440"
+                  y="185"
+                  text-anchor="middle"
+                  font-family="Inter"
+                  font-size="11"
+                  fill="#888"
+                >
+                  Autocorrelation Function for White Noise
+                </text>
+                <!-- barras ACF do WN — quase todas dentro da banda, exceto lag 1 -->
+                <rect
+                  x="85"
+                  y="235"
+                  width="16"
+                  height="25"
+                  fill="var(--accent2)"
+                  opacity=".8"
+                />
+                <!-- lag 1: -0.22 — ligeiramente fora -->
+                <rect
+                  x="130"
+                  y="252"
+                  width="16"
+                  height="8"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 2: 0.06 -->
+                <rect
+                  x="175"
+                  y="260"
+                  width="16"
+                  height="12"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 3: -0.08 -->
+                <rect
+                  x="220"
+                  y="252"
+                  width="16"
+                  height="8"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 4 -->
+                <rect
+                  x="265"
+                  y="255"
+                  width="16"
+                  height="5"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 5 -->
+                <rect
+                  x="310"
+                  y="250"
+                  width="16"
+                  height="10"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 6 -->
+                <rect
+                  x="355"
+                  y="252"
+                  width="16"
+                  height="8"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 7 -->
+                <rect
+                  x="400"
+                  y="254"
+                  width="16"
+                  height="6"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 8 -->
+                <rect
+                  x="445"
+                  y="256"
+                  width="16"
+                  height="4"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 9 -->
+                <rect
+                  x="490"
+                  y="253"
+                  width="16"
+                  height="7"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 10 -->
+                <rect
+                  x="535"
+                  y="260"
+                  width="16"
+                  height="9"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 11 -->
+                <rect
+                  x="580"
+                  y="255"
+                  width="16"
+                  height="5"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 12 -->
+                <rect
+                  x="625"
+                  y="252"
+                  width="16"
+                  height="8"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 13 -->
+                <rect
+                  x="670"
+                  y="256"
+                  width="16"
+                  height="4"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 14 -->
+                <rect
+                  x="715"
+                  y="258"
+                  width="16"
+                  height="2"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 15 -->
+                <rect
+                  x="760"
+                  y="253"
+                  width="16"
+                  height="7"
+                  fill="var(--muted)"
+                  opacity=".6"
+                />
+                <!-- lag 16 -->
+                <!-- labels lags -->
+                <text
+                  x="93"
+                  y="325"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  1
+                </text>
+                <text
+                  x="440"
+                  y="325"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  8
+                </text>
+                <text
+                  x="776"
+                  y="325"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="#555"
+                >
+                  16
+                </text>
+                <text
+                  x="440"
+                  y="338"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  lag [1]
+                </text>
+                <text
+                  x="52"
+                  y="263"
+                  text-anchor="end"
+                  font-family="JetBrains Mono"
+                  font-size="9"
+                  fill="#555"
+                >
+                  0.0
+                </text>
+                <!-- nota lag 1 fora da banda -->
+                <text
+                  x="90"
+                  y="230"
+                  text-anchor="middle"
+                  font-family="JetBrains Mono"
+                  font-size="8"
+                  fill="var(--accent2)"
+                >
+                  fora*
+                </text>
+              </svg>
             </div>
-            <p
-              style="
-                font-family: &quot;Space Mono&quot;, monospace;
-                font-size: 11px;
-                color: var(--muted);
-                margin-top: 16px;
-              "
-            >
-              Verde = tendência &nbsp;|&nbsp; Roxo = pico sazonal &nbsp;|&nbsp;
-              Linha pontilhada = limite de significância
-            </p>
+            <div class="chart-insight">
+              <span>Limite: ±1.96/√T</span> — para T=50 observacoes, limite =
+              ±0.28. Lag 1 esta ligeiramente fora. O livro diz: "e apenas
+              levemente alem do limite", confirmando que a serie e WN.
+              <span style="color: var(--accent)"
+                >Regra: se os RESIDUOS do seu modelo tiverem barras fora da
+                banda, o modelo falhou em capturar toda a informacao.</span
+              >
+            </div>
           </div>
 
           <div class="code-block">
-            <div class="code-label">Como plotar o ACF em Python</div>
-            <pre><span class="kw">from</span> statsmodels.graphics.tsaplots <span class="kw">import</span> plot_acf
-<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
-
-<span class="cm"># lags=40 mostra os primeiros 40 defasagens</span>
-<span class="fn">plot_acf</span>(df[<span class="st">"valor"</span>], lags=<span class="nb">40</span>)
-plt.<span class="fn">show</span>()</pre>
-          </div>
-
-          <div class="quiz-block">
-            <div class="quiz-label">Quiz 2.6</div>
-            <div class="quiz-q">
-              No gráfico ACF de uma série mensal, você vê barras altas nos lags
-              12, 24 e 36, e barras pequenas nos outros lags. O que isso indica?
+            <div class="code-label">
+              Codigo — Figs 2.22 e 2.23 + diagnostico de residuos
             </div>
-            <div class="quiz-options">
-              <button
-                class="quiz-option"
-                onclick="
-                  answer(
-                    this,
-                    false,
-                    'Tendência deixaria as primeiras barras altas decaindo gradualmente — não picos em lags específicos.',
-                  )
-                "
-              >
-                Tendência de longo prazo
-              </button>
-              <button
-                class="quiz-option"
-                onclick="
-                  answer(
-                    this,
-                    false,
-                    'Ruído branco não teria nenhuma barra significativa.',
-                  )
-                "
-              >
-                Ruído branco
-              </button>
-              <button
-                class="quiz-option"
-                onclick="
-                  answer(
-                    this,
-                    true,
-                    'Correto. Picos nos lags 12, 24, 36 = sazonalidade anual. O valor de janeiro se correlaciona com o do janeiro anterior, dois anos atrás, etc.',
-                  )
-                "
-              >
-                Sazonalidade anual forte
-              </button>
-            </div>
-            <div class="quiz-feedback" id="fb-5"></div>
+            <pre><span class="cm"># gera serie de ruido branco</span>
+rng = np.random.<span class="fn">RandomState</span>(<span class="nb">30</span>)
+wn = pd.<span class="fn">DataFrame</span>({
+    <span class="st">'y'</span>: rng.<span class="fn">normal</span>(<span class="nb">0</span>, <span class="nb">1</span>, <span class="nb">50</span>),
+    <span class="st">'ds'</span>: np.<span class="fn">arange</span>(<span class="nb">1</span>, <span class="nb">51</span>)
+})
+
+fig, axes = plt.<span class="fn">subplots</span>(<span class="nb">2</span>, <span class="nb">1</span>, figsize=(<span class="nb">10</span>, <span class="nb">6</span>))
+
+<span class="cm"># serie</span>
+axes[<span class="nb">0</span>].<span class="fn">plot</span>(wn[<span class="st">'ds'</span>], wn[<span class="st">'y'</span>], color=<span class="st">'steelblue'</span>)
+axes[<span class="nb">0</span>].<span class="fn">axhline</span>(<span class="nb">0</span>, color=<span class="st">'gray'</span>, linestyle=<span class="st">'--'</span>, alpha=<span class="nb">.5</span>)
+axes[<span class="nb">0</span>].<span class="fn">set_title</span>(<span class="st">'White Noise'</span>)
+
+<span class="cm"># ACF</span>
+<span class="fn">plot_acf</span>(wn[<span class="st">'y'</span>], lags=<span class="nb">16</span>, ax=axes[<span class="nb">1</span>],
+         zero=<span class="nb">False</span>, bartlett_confint=<span class="nb">False</span>)
+axes[<span class="nb">1</span>].<span class="fn">set_title</span>(<span class="st">'ACF — Ruido Branco'</span>)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">show</span>()
+
+<span class="cm"># ---- diagnostico pos-modelo ----</span>
+<span class="cm"># apos ajustar qualquer modelo, verifique os residuos:</span>
+residuos = y_real - y_previsto
+limite = <span class="nb">1.96</span> / np.<span class="fn">sqrt</span>(<span class="fn">len</span>(residuos))
+<span class="fn">print</span>(<span class="fn">f</span><span class="st">'Limite ±{limite:.3f}'</span>)
+<span class="fn">plot_acf</span>(residuos, lags=<span class="nb">24</span>)
+<span class="cm"># se barras fora da banda → modelo incompleto → melhorar</span></pre>
           </div>
         </div>
       </div>
 
       <hr class="divider" />
 
-      <!-- SEÇÃO 7 -->
+      <!-- ===== SEC 7: CONSOLIDACAO ===== -->
       <div class="section" id="s7">
         <div class="section-header" onclick="toggleSection('s7')">
-          <span class="section-num">2.9</span>
-          <span class="section-title">White noise e validação de modelos</span>
+          <span class="section-num">Revisao</span>
+          <span class="section-title"
+            >Checklist — graficos essenciais do pesquisador</span
+          >
           <span class="section-toggle">+</span>
         </div>
         <div class="section-body">
-          <div class="concept">
-            <div class="concept-title">O que é ruído branco</div>
-            <p>
-              Uma série onde os valores são completamente aleatórios e
-              independentes. Sem tendência, sem sazonalidade, sem
-              autocorrelação. O ACF mostra todas as barras dentro do intervalo
-              de confiança.
-            </p>
-          </div>
-
           <div class="concept orange">
-            <div class="concept-title">Por que isso importa na prática</div>
+            <div class="concept-title">Tabela de referencia rapida</div>
+            <ul>
+              <li>
+                <span class="hl2">Time plot</span> — sempre primeiro. Tendencia,
+                outliers, mudancas estruturais
+              </li>
+              <li>
+                <span class="hl2">Sazonal</span> — quando suspeitar de
+                sazonalidade. Padrao e sua estabilidade
+              </li>
+              <li>
+                <span class="hl2">Sub-series</span> — quando sazonalidade pode
+                ter mudado. Variacao interna
+              </li>
+              <li>
+                <span class="hl2">Scatter</span> — quando ha covariaveis.
+                Relacoes entre series
+              </li>
+              <li>
+                <span class="hl2">Lag plot</span> — antes de modelar. Quais
+                defasagens tem correlacao
+              </li>
+              <li>
+                <span class="hl2">ACF</span> — confirma periodo sazonal,
+                tendencia. Diagnostico padrao
+              </li>
+              <li>
+                <span class="hl2">ACF dos residuos</span> — apos modelar.
+                Criterio de qualidade do modelo
+              </li>
+            </ul>
+          </div>
+
+          <div class="checklist">
+            <div class="checklist-title">
+              Marque o que voce ja consegue fazer
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Criar um time plot e identificar tendencia, sazonalidade e
+                outliers visualmente</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Diferenciar sazonalidade aditiva de multiplicativa pelo grafico
+                temporal</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Criar grafico sazonal com seaborn lineplot agrupado por
+                ano</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Criar sub-series sazonais com subplots e linha de media
+                historica</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Calcular correlacao de Pearson e saber quando ela e
+                insuficiente</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Plotar e interpretar o correlograma (ACF) — identificar periodo
+                sazonal</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Usar ACF dos residuos como criterio de qualidade do
+                modelo</span
+              >
+            </div>
+            <div class="check-item" onclick="toggleCheck(this)">
+              <div class="check-box"></div>
+              <span class="check-text"
+                >Calcular o limite de significancia: ±1.96/√T para qualquer
+                serie</span
+              >
+            </div>
+          </div>
+
+          <div class="concept purple">
+            <div class="concept-title">
+              Proximo: Capitulo 3 — Decomposicao de Series Temporais
+            </div>
             <p>
-              Depois que você ajusta um modelo de previsão, você analisa os
-              resíduos (erros do modelo). Se os resíduos parecem ruído branco, o
-              modelo capturou toda a estrutura previsível da série. Se ainda
-              tiver padrão nos resíduos, o modelo está deixando informação na
-              mesa.
+              STL, X-11 e SEATS — metodos formais para separar tendencia,
+              sazonalidade e residuo. Pre-processamento padrao antes de qualquer
+              modelagem hierarquica. O STL e o metodo que voce vai usar em toda
+              a pesquisa.
             </p>
-          </div>
-
-          <div class="analogy">
-            <div class="analogy-label">Regra prática</div>
-            <p>
-              Resíduo bom = ruído branco.<br />
-              Resíduo com padrão no ACF = modelo ruim, precisa melhorar.
-            </p>
-          </div>
-
-          <div class="quiz-block">
-            <div class="quiz-label">Quiz 2.7</div>
-            <div class="quiz-q">
-              Após treinar um modelo ARIMA, você plota o ACF dos resíduos e vê
-              um pico significativo no lag 12. O que você conclui?
-            </div>
-            <div class="quiz-options">
-              <button
-                class="quiz-option"
-                onclick="
-                  answer(
-                    this,
-                    false,
-                    'O modelo não capturou a sazonalidade — não está bom.',
-                  )
-                "
-              >
-                O modelo está bom, resíduos sempre têm algum pico
-              </button>
-              <button
-                class="quiz-option"
-                onclick="
-                  answer(
-                    this,
-                    true,
-                    'Correto. Pico no lag 12 nos resíduos = o modelo não capturou a sazonalidade anual. Precisa adicionar componente sazonal (ex: SARIMA).',
-                  )
-                "
-              >
-                O modelo não capturou a sazonalidade anual — precisa ajuste
-              </button>
-              <button
-                class="quiz-option"
-                onclick="
-                  answer(
-                    this,
-                    false,
-                    'Trocar de dado não resolve — o problema é na especificação do modelo.',
-                  )
-                "
-              >
-                Trocar os dados de treino
-              </button>
-            </div>
-            <div class="quiz-feedback" id="fb-6"></div>
-          </div>
-        </div>
-      </div>
-
-      <hr class="divider" />
-
-      <!-- CHECKLIST FINAL -->
-      <div class="section" id="sFinal">
-        <div class="section-header" onclick="toggleSection('sFinal')">
-          <span
-            class="section-num"
-            style="
-              background: rgba(124, 111, 255, 0.1);
-              border-color: rgba(124, 111, 255, 0.3);
-              color: var(--accent3);
-            "
-            >REVIEW</span
-          >
-          <span class="section-title">Checklist de domínio</span>
-          <span class="section-toggle">+</span>
-        </div>
-        <div class="section-body">
-          <p
-            style="
-              font-size: 13px;
-              color: var(--muted);
-              margin-bottom: 16px;
-              font-family: &quot;Space Mono&quot;, monospace;
-            "
-          >
-            Marque o que você consegue fazer sem consultar o livro.
-          </p>
-          <div class="checklist" id="checklist">
-            <div class="check-item" onclick="toggleCheck(this)">
-              <div class="check-box">✓</div>
-              <div class="check-text">
-                Estruturar um DataFrame no formato correto para séries temporais
-                (colunas ds, chave, valor)
-              </div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this)">
-              <div class="check-box">✓</div>
-              <div class="check-text">
-                Diferenciar Timestamp de Period e saber quando usar cada um
-              </div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this)">
-              <div class="check-box">✓</div>
-              <div class="check-text">
-                Identificar tendência, sazonalidade e ciclo num time plot
-              </div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this)">
-              <div class="check-box">✓</div>
-              <div class="check-text">
-                Explicar a diferença entre seasonal plot e subseries plot e
-                quando usar cada um
-              </div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this)">
-              <div class="check-box">✓</div>
-              <div class="check-text">
-                Interpretar um lag plot (com estrutura vs nuvem aleatória)
-              </div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this)">
-              <div class="check-box">✓</div>
-              <div class="check-text">
-                Ler um gráfico ACF e identificar tendência, sazonalidade ou
-                ruído branco
-              </div>
-            </div>
-            <div class="check-item" onclick="toggleCheck(this)">
-              <div class="check-box">✓</div>
-              <div class="check-text">
-                Usar o ACF dos resíduos pra avaliar se um modelo capturou a
-                estrutura da série
-              </div>
-            </div>
           </div>
         </div>
       </div>
 
       <div class="nav-bottom">
-        <button
-          class="nav-btn"
-          onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
-        >
-          ↑ Topo
-        </button>
-        <span class="score-display" id="quizScore">Quiz: 0/7 corretas</span>
-        <button class="nav-btn" onclick="expandAll()">Expandir tudo</button>
+        <button class="nav-btn">← Cap. 1</button>
+        <span class="score-display" id="scoreDisplay">Quiz: 0/5</span>
+        <button class="nav-btn">Cap. 3 →</button>
       </div>
     </div>
-
     <script>
-      // Seções
+      const TOTAL = 7;
+      let opened = new Set(),
+        score = 0,
+        total = 0,
+        answered = {};
       function toggleSection(id) {
         const el = document.getElementById(id);
+        const was = el.classList.contains("open");
         el.classList.toggle("open");
-        updateProgress();
-      }
-
-      function expandAll() {
-        document
-          .querySelectorAll(".section")
-          .forEach((s) => s.classList.add("open"));
-        updateProgress();
-      }
-
-      // Quiz
-      let quizAnswers = new Array(7).fill(null);
-      let quizCorrect = 0;
-
-      function answer(btn, correct, feedback) {
-        const block = btn.closest(".quiz-block");
-        const options = block.querySelectorAll(".quiz-option");
-        const fbId = block.querySelector(".quiz-feedback").id;
-        const idx = parseInt(fbId.split("-")[1]);
-
-        if (quizAnswers[idx] !== null) return;
-
-        options.forEach((o) => (o.disabled = true));
-        btn.classList.add(correct ? "correct" : "wrong");
-
-        if (!correct) {
-          options.forEach((o) => {
-            if (o.getAttribute("onclick").includes("true"))
-              o.classList.add("correct");
-          });
+        if (!was) {
+          opened.add(id);
+          updateProgress();
         }
-
-        const fb = document.getElementById(fbId);
-        fb.textContent = (correct ? "✓ " : "✗ ") + feedback;
-        fb.classList.add("show");
-
-        quizAnswers[idx] = correct;
-        if (correct) quizCorrect++;
-        document.getElementById("quizScore").textContent =
-          `Quiz: ${quizCorrect}/7 corretas`;
-        updateProgress();
       }
-
-      // Checklist
-      function toggleCheck(el) {
-        el.classList.toggle("done");
-        updateProgress();
-      }
-
-      // Progress
       function updateProgress() {
-        const sections = document.querySelectorAll(
-          ".section:not(#sFinal)",
-        ).length;
-        const open = document.querySelectorAll(
-          ".section.open:not(#sFinal)",
-        ).length;
-        const pct = Math.round((open / sections) * 100);
+        const pct = Math.round((opened.size / TOTAL) * 100);
         document.getElementById("progressFill").style.width = pct + "%";
         document.getElementById("progressText").textContent =
-          `${open} de ${sections} seções abertas`;
+          opened.size + " de " + TOTAL + " secoes concluidas";
         document.getElementById("progressPct").textContent = pct + "%";
       }
-
-      // ACF demo charts
-      function buildACF(containerId, labelsId, type) {
-        const container = document.getElementById(containerId);
-        const labelsContainer = document.getElementById(labelsId);
-
-        let heights, classes;
-
-        if (type === "trend") {
-          heights = [72, 64, 57, 50, 44, 38, 33, 28, 23, 19, 15, 12];
-          classes = ["", "", "", "", "", "", "", "", "", "", "", ""];
-        } else {
-          heights = [10, 8, 9, 62, 7, 8, 9, 58, 8, 7, 8, 55];
-          classes = [
-            "",
-            "",
-            "",
-            "season",
-            "",
-            "",
-            "",
-            "season",
-            "",
-            "",
-            "",
-            "season",
-          ];
-        }
-
-        heights.forEach((h, i) => {
-          const bar = document.createElement("div");
-          bar.className = "acf-bar " + classes[i];
-          bar.style.height = h + "px";
-          bar.title = `Lag ${i + 1}: ${(h / 80).toFixed(2)}`;
-          container.appendChild(bar);
-        });
-
-        heights.forEach((h, i) => {
-          const label = document.createElement("div");
-          label.className = "acf-label";
-          label.textContent = i + 1;
-          labelsContainer.appendChild(label);
-        });
+      function answer(btn, correct, feedback) {
+        const block = btn.closest(".quiz-block");
+        const fbEl = block.querySelector(".quiz-feedback");
+        if (answered[fbEl.id]) return;
+        answered[fbEl.id] = true;
+        total++;
+        block
+          .querySelectorAll(".quiz-option")
+          .forEach((o) => (o.disabled = true));
+        btn.classList.add(correct ? "correct" : "wrong");
+        if (correct) score++;
+        fbEl.textContent = feedback;
+        fbEl.classList.add("show");
+        document.getElementById("scoreDisplay").textContent =
+          "Quiz: " + score + "/" + total;
       }
-
-      buildACF("acf-trend", "acf-trend-labels", "trend");
-      buildACF("acf-season", "acf-season-labels", "season");
-      updateProgress();
+      function toggleCheck(el) {
+        el.classList.toggle("done");
+      }
     </script>
   </body>
 </html>
