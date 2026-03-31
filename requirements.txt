@@ -4,7 +4,9 @@ aiohttp==3.13.3
 aiosignal==1.4.0
 alembic==1.18.4
 annotated-types==0.7.0
+antropy==0.2.1
 anyio==4.12.1
+arch==8.0.0
 argon2-cffi==25.1.0
 argon2-cffi-bindings==25.1.0
 arrow==1.4.0
@@ -146,6 +148,7 @@ SQLAlchemy==2.0.48
 stack-data==0.6.3
 statsforecast==2.0.3
 statsmodels==0.14.6
+supersmoother==0.4
 sympy==1.14.0
 tensorboardX==2.6.4
 terminado==0.18.1
@@ -157,6 +160,7 @@ tornado==6.5.5
 tqdm==4.67.3
 traitlets==5.14.3
 triad==1.0.2
+tsfeatures==0.4.5
 typing-inspection==0.4.2
 typing_extensions==4.15.0
 tzdata==2025.3
